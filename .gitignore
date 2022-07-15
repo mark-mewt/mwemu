@@ -33,3 +33,5 @@
 .vs
 *.user
 code/out
+code/mewt/x64
+code/x64
