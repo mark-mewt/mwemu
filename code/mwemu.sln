@@ -7,20 +7,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mewt", "mewt\mewt.vcxproj",
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
+		Debug|Clang = Debug|Clang
+		Debug|MSVC = Debug|MSVC
+		Release|Clang = Release|Clang
+		Release|MSVC = Release|MSVC
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|x64.ActiveCfg = Debug|x64
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|x64.Build.0 = Debug|x64
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|x86.ActiveCfg = Debug|Win32
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|x86.Build.0 = Debug|Win32
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|x64.ActiveCfg = Release|x64
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|x64.Build.0 = Release|x64
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|x86.ActiveCfg = Release|Win32
-		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|x86.Build.0 = Release|Win32
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|Clang.ActiveCfg = Debug-Clang|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|MSVC.ActiveCfg = Debug-MSVC|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|MSVC.Build.0 = Debug-MSVC|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|Clang.ActiveCfg = Release-Clang|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|MSVC.ActiveCfg = Release-MSVC|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|MSVC.Build.0 = Release-MSVC|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
