@@ -80,6 +80,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,6 +96,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +111,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +138,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="diag\log.cpp" />
+    <ClCompile Include="diag\main.cpp" />
+    <ClCompile Include="emu\clock.cpp" />
     <ClCompile Include="emu\cpu\mos_6502.cpp" />
+    <ClCompile Include="emu\gpu\vic2.cpp" />
+    <ClCompile Include="emu\sys\c64.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="async\awaitable_func.decl.h" />
+    <ClInclude Include="async\awaitable_func.h" />
+    <ClInclude Include="async\func_awaiter.decl.h" />
+    <ClInclude Include="async\func_awaiter.h" />
+    <ClInclude Include="async\promise.h" />
+    <ClInclude Include="async\promise_value.h" />
+    <ClInclude Include="diag\log.h" />
+    <ClInclude Include="emu\clock.h" />
+    <ClInclude Include="emu\clock.decl.h" />
+    <ClInclude Include="emu\cpu\mos_6502.h" />
+    <ClInclude Include="emu\gpu\vic2.h" />
+    <ClInclude Include="emu\sys\c64.h" />
+    <ClInclude Include="types\intrusive_stack.h" />
+    <ClInclude Include="types\non_movable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,9 +14,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|Clang.ActiveCfg = Debug-Clang|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|Clang.Build.0 = Debug-Clang|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|MSVC.ActiveCfg = Debug-MSVC|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|MSVC.Build.0 = Debug-MSVC|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|Clang.ActiveCfg = Release-Clang|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|Clang.Build.0 = Release-Clang|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|MSVC.ActiveCfg = Release-MSVC|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|MSVC.Build.0 = Release-MSVC|x64
 	EndGlobalSection

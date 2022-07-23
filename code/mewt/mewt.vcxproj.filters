@@ -18,5 +18,64 @@
     <ClCompile Include="emu\cpu\mos_6502.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="emu\gpu\vic2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emu\sys\c64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emu\clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="diag\log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="diag\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="types\intrusive_stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\non_movable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\promise_value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\promise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\awaitable_func.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\func_awaiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\func_awaiter.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\awaitable_func.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\clock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\cpu\mos_6502.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\clock.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\gpu\vic2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\sys\c64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="diag\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
