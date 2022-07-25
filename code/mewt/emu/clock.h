@@ -3,8 +3,7 @@
 
 #include "emu/clock.decl.h"
 #include "types/intrusive_stack.h"
-
-#include <coroutine>
+#include "types/coroutine.h"
 
 namespace mewt::emu
 {

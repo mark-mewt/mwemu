@@ -1,6 +1,10 @@
 
 #pragma once
 
+#ifdef __clang__
+#define __cpp_consteval
+#endif
+
 #include <source_location>
 
 namespace mewt::diag

@@ -6,15 +6,6 @@
 #include "emu/clock.h"
 #include "diag/log.h"
 
-#ifdef __clang__
-#define __cpp_lib_coroutine 1
-#endif
-
-namespace std::experimental
-{
-   using namespace std;
-}
-
 /*
 * 
 * ToDo:
@@ -31,22 +22,25 @@ namespace std::experimental
 namespace mewt::emu::cpu
 {
 
-   mos6502_t::mos6502_t(const clock_source_t& clock)
-      : _clock(clock)
+   mos6502_t::mos6502_t(const clock_source_t& clock, memory_interface<bus_spec_t>& memory_interface)
+      : _clock(clock), _memory_interface(memory_interface)
    {
       logger().log("%s: %d", __FUNCTION__, 0);
    }
 
-   async::awaitable_func_t<uint8_t> mos6502_t::read_mem()
+   async::awaitable_func_t<mos6502_t::data_t> mos6502_t::read_data(address_t address)
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await _clock.next_tick();
-      logger().log("%s: %d", __FUNCTION__, 1);
-      co_await _clock.next_tick();
-      logger().log("%s: %d", __FUNCTION__, 2);
-      co_await _clock.next_tick();
-      logger().log("%s: %d", __FUNCTION__, 3);
-      co_return 42;
+      co_return _memory_interface.read(address);
+   }
+
+   async::awaitable_func_t<mos6502_t::address_t> mos6502_t::read_address(address_t address)
+   {
+      logger().log("%s: %d", __FUNCTION__, 0);
+      auto low = co_await read_data(address);
+      auto high = co_await read_data(address + 1);
+      co_return (address_t)low | ((address_t)high << 8);
    }
 
    async::awaitable_func_t<> mos6502_t::write_mem(uint8_t v)
@@ -62,28 +56,24 @@ namespace mewt::emu::cpu
 
    async::awaitable_func_t<> mos6502_t::run_inst()
    {
-      logger().log("%s: %d", __FUNCTION__, 0);
-      auto v = co_await read_mem();
-      logger().log("%s: %d", __FUNCTION__, 1);
-      co_await _clock.next_tick();
-      logger().log("%s: %d", __FUNCTION__, 2);
-      co_await _clock.next_tick();
-      logger().log("%s: %d", __FUNCTION__, 3);
-      co_await _clock.next_tick();
-      logger().log("%s: %d", __FUNCTION__, 4);
-      co_await write_mem(v);
-      logger().log("%s: %d", __FUNCTION__, 5);
+      auto inst = co_await read_data(_pc);
+      logger().log("0x%x: %x", _pc, inst);
+      ++_pc;
+      switch (inst)
+      {
+      case 0:
+         break;
+      }
    }
 
    async::awaitable_func_t<> mos6502_t::run_cpu()
    {
+      _pc = co_await read_address(0xfffc);
       logger().log("%s: %d", __FUNCTION__, 0);
-      co_await run_inst();
-      logger().log("%s: %d", __FUNCTION__, 1);
-      co_await run_inst();
-      logger().log("%s: %d", __FUNCTION__, 2);
-      co_await run_inst();
-      logger().log("%s: %d", __FUNCTION__, 3);
+      for (;;)
+      {
+         co_await run_inst();
+      }
    }
 
 }
