@@ -10,7 +10,7 @@
 namespace mewt::emu::cpu
 {
 
-   class mos6502_t
+   class mos65xx_t
    {
    private:
       using bus_spec_t = bus_spec<16, 8>;
@@ -22,7 +22,7 @@ namespace mewt::emu::cpu
       address_t _pc;
 
    public:
-      mos6502_t(const clock_source_t& clock, memory_interface<bus_spec_t>& memory_interface);
+      mos65xx_t(const clock_source_t& clock, memory_interface<bus_spec_t>& memory_interface);
       async::awaitable_func_t<data_t> read_data(address_t address);
       async::awaitable_func_t<address_t> read_address(address_t address);
       async::awaitable_func_t<> write_mem(data_t v);

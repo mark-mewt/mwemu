@@ -142,7 +142,7 @@
     <ClCompile Include="io\reader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="emu\clock.cpp" />
-    <ClCompile Include="emu\cpu\mos_6502.cpp" />
+    <ClCompile Include="emu\cpu\mos_65xx.cpp" />
     <ClCompile Include="emu\gpu\vic2.cpp" />
     <ClCompile Include="emu\sys\c64.cpp" />
   </ItemGroup>
@@ -157,7 +157,8 @@
     <ClInclude Include="emu\bus_spec.h" />
     <ClInclude Include="emu\clock.h" />
     <ClInclude Include="emu\clock.decl.h" />
-    <ClInclude Include="emu\cpu\mos_6502.h" />
+    <ClInclude Include="emu\cpu\mos_6510.h" />
+    <ClInclude Include="emu\cpu\mos_65xx.h" />
     <ClInclude Include="emu\gpu\vic2.h" />
     <ClInclude Include="emu\memory_interface.h" />
     <ClInclude Include="emu\ram\fixed_size_ram.h" />

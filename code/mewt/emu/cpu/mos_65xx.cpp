@@ -1,5 +1,5 @@
 
-#include "emu/cpu/mos_6502.h"
+#include "emu/cpu/mos_65xx.h"
 #include "types/intrusive_stack.h"
 #include "async/awaitable_func.h"
 #include "async/func_awaiter.h"
@@ -22,20 +22,20 @@
 namespace mewt::emu::cpu
 {
 
-   mos6502_t::mos6502_t(const clock_source_t& clock, memory_interface<bus_spec_t>& memory_interface)
+   mos65xx_t::mos65xx_t(const clock_source_t& clock, memory_interface<bus_spec_t>& memory_interface)
       : _clock(clock), _memory_interface(memory_interface)
    {
       logger().log("%s: %d", __FUNCTION__, 0);
    }
 
-   async::awaitable_func_t<mos6502_t::data_t> mos6502_t::read_data(address_t address)
+   async::awaitable_func_t<mos65xx_t::data_t> mos65xx_t::read_data(address_t address)
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await _clock.next_tick();
       co_return _memory_interface.read(address);
    }
 
-   async::awaitable_func_t<mos6502_t::address_t> mos6502_t::read_address(address_t address)
+   async::awaitable_func_t<mos65xx_t::address_t> mos65xx_t::read_address(address_t address)
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       auto low = co_await read_data(address);
@@ -43,7 +43,7 @@ namespace mewt::emu::cpu
       co_return (address_t)low | ((address_t)high << 8);
    }
 
-   async::awaitable_func_t<> mos6502_t::write_mem(uint8_t v)
+   async::awaitable_func_t<> mos65xx_t::write_mem(uint8_t v)
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await _clock.next_tick();
@@ -54,7 +54,7 @@ namespace mewt::emu::cpu
       logger().log("%s: %d", __FUNCTION__, 3);
    }
 
-   async::awaitable_func_t<> mos6502_t::run_inst()
+   async::awaitable_func_t<> mos65xx_t::run_inst()
    {
       auto inst = co_await read_data(_pc);
       logger().log("0x%x: %x", _pc, inst);
@@ -66,7 +66,7 @@ namespace mewt::emu::cpu
       }
    }
 
-   async::awaitable_func_t<> mos6502_t::run_cpu()
+   async::awaitable_func_t<> mos65xx_t::run_cpu()
    {
       _pc = co_await read_address(0xfffc);
       logger().log("%s: %d", __FUNCTION__, 0);

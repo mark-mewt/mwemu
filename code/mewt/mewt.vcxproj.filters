@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="emu\cpu\mos_6502.cpp">
+    <ClCompile Include="emu\cpu\mos_65xx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="emu\gpu\vic2.cpp">
@@ -65,7 +65,7 @@
     <ClInclude Include="emu\clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\cpu\mos_6502.h">
+    <ClInclude Include="emu\cpu\mos_65xx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="emu\clock.decl.h">
@@ -102,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\coroutine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\cpu\mos_6510.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

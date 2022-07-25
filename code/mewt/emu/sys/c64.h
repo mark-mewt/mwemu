@@ -4,7 +4,7 @@
 #include "emu/rom/fixed_size_rom.h"
 #include "emu/ram/fixed_size_ram.h"
 #include "emu/clock.h"
-#include "emu/cpu/mos_6502.h"
+#include "emu/cpu/mos_6510.h"
 #include "emu/gpu/vic2.h"
 
 namespace mewt::emu::sys
@@ -32,7 +32,7 @@ namespace mewt::emu::sys
 		};
 		cpu_memory_controller_t _cpu_memory_controller{ *this };
 		clock_source_t _clock;
-		cpu::mos6502_t _cpu{ _clock, _cpu_memory_controller };
+		cpu::mos6510_t _cpu{ _clock, _cpu_memory_controller };
 		gpu::vic2_t _gpu{ _clock };
 		rom::fixed_size_rom<8 * 1024, bus_spec_t> _basic_rom;
 		rom::fixed_size_rom<8 * 1024, bus_spec_t> _kernel_rom;
