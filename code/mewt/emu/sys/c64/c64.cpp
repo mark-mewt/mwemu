@@ -1,16 +1,16 @@
 
-#include "emu/sys/c64.h"
-#include "diag/log.h"
-#include "async/awaitable_func.h"
+#include "mewt/emu/sys/c64/c64.h"
+#include "mewt/diag/log.h"
+#include "mewt/async/awaitable_func.h"
 
-namespace mewt::emu::sys
+namespace mewt::emu::sys::c64
 {
 
    void c64_t::run_sys()
    {
 
-      _basic_rom.load_rom("emu/rom/64c.251913-01.bin");
-      _kernel_rom.load_rom("emu/rom/64c.251913-01.bin", 8 * 1024);
+      _basic_rom.load_rom("emu/sys/c64/64c.251913-01.bin");
+      _kernel_rom.load_rom("emu/sys/c64/64c.251913-01.bin", 8 * 1024);
 
 
       logger().log("%s: %d", __FUNCTION__, 0);
@@ -23,7 +23,7 @@ namespace mewt::emu::sys
       logger().log("%s: %d", __FUNCTION__, 2);
    }
 
-   memory_interface<c64_t::bus_spec_t>& c64_t::memory_device(memory_device_t device_type)
+   memory_interface_t& c64_t::memory_device(memory_device_t device_type)
    {
       switch (device_type)
       {
@@ -50,7 +50,7 @@ namespace mewt::emu::sys
       return regions[address >> 12];
    }
 
-   c64_t::address_t c64_t::cpu_memory_controller_t::address_mask(memory_device_t device)
+   address_t c64_t::cpu_memory_controller_t::address_mask(memory_device_t device)
    {
       static data_t blocks[] = { 0, 16, 13, 13, 13, 12, 13, 12 };
       return (address_t)((1 << blocks[(data_t)device]) - 1);
@@ -119,7 +119,7 @@ namespace mewt::emu::sys
       }
    }
 
-   c64_t::data_t c64_t::cpu_memory_controller_t::read(address_t address)
+   data_t c64_t::cpu_memory_controller_t::read(address_t address)
    {
       if (address == 0)
          return _sys._port_write_enable;
@@ -181,7 +181,7 @@ namespace mewt::emu::sys
          _sys._ram.write(address, data);*/
    }
 
-   c64_t::data_t c64_t::io_controller_t::read(address_t address)
+   data_t c64_t::io_controller_t::read(address_t address)
    {
       return device_at(address).read(address);
    }
@@ -191,7 +191,7 @@ namespace mewt::emu::sys
       device_at(address).write(address, data);
    }
 
-   memory_interface<c64_t::bus_spec_t>& c64_t::io_controller_t::device_at(address_t address)
+   memory_interface_t& c64_t::io_controller_t::device_at(address_t address)
    {
       auto page = (address >> 8) & 0xf;
       if (page < 4)
@@ -210,7 +210,7 @@ namespace mewt::emu::sys
          return _sys._io2_controller;
    }
 
-   c64_t::data_t c64_t::dummy_controller_t::read(address_t address)
+   data_t c64_t::dummy_controller_t::read(address_t address)
    {
       throw std::exception("implement");
    }

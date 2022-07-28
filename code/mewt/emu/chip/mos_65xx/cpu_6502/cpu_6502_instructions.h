@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-namespace mewt::emu::cpu::mos65xx
+namespace mewt::emu::chip::mos_65xx::cpu_6502
 {
 
 	enum class opcode_t
@@ -12,7 +12,7 @@ namespace mewt::emu::cpu::mos65xx
 		STA, STY, STX, DEY, TXA, BCC, TYA, TXS, LDY, LDA, LDX, TAY, TAX, BCS, CLV, TSX, CPY, CMP, DEC, INY, DEX, BNE, CLD, CPX, SBC, INC, INX,
 		NOP, BEQ, SED
 	};
-const char* to_string(opcode_t opcode);
+	const char* to_string(opcode_t opcode);
 
 	enum class data_loc_t
 	{

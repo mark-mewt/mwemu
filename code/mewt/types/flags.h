@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "types/int_types.h"
+#include "mewt/types/int_types.h"
 
 namespace mewt::types
 {

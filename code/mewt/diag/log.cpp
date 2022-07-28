@@ -1,5 +1,5 @@
 
-#include "diag/log.h"
+#include "mewt/diag/log.h"
 
 #include <stdarg.h>
 #include <stdio.h>

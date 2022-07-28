@@ -1,7 +1,7 @@
 
-#include "emu/clock.h"
+#include "mewt/emu/chip/clock/clock.h"
 
-namespace mewt::emu
+namespace mewt::emu::chip
 {
 
    void clock_source_t::run()

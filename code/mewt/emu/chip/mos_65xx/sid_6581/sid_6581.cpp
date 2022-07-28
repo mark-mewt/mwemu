@@ -1,14 +1,13 @@
 
-#include "emu/mos/sid_6581.h"
-#include "diag/log.h"
-#include "async/awaitable_func.h"
-#include "async/func_awaiter.h"
-#include "emu/clock.h"
+#include "mewt/emu/chip/mos_65xx/sid_6581/sid_6581.h"
+#include "mewt/diag/log.h"
+#include "mewt/async/awaitable_func.h"
+#include "mewt/async/func_awaiter.h"
+#include "mewt/emu/chip/clock/clock.h"
 
-namespace mewt::emu::mos
-{
+namespace mewt::emu::chip::mos_65xx {
 
-   sid_6581_t::data_t sid_6581_t::io_controller_t::read(address_t address)
+   data_t sid_6581_t::io_controller_t::read(address_t address)
    {
       // https://www.c64-wiki.com/wiki/SID
       address &= 0xff;

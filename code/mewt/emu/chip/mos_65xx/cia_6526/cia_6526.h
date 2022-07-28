@@ -1,13 +1,12 @@
 
 #pragma once
 
-#include "emu/bus_spec.h"
-#include "emu/memory_interface.h"
+#include "mewt/emu/chip/mos_65xx/mos_65xx.h"
 
-namespace mewt::emu::ic
+namespace mewt::emu::chip::mos_65xx
 {
 
-	struct mos_cia_6526_t : public memory_interface<bus_spec<16, 8>>
+	struct cia_6526_t : public memory_interface_t
 	{
 		struct regs_t
 		{

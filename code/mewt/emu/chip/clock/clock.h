@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include "emu/clock.decl.h"
-#include "types/intrusive_stack.h"
-#include "types/coroutine.h"
+#include "mewt/emu/chip/clock/clock.decl.h"
+#include "mewt/types/intrusive_stack.h"
+#include "mewt/types/coroutine.h"
 
-namespace mewt::emu
+namespace mewt::emu::chip
 {
 
    // todo: tidy this up!

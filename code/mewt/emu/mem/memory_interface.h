@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "emu/bus_spec.h"
+#include "mewt/emu/mem/bus_spec.h"
 
-namespace mewt::emu
+namespace mewt::emu::mem
 {
 
 	template<is_bus_spec _BusSpec>

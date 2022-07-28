@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="emu\cpu\mos_65xx.cpp">
+    <ClCompile Include="emu\chip\mos_65xx\cpu_6502\cpu_6502.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="emu\gpu\vic2.cpp">
+    <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="emu\sys\c64.cpp">
+    <ClCompile Include="emu\sys\c64\c64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="emu\clock.cpp">
+    <ClCompile Include="emu\chip\clock\clock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="diag\log.cpp">
@@ -36,13 +36,13 @@
     <ClCompile Include="io\reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="emu\cpu\mos_65xx\mos65xx_instructions.cpp">
+    <ClCompile Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="emu\ic\mos_cia_6526.cpp">
+    <ClCompile Include="emu\chip\mos_65xx\cia_6526\cia_6526.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="emu\mos\sid_6581.cpp">
+    <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,19 +71,19 @@
     <ClInclude Include="async\awaitable_func.decl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\clock.h">
+    <ClInclude Include="emu\chip\clock\clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\cpu\mos_65xx.h">
+    <ClInclude Include="emu\chip\mos_65xx\cpu_6502\cpu_6502.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\clock.decl.h">
+    <ClInclude Include="emu\chip\clock\clock.decl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\gpu\vic2.h">
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\sys\c64.h">
+    <ClInclude Include="emu\sys\c64\c64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="diag\log.h">
@@ -92,19 +92,19 @@
     <ClInclude Include="io\reader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\rom\fixed_size_rom.h">
+    <ClInclude Include="emu\mem\rom\fixed_size_rom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\ram\fixed_size_ram.h">
+    <ClInclude Include="emu\mem\ram\fixed_size_ram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\memory_interface.h">
+    <ClInclude Include="emu\mem\memory_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\int_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\bus_spec.h">
+    <ClInclude Include="emu\mem\bus_spec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\concepts.h">
@@ -113,19 +113,19 @@
     <ClInclude Include="types\coroutine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\cpu\mos_6510.h">
+    <ClInclude Include="emu\chip\mos_65xx\cpu_6510\cpu_6510.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\cpu\mos_65xx\mos65xx_instructions.h">
+    <ClInclude Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\ic\mos_cia_6526.h">
+    <ClInclude Include="emu\chip\mos_65xx\cia_6526\cia_6526.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\mos\sid_6581.h">
+    <ClInclude Include="emu\chip\mos_65xx\sid_6581\sid_6581.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\unique_referencable.h">
@@ -134,8 +134,15 @@
     <ClInclude Include="async\future.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="emu\cpu\mos_65xx\mewt.natvis" />
+    <Natvis Include="mewt.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
+    <None Include=".editorconfig" />
   </ItemGroup>
 </Project>

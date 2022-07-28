@@ -1,7 +1,7 @@
 
-#include "emu/cpu/mos_65xx/mos65xx_instructions.h"
+#include "mewt/emu/chip/mos_65xx/cpu_6502/cpu_6502_instructions.h"
 
-namespace mewt::emu::cpu::mos65xx
+namespace mewt::emu::chip::mos_65xx::cpu_6502
 {
 
 	using op = opcode_t;

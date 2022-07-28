@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "types/non_movable.h"
-#include "async/future.h"
+#include "mewt/types/non_movable.h"
+#include "mewt/async/future.h"
 
 #include <optional>
 

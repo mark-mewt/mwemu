@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "types/int_types.h"
-#include "types/concepts.h"
+#include "mewt/types/int_types.h"
+#include "mewt/types/concepts.h"
 
-namespace mewt::emu
+namespace mewt::emu::mem
 {
 
 	template<int _AddressBits, int _DataBits>

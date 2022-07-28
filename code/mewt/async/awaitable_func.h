@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "async/awaitable_func.decl.h"
-#include "async/func_awaiter.decl.h"
-#include "async/promise.h"
+#include "mewt/async/awaitable_func.decl.h"
+#include "mewt/async/func_awaiter.decl.h"
+#include "mewt/async/promise.h"
 
 namespace mewt::async
 {

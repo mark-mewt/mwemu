@@ -1,12 +1,11 @@
 
 #pragma once
 
-#include "async/awaitable_func.decl.h"
-#include "emu/clock.decl.h"
-#include "emu/bus_spec.h"
-#include "emu/memory_interface.h"
+#include "mewt/async/awaitable_func.decl.h"
+#include "mewt/emu/chip/clock/clock.decl.h"
+#include "mewt/emu/chip/mos_65xx/mos_65xx.h"
 
-namespace mewt::emu::mos
+namespace mewt::emu::chip::mos_65xx
 {
 
    class sid_6581_t
@@ -15,11 +14,7 @@ namespace mewt::emu::mos
       const clock_source_t& _clock;
    public:
 
-		using bus_spec_t = bus_spec<16, 8>;
-		using address_t = bus_spec_t::address_t;
-		using data_t = bus_spec_t::data_t;
-
-		struct io_controller_t : public memory_interface<bus_spec_t>
+		struct io_controller_t : public memory_interface_t
 		{
 			sid_6581_t& _sys;
 			struct regs_t
