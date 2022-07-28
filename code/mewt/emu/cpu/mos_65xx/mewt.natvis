@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+	<Type Name="mewt::emu::cpu::mos65xx::instruction_t">
+		<DisplayString>{opcode,en}[{hex,x}] {src,en} -&gt; {oper,en}({ref,en}) -&gt; {dest,en} [flag: {flag,en}]</DisplayString>
+	</Type>
+
+</AutoVisualizer>

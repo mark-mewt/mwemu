@@ -36,6 +36,15 @@
     <ClCompile Include="io\reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="emu\cpu\mos_65xx\mos65xx_instructions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emu\ic\mos_cia_6526.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emu\mos\sid_6581.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="types\intrusive_stack.h">
@@ -107,5 +116,26 @@
     <ClInclude Include="emu\cpu\mos_6510.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="emu\cpu\mos_65xx\mos65xx_instructions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\flags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\ic\mos_cia_6526.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\mos\sid_6581.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\unique_referencable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\future.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="emu\cpu\mos_65xx\mewt.natvis" />
   </ItemGroup>
 </Project>

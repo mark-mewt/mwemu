@@ -21,7 +21,7 @@ namespace mewt::async
    struct func_awaiter_t : public func_awaiter_base_t<_ReturnType>
    {
       using func_awaiter_base_t<_ReturnType>::func_awaiter_base_t;
-      _ReturnType await_resume() { return *this->_func.promise()._return_value; }
+      _ReturnType await_resume() { return *this->_func.future()._return_value; }
    };
 
    template<> // todo: we can merge this back into above using if constexpr
@@ -34,7 +34,10 @@ namespace mewt::async
    template<typename _ReturnType>
    bool func_awaiter_base_t<_ReturnType>::await_suspend(std::coroutine_handle<> continuation)
    {
-      _func.promise().set_continuation(continuation);
+      if (!_func.future().has_reference())
+         return false;
+      //bool isc = _func.is_complete();
+      _func.future()._continuation = continuation;
       //_continuation = continuation;
       // when _func is done, we need to resume _continuation
       // how do we know when _func is done?

@@ -14,10 +14,21 @@ namespace mewt::async
    public:
       using promise_type = promise_t<_ReturnType>;
       inline func_awaiter_t<_ReturnType> operator co_await () { return *this; }
-      inline awaitable_func_t(std::coroutine_handle<promise_type> handle) : _promise(handle.promise()) { }
-      inline auto& promise() const { return _promise; }
+      inline awaitable_func_t(async::future<_ReturnType>&& future)
+         : _future(std::move(future))
+      {
+         //if (handle.done())
+         // /  this->set_complete();
+         //else 
+         //   _promise._return_value = this;
+      }
+      //inline auto& promise() const { return _promise; }
+      inline auto& future() { return _future; }
    private:
-      promise_type& _promise;
+      async::future<_ReturnType> _future;
    };
 
 }
+
+
+// for a coroutine that takes a path that doesn't suspend, and just returns, it appears the promise is destroyed before the return type is created.
