@@ -38,13 +38,13 @@ namespace mewt::emu::chip::mos_65xx
    {
       co_await _clock.next_tick();
       auto data = _memory_interface.read(address);
-      logger().log("[0x%04X] -> 0x%02X", address, data);
+      //logger().log("[0x%04X] -> 0x%02X", address, data);
       co_return data;
    }
 
    async::awaitable_func_t<address_t> cpu_6502_t::read_address(address_t address)
    {
-      logger().log("%s: %d", __FUNCTION__, 0);
+      //logger().log("%s: %d", __FUNCTION__, 0);
       auto low = co_await read_data(address);
       auto high = co_await read_data(address + 1);
       co_return (address_t)low | ((address_t)high << 8);
@@ -52,7 +52,7 @@ namespace mewt::emu::chip::mos_65xx
 
    async::awaitable_func_t<address_t> cpu_6502_t::read_address_zp(data_t offset)
    {
-      logger().log("%s: %d", __FUNCTION__, 0);
+      //logger().log("%s: %d", __FUNCTION__, 0);
       auto low = co_await read_data(offset);
       auto high = co_await read_data((offset + 1) & 0xff);
       co_return (address_t)low | ((address_t)high << 8);
@@ -60,15 +60,33 @@ namespace mewt::emu::chip::mos_65xx
 
    async::awaitable_func_t<> cpu_6502_t::write_data(address_t address, data_t data)
    {
-      logger().log("[0x%04X] <- 0x%02X", address, data);
+      //logger().log("[0x%04X] <- 0x%02X", address, data);
       co_await _clock.next_tick();
       co_return _memory_interface.write(address, data);
    }
 
+	class no_reentry_check_t {
+		static bool _is_in;
+	public:
+		no_reentry_check_t() {
+			if (_is_in)
+				throw std::exception("previous instruction not ended");
+			_is_in = true;
+		}
+		~no_reentry_check_t() noexcept(false) {
+			if (!_is_in)
+				throw std::exception("instruction not started");
+			_is_in = false;
+		}
+	};
+
+	bool no_reentry_check_t::_is_in = false;
+
    async::awaitable_func_t<> cpu_6502_t::run_inst()
    {
+		no_reentry_check_t no_reentry_check;
 		using namespace cpu_6502;
-      logger().log("--------------------------");
+      //logger().log("--------------------------");
       auto instCode = co_await read_data(_pc);
 		auto& inst = get_instructions()[instCode];
       auto immLow = co_await read_data(_pc+1);
@@ -78,9 +96,11 @@ namespace mewt::emu::chip::mos_65xx
       {
          immHigh = co_await read_data(_pc + 2);
          immAddr = makeword(immLow, immHigh);
-         logger().log("0x%04X: %02X %s(%04X)", _pc, instCode, to_string(inst.opcode), immAddr);
-      } else
-         logger().log("0x%04X: %02X %s(%02X)", _pc, instCode, to_string(inst.opcode), immLow);
+         //logger().log("0x%04X: %02X %s(%04X)", _pc, instCode, to_string(inst.opcode), immAddr);
+		}
+		else {
+			//logger().log("0x%04X: %02X %s(%02X)", _pc, instCode, to_string(inst.opcode), immLow);
+		}
       ++_pc;
       if (!inst.is_1_byte())
       {
@@ -126,15 +146,24 @@ namespace mewt::emu::chip::mos_65xx
          val = _reg_s;
          break;
 		case data_loc_t::PtrX:
-         val = co_await read_data(immAddr + _reg_x);
-         break;
+			val = co_await read_data(immAddr + _reg_x);
+			break;
+		case data_loc_t::PtrY:
+			val = co_await read_data(immAddr + _reg_y);
+			break;
 		case data_loc_t::Ptr_:
          val = co_await read_data(immAddr);
          break;
-      case data_loc_t::Zpge:
-         val = co_await read_data(immLow);
-         break;
-      case data_loc_t::IndY:
+		case data_loc_t::Zpge:
+			val = co_await read_data(immLow);
+			break;
+		case data_loc_t::ZppX:
+			val = co_await read_data((immLow + _reg_x) & 0xff);
+			break;
+		case data_loc_t::ZppY:
+			val = co_await read_data((immLow + _reg_y) & 0xff);
+			break;
+		case data_loc_t::IndY:
          val = co_await read_data(co_await read_address_zp(immLow) + _reg_y);
          break;
       default:
@@ -148,10 +177,16 @@ namespace mewt::emu::chip::mos_65xx
       case data_loc_t::Flag:
          ref = _reg_flags;
          break;
-      case data_loc_t::RegA:
-         ref = _reg_a;
-         break;
-      case data_loc_t::Bit0:
+		case data_loc_t::RegA:
+			ref = _reg_a;
+			break;
+		case data_loc_t::RegX:
+			ref = _reg_x;
+			break;
+		case data_loc_t::RegY:
+			ref = _reg_y;
+			break;
+		case data_loc_t::Bit0:
          ref = 0x01;
          break;
       case data_loc_t::Bit1:
@@ -181,20 +216,31 @@ namespace mewt::emu::chip::mos_65xx
       case operation_t::And_:
          val &= ref;
          break;
-      case operation_t::Sub_:
-      {
-         bool signs_equal = (val & 0x80) == (ref & 0x80);
-         val = ref - val;
-         if (inst.dest != data_loc_t::None)
-         {
-            val -= (carry_flag ? 0 : 1);
-            bool signs_changed = (val & 0x80) == (ref & 0x80);
-            overflow_flag = signs_equal && signs_changed;
-         }
-         carry_flag = (val & 0x80) == 0;
-      }
-         break;
-      case operation_t::Dec_:
+		case operation_t::Sub_: {
+			bool signs_equal = (val & 0x80) == (ref & 0x80);
+			val = ref - val;
+			if (inst.dest != data_loc_t::None) {
+				val -= (carry_flag ? 0 : 1);
+				bool signs_changed = (val & 0x80) == (ref & 0x80);
+				overflow_flag = signs_equal && signs_changed;
+			}
+			carry_flag = (val & 0x80) == 0;
+		} break;
+		case operation_t::Add_: {
+			bool signs_equal = (val & 0x80) == (ref & 0x80);
+			uint16_t val16 = (uint16_t)ref + (uint16_t)val;
+			val = (data_t)val16;
+			if (inst.dest != data_loc_t::None) {
+				val += (carry_flag ? 1 : 0);
+				bool signs_changed = (val & 0x80) == (ref & 0x80);
+				overflow_flag = signs_equal && signs_changed;
+			}
+			if (_reg_flags[flag_t::Decimal])
+				carry_flag = (val16 > 99);
+			else
+				carry_flag = (val16 & 0xff00) != 0;
+		} break;
+		case operation_t::Dec_:
          val -= ref;
          break;
       case operation_t::Inc_:
@@ -251,10 +297,16 @@ namespace mewt::emu::chip::mos_65xx
       case data_loc_t::PtrY:
          co_await write_data(immAddr + _reg_y, val);
          break;
-      case data_loc_t::Zpge:
-         co_await write_data(immLow, val);
-         break;
-      case data_loc_t::IndY:
+		case data_loc_t::Zpge:
+			co_await write_data(immLow, val);
+			break;
+		case data_loc_t::ZppX:
+			co_await write_data((immLow + _reg_x) & 0xff, val);
+			break;
+		case data_loc_t::ZppY:
+			co_await write_data((immLow + _reg_y) & 0xff, val);
+			break;
+		case data_loc_t::IndY:
          co_await write_data(co_await read_address_zp(immLow) + _reg_y, val);
          break;
       default:
@@ -281,9 +333,21 @@ namespace mewt::emu::chip::mos_65xx
          take_branch = !_reg_flags[flag_t::Zero];
          break;
 		case cpu_6502::branch_instruction_t::BEQ:
-         take_branch = _reg_flags[flag_t::Zero];
-         break;
-      default:
+			take_branch = _reg_flags[flag_t::Zero];
+			break;
+		case cpu_6502::branch_instruction_t::BCS:
+			take_branch = _reg_flags[flag_t::Carry];
+			break;
+		case cpu_6502::branch_instruction_t::BCC:
+			take_branch = !_reg_flags[flag_t::Carry];
+			break;
+		case cpu_6502::branch_instruction_t::BMI:
+			take_branch = _reg_flags[flag_t::Negative];
+			break;
+		case cpu_6502::branch_instruction_t::BPL:
+			take_branch = !_reg_flags[flag_t::Negative];
+			break;
+		default:
          throw std::exception("implement");
       }
       if (take_branch)

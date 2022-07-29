@@ -82,11 +82,11 @@ namespace mewt::emu::sys::c64
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _kernel_rom;
 		mem::rom::fixed_size_rom<4 * 1024, bus_spec_t> _character_rom;
 		mem::ram::fixed_size_ram<64 * 1024, bus_spec_t> _ram;
+		mem::ram::fixed_size_ram<1 * 1024, bus_spec_t> _color_ram;
 		io_controller_t _io_controller{ *this };
 
 		chip::mos_65xx::sid_6581_t _sid{ _clock };
 
-		dummy_controller_t _color_io_controller;
 		chip::mos_65xx::cia_6526_t _cia1_controller;
 		chip::mos_65xx::cia_6526_t _cia2_controller;
 		dummy_controller_t _io1_controller;

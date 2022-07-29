@@ -40,7 +40,11 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		Bit1, // = 0x01
 		Bit2, // = 0x04
 		Bit3, // = 0x08
-		//PC__, // = program counter
+		Bit4, // = 0x10
+		Bit5, // = 0x20
+		Bit6, // = 0x40
+		Bit7, // = 0x80
+		// PC__, // = program counter
 	};
 
 	enum class operation_t
@@ -50,7 +54,8 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		Or__,
 		And_,
 		AndN, // dest = src and not ref
-		Sub_,	// sub src from ref. if dest is not none, then alse subtract ~carry. For normal flags set flags N, Z, C - also set V if dest is not none.
+		Sub_,	// sub src from ref. if dest is not none, then alsa subtract ~carry. For normal flags set flags N, Z, C - also set V if dest is not none.
+		Add_, // add src to ref. if dest is not none, then also add carry. For normal flags set flags N, Z, C - also set V if dest is not none.
 		Dec_, // sub ref from src and place in dest. set only N and Z flags
 		Inc_, // add ref to src and place in dest. set only N and Z flags
 		Rol_,	// rotate left via the carry flag

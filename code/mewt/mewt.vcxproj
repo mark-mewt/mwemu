@@ -156,7 +156,6 @@
     <ClInclude Include="async\func_awaiter.h" />
     <ClInclude Include="async\future.h" />
     <ClInclude Include="async\promise.h" />
-    <ClInclude Include="async\promise_value.h" />
     <ClInclude Include="diag\log.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
     <ClInclude Include="emu\mem\bus_spec.h" />

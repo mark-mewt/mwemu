@@ -25,6 +25,9 @@ namespace mewt::diag
       char buf2[1024];
       sprintf_s(buf2, "%s(%d): [%s] %s\n", _loc.file_name(), _loc.line(), _loc.function_name(), buf);
       ::OutputDebugStringA(buf2);
+		static int i = 0;
+		if (((i++) & 7) == 0)
+			::Sleep(1);
    }
 
 	log_context_t logger(std::source_location loc) { return loc; }

@@ -37,7 +37,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0x15, op::ORA, from::ZppX, to::RegA, with::RegA, do_::Or__, flag::Nrml }, //	Or	-	N,Z	2	4
 		{ 0x16, op::ASL, from::ZppX, to::ZppX, with::None, do_::ToDo, flag::ToDo }, //	ASL1		N,Z,C	2	6
 		{ 0x17, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0x18, op::CLC, from::ToDo, to::ToDo, with::ToDo, do_::ToDo, flag::ToDo }, //					C	1	2			Clear Carry
+		{ 0x18, op::CLC, from::Flag, to::Flag, with::Bit0, do_::AndN, flag::None }, //					C	1	2			Clear Carry
 		{ 0x19, op::ORA, from::PtrY, to::RegA, with::RegA, do_::Or__, flag::Nrml }, //	Or	-	N,Z	3	4	1
 		{ 0x1A, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0x1B, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
@@ -101,7 +101,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0x55, op::EOR, from::ZppX, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	Xor		N,Z	2	4
 		{ 0x56, op::LSR, from::ZppX, to::ZppX, with::None, do_::ToDo, flag::ToDo }, //	Lsr	-	N,Z,C	2	6
 		{ 0x57, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0x58, op::CLI, from::ToDo, to::ToDo, with::ToDo, do_::ToDo, flag::ToDo }, //					I	1	2			Clear Interrupt
+		{ 0x58, op::CLI, from::Flag, to::Flag, with::Bit2, do_::AndN, flag::None }, //					I	1	2			Clear Interrupt
 		{ 0x59, op::EOR, from::PtrY, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	Xor		N,Z	3	4	1
 		{ 0x5A, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0x5B, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
@@ -118,7 +118,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0x66, op::ROR, from::Zpge, to::Zpge, with::None, do_::ToDo, flag::ToDo }, //	RotateRight		N,Z,C	2	5
 		{ 0x67, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0x68, op::PLA, from::Stck, to::RegA, with::None, do_::ToDo, flag::ToDo }, //	-	-	-	1	4
-		{ 0x69, op::ADC, from::Imm8, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	Add2DstC		N,V,Z,C	2	2
+		{ 0x69, op::ADC, from::Imm8, to::RegA, with::RegA, do_::Add_, flag::Nrml }, //	Add2DstC		N,V,Z,C	2	2
 		{ 0x6A, op::ROR, from::RegA, to::RegA, with::None, do_::ToDo, flag::ToDo }, //	RotateRight		N,Z,C	1	2
 		{ 0x6B, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0x6C, op::JMP, from::None, to::None, with::None, do_::ToDo, flag::ToDo }, //		Branch	-	-	3	5
@@ -149,7 +149,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0x85, op::STA, from::RegA, to::Zpge, with::None, do_::Copy, flag::None }, //	-		-	2	3
 		{ 0x86, op::STX, from::RegX, to::Zpge, with::None, do_::Copy, flag::None }, //	-	-	-	2	3
 		{ 0x87, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0x88, op::DEY, from::RegY, to::RegY, with::None, do_::ToDo, flag::ToDo }, //	Dec		N,Z	1	2
+		{ 0x88, op::DEY, from::RegY, to::RegY, with::Bit0, do_::Dec_, flag::Nrml }, //	Dec		N,Z	1	2
 		{ 0x89, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0x8A, op::TXA, from::RegX, to::RegA, with::None, do_::Copy, flag::Nrml }, //			N,Z	1	2
 		{ 0x8B, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
@@ -179,7 +179,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0xA3, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xA4, op::LDY, from::Zpge, to::RegY, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	3
 		{ 0xA5, op::LDA, from::Zpge, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	3
-		{ 0xA6, op::LDX, from::Zpge, to::RegX, with::None, do_::ToDo, flag::ToDo }, //	-		N,Z	2	3
+		{ 0xA6, op::LDX, from::Zpge, to::RegX, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	3
 		{ 0xA7, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xA8, op::TAY, from::RegA, to::RegY, with::None, do_::Copy, flag::Nrml }, //			N,Z	1	2
 		{ 0xA9, op::LDA, from::Imm8, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	2			Load Accumulator Immediate
@@ -187,7 +187,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0xAB, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xAC, op::LDY, from::Ptr_, to::RegY, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4
 		{ 0xAD, op::LDA, from::Ptr_, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4
-		{ 0xAE, op::LDX, from::Ptr_, to::RegX, with::None, do_::ToDo, flag::ToDo }, //	-		N,Z	3	4
+		{ 0xAE, op::LDX, from::Ptr_, to::RegX, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4
 		{ 0xAF, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xB0, op::BCS, from::Imm8, to::None, with::None, do_::ToDo, flag::None }, //	Branch	CarrySet	-	2	2	1	1
 		{ 0xB1, op::LDA, from::IndY, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	5	1
@@ -195,31 +195,31 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0xB3, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xB4, op::LDY, from::ZppX, to::RegY, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	4
 		{ 0xB5, op::LDA, from::ZppX, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	4
-		{ 0xB6, op::LDX, from::ZppY, to::RegX, with::None, do_::ToDo, flag::ToDo }, //	-		N,Z	2	4
+		{ 0xB6, op::LDX, from::ZppY, to::RegX, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	2	4
 		{ 0xB7, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xB8, op::CLV, from::ToDo, to::ToDo, with::ToDo, do_::ToDo, flag::ToDo }, //					O	1	2			Clear Overflow
+		{ 0xB8, op::CLV, from::Flag, to::Flag, with::Bit6, do_::AndN, flag::None }, //					O	1	2			Clear Overflow
 		{ 0xB9, op::LDA, from::PtrY, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4	1
 		{ 0xBA, op::TSX, from::RegS, to::RegX, with::None, do_::Copy, flag::Nrml }, //	-	-	-	1	2
 		{ 0xBB, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xBC, op::LDY, from::PtrX, to::RegY, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4	1
 		{ 0xBD, op::LDA, from::PtrX, to::RegA, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4	1
-		{ 0xBE, op::LDX, from::PtrY, to::RegX, with::None, do_::ToDo, flag::ToDo }, //	-		N,Z	3	4	1
+		{ 0xBE, op::LDX, from::PtrY, to::RegX, with::None, do_::Copy, flag::Nrml }, //	-		N,Z	3	4	1
 		{ 0xBF, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xC0, op::CPY, from::Imm8, to::None, with::RegY, do_::ToDo, flag::ToDo }, //	Compare		N,Z,C	2	2
+		{ 0xC0, op::CPY, from::Imm8, to::None, with::RegY, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	2
 		{ 0xC1, op::CMP, from::IndX, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	6
 		{ 0xC2, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xC3, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xC4, op::CPY, from::Zpge, to::None, with::RegY, do_::ToDo, flag::ToDo }, //	Compare		N,Z,C	2	3
+		{ 0xC4, op::CPY, from::Zpge, to::None, with::RegY, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	3
 		{ 0xC5, op::CMP, from::Zpge, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	3
-		{ 0xC6, op::DEC, from::Zpge, to::Zpge, with::None, do_::ToDo, flag::ToDo }, //	Dec		N,Z	2	5
+		{ 0xC6, op::DEC, from::Zpge, to::Zpge, with::Bit0, do_::Dec_, flag::Nrml }, //	Dec		N,Z	2	5
 		{ 0xC7, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xC8, op::INY, from::RegY, to::RegY, with::Bit0, do_::Inc_, flag::Nrml }, //	Inc		N,Z	1	2
 		{ 0xC9, op::CMP, from::Imm8, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	2
 		{ 0xCA, op::DEX, from::RegX, to::RegX, with::Bit0, do_::Dec_, flag::Nrml }, //	Dec		N,Z	1	2
 		{ 0xCB, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xCC, op::CPY, from::Ptr_, to::None, with::RegY, do_::ToDo, flag::ToDo }, //	Compare		N,Z,C	3	4
+		{ 0xCC, op::CPY, from::Ptr_, to::None, with::RegY, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	3	4
 		{ 0xCD, op::CMP, from::Ptr_, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	3	4
-		{ 0xCE, op::DEC, from::Ptr_, to::Ptr_, with::None, do_::ToDo, flag::ToDo }, //	Dec		N,Z	3	6
+		{ 0xCE, op::DEC, from::Ptr_, to::Ptr_, with::Bit0, do_::Dec_, flag::Nrml }, //	Dec		N,Z	3	6
 		{ 0xCF, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xD0, op::BNE, from::Imm8, to::None, with::None, do_::ToDo, flag::None }, //	Branch	NotEqual	-	2	2	1	1
 		{ 0xD1, op::CMP, from::IndY, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	5	1
@@ -227,7 +227,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0xD3, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xD4, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xD5, op::CMP, from::ZppX, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	4
-		{ 0xD6, op::DEC, from::ZppX, to::ZppX, with::None, do_::ToDo, flag::ToDo }, //	Dec		N,Z	2	6
+		{ 0xD6, op::DEC, from::ZppX, to::ZppX, with::Bit0, do_::Dec_, flag::Nrml }, //	Dec		N,Z	2	6
 		{ 0xD7, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xD8, op::CLD, from::Flag, to::Flag, with::Bit3, do_::AndN, flag::None }, //					D	1	2			Clear Decimal
 		{ 0xD9, op::CMP, from::PtrY, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	3	4	1
@@ -235,23 +235,23 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		{ 0xDB, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xDC, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xDD, op::CMP, from::PtrX, to::None, with::RegA, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	3	4	1
-		{ 0xDE, op::DEC, from::PtrX, to::PtrX, with::None, do_::ToDo, flag::ToDo }, //	Dec		N,Z	3	7
+		{ 0xDE, op::DEC, from::PtrX, to::PtrX, with::Bit0, do_::Dec_, flag::Nrml }, //	Dec		N,Z	3	7
 		{ 0xDF, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xE0, op::CPX, from::Imm8, to::None, with::RegX, do_::ToDo, flag::ToDo }, //	Compare		N,Z,C	2	2
+		{ 0xE0, op::CPX, from::Imm8, to::None, with::RegX, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	2
 		{ 0xE1, op::SBC, from::IndX, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	SubWithCarry	-	N,V,Z,C	2	6
 		{ 0xE2, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xE3, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xE4, op::CPX, from::Zpge, to::None, with::RegX, do_::ToDo, flag::ToDo }, //	Compare		N,Z,C	2	3
+		{ 0xE4, op::CPX, from::Zpge, to::None, with::RegX, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	2	3
 		{ 0xE5, op::SBC, from::Zpge, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	SubWithCarry	-	N,V,Z,C	2	3
-		{ 0xE6, op::INC, from::Zpge, to::Zpge, with::None, do_::Inc_, flag::Nrml }, //	Inc		N,Z	2	5
+		{ 0xE6, op::INC, from::Zpge, to::Zpge, with::Bit0, do_::Inc_, flag::Nrml }, //	Inc		N,Z	2	5
 		{ 0xE7, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xE8, op::INX, from::RegX, to::RegX, with::None, do_::Inc_, flag::Nrml }, //	Inc		N,Z	1	2
+		{ 0xE8, op::INX, from::RegX, to::RegX, with::Bit0, do_::Inc_, flag::Nrml }, //	Inc		N,Z	1	2
 		{ 0xE9, op::SBC, from::Imm8, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	SubWithCarry	-	N,V,Z,C	2	2
 		{ 0xEA, op::NOP, from::None, to::None, with::None, do_::ToDo, flag::ToDo }, //			-	-	-	1	2
 		{ 0xEB, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
-		{ 0xEC, op::CPX, from::Ptr_, to::None, with::RegX, do_::ToDo, flag::ToDo }, //	Compare		N,Z,C	3	4
+		{ 0xEC, op::CPX, from::Ptr_, to::None, with::RegX, do_::Sub_, flag::Nrml }, //	Compare		N,Z,C	3	4
 		{ 0xED, op::SBC, from::Ptr_, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	SubWithCarry	-	N,V,Z,C	3	4
-		{ 0xEE, op::INC, from::Ptr_, to::Ptr_, with::None, do_::Inc_, flag::Nrml }, //	Inc		N,Z	3	6
+		{ 0xEE, op::INC, from::Ptr_, to::Ptr_, with::Bit0, do_::Inc_, flag::Nrml }, //	Inc		N,Z	3	6
 		{ 0xEF, op::___, from::____, to::____, with::____, do_::ToDo, flag::ToDo }, //
 		{ 0xF0, op::BEQ, from::Imm8, to::None, with::None, do_::ToDo, flag::None }, //	Branch	Equal	-	2	2	1	1
 		{ 0xF1, op::SBC, from::IndY, to::RegA, with::RegA, do_::ToDo, flag::ToDo }, //	SubWithCarry	-	N,V,Z,C	2	5	1

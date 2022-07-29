@@ -29,9 +29,11 @@ namespace mewt::emu::sys::c64
       {
       case memory_device_t::Ram:
          return _ram;
-      case memory_device_t::KernalRom:
-         return _kernel_rom;
-      case memory_device_t::IO:
+		case memory_device_t::KernalRom:
+			return _kernel_rom;
+		case memory_device_t::BasicRom:
+			return _basic_rom;
+		case memory_device_t::IO:
          return _io_controller;
       default:
          throw std::exception("implement");
@@ -199,7 +201,7 @@ namespace mewt::emu::sys::c64
       else if (page < 8)
          return _sys._sid._io_controller;
       else if (page < 12)
-         return _sys._color_io_controller;
+			return _sys._color_ram;
       else if (page == 12)
          return _sys._cia1_controller;
       else if (page == 13)
