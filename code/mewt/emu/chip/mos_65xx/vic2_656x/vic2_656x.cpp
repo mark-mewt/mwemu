@@ -1,8 +1,7 @@
 
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
 #include "mewt/diag/log.h"
-#include "mewt/async/awaitable_func.h"
-#include "mewt/async/func_awaiter.h"
+#include "mewt/async/future_promise.h"
 #include "mewt/emu/chip/clock/clock.h"
 
 namespace mewt::emu::chip::mos_65xx
@@ -30,7 +29,7 @@ namespace mewt::emu::chip::mos_65xx
    {
       logger().log("vic2_656x_t::construct");
    }
-	async::awaitable_func_t<> vic2_656x_t::read_mem()
+	async::future<> vic2_656x_t::read_mem()
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await _clock.next_tick();
@@ -38,7 +37,7 @@ namespace mewt::emu::chip::mos_65xx
       co_await _clock.next_tick();
       logger().log("%s: %d", __FUNCTION__, 2);
    }
-	async::awaitable_func_t<> vic2_656x_t::run_inst()
+	async::future<> vic2_656x_t::run_inst()
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await read_mem();
@@ -48,7 +47,7 @@ namespace mewt::emu::chip::mos_65xx
       co_await _clock.next_tick();
       logger().log("%s: %d", __FUNCTION__, 3);
    }
-	async::awaitable_func_t<> vic2_656x_t::run_gpu()
+	async::future<> vic2_656x_t::run_gpu()
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await run_inst();

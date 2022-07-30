@@ -15,8 +15,8 @@ namespace mewt::emu::mem::rom
 
 	public:
 
-		using data_t = memory_interface<_BusSpec>::data_t;
-		using address_t = memory_interface<_BusSpec>::address_t;
+		using data_t = typename memory_interface<_BusSpec>::data_t;
+		using address_t = typename memory_interface<_BusSpec>::address_t;
 
 		inline void load_rom(const std::string_view& name, size_t offset = 0)
 		{

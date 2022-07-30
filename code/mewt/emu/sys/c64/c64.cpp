@@ -1,7 +1,7 @@
 
 #include "mewt/emu/sys/c64/c64.h"
 #include "mewt/diag/log.h"
-#include "mewt/async/awaitable_func.h"
+#include "mewt/async/future_promise.h"
 
 namespace mewt::emu::sys::c64
 {
@@ -16,8 +16,6 @@ namespace mewt::emu::sys::c64
       logger().log("%s: %d", __FUNCTION__, 0);
       auto cr = _cpu.run_cpu();
       auto gr = _vic2.run_gpu();
-      //run_async([&]() { return cpu.cpu_runner(); });
-      //run_async([&]() { gpu.gpu_runner(); });
       logger().log("%s: %d", __FUNCTION__, 1);
       _clock.run();
       logger().log("%s: %d", __FUNCTION__, 2);

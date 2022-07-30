@@ -150,12 +150,8 @@
     <ClCompile Include="emu\sys\c64\c64.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="async\awaitable_func.decl.h" />
-    <ClInclude Include="async\awaitable_func.h" />
-    <ClInclude Include="async\func_awaiter.decl.h" />
-    <ClInclude Include="async\func_awaiter.h" />
-    <ClInclude Include="async\future.h" />
-    <ClInclude Include="async\promise.h" />
+    <ClInclude Include="async\future_promise.decl.h" />
+    <ClInclude Include="async\future_promise.h" />
     <ClInclude Include="diag\log.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
     <ClInclude Include="emu\mem\bus_spec.h" />

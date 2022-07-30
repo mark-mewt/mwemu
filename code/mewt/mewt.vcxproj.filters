@@ -53,21 +53,6 @@
     <ClInclude Include="types\non_movable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="async\promise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="async\awaitable_func.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="async\func_awaiter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="async\func_awaiter.decl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="async\awaitable_func.decl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="emu\chip\clock\clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -128,10 +113,13 @@
     <ClInclude Include="types\unique_referencable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="async\future.h">
+    <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h">
+    <ClInclude Include="async\future_promise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\future_promise.decl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

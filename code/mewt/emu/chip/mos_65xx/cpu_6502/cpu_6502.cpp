@@ -1,8 +1,7 @@
 
 #include "mewt/emu/chip/mos_65xx/cpu_6502/cpu_6502.h"
 #include "mewt/types/intrusive_stack.h"
-#include "mewt/async/awaitable_func.h"
-#include "mewt/async/func_awaiter.h"
+#include "mewt/async/future_promise.h"
 #include "mewt/emu/chip/clock/clock.h"
 #include "mewt/diag/log.h"
 #include "mewt/emu/chip/mos_65xx/cpu_6502/cpu_6502_instructions.h"
@@ -34,7 +33,7 @@ namespace mewt::emu::chip::mos_65xx
       logger().log("%s: %d", __FUNCTION__, 0);
    }
 
-   async::awaitable_func_t<data_t> cpu_6502_t::read_data(address_t address)
+   async::future<data_t> cpu_6502_t::read_data(address_t address)
    {
       co_await _clock.next_tick();
       auto data = _memory_interface.read(address);
@@ -42,7 +41,7 @@ namespace mewt::emu::chip::mos_65xx
       co_return data;
    }
 
-   async::awaitable_func_t<address_t> cpu_6502_t::read_address(address_t address)
+   async::future<address_t> cpu_6502_t::read_address(address_t address)
    {
       //logger().log("%s: %d", __FUNCTION__, 0);
       auto low = co_await read_data(address);
@@ -50,7 +49,7 @@ namespace mewt::emu::chip::mos_65xx
       co_return (address_t)low | ((address_t)high << 8);
    }
 
-   async::awaitable_func_t<address_t> cpu_6502_t::read_address_zp(data_t offset)
+   async::future<address_t> cpu_6502_t::read_address_zp(data_t offset)
    {
       //logger().log("%s: %d", __FUNCTION__, 0);
       auto low = co_await read_data(offset);
@@ -58,7 +57,7 @@ namespace mewt::emu::chip::mos_65xx
       co_return (address_t)low | ((address_t)high << 8);
    }
 
-   async::awaitable_func_t<> cpu_6502_t::write_data(address_t address, data_t data)
+   async::future<> cpu_6502_t::write_data(address_t address, data_t data)
    {
       //logger().log("[0x%04X] <- 0x%02X", address, data);
       co_await _clock.next_tick();
@@ -82,7 +81,7 @@ namespace mewt::emu::chip::mos_65xx
 
 	bool no_reentry_check_t::_is_in = false;
 
-   async::awaitable_func_t<> cpu_6502_t::run_inst()
+   async::future<> cpu_6502_t::run_inst()
    {
 		no_reentry_check_t no_reentry_check;
 		using namespace cpu_6502;
@@ -314,7 +313,7 @@ namespace mewt::emu::chip::mos_65xx
       }
    }
 
-   async::awaitable_func_t<> cpu_6502_t::run_cpu()
+   async::future<> cpu_6502_t::run_cpu()
    {
       _pc = co_await read_address(0xfffc);
       logger().log("%s: %d", __FUNCTION__, 0);
@@ -324,7 +323,7 @@ namespace mewt::emu::chip::mos_65xx
       }
    }
 
-   async::awaitable_func_t<> cpu_6502_t::handle_branch(cpu_6502::branch_instruction_t inst, data_t immLow)
+   async::future<> cpu_6502_t::handle_branch(cpu_6502::branch_instruction_t inst, data_t immLow)
    {
       bool take_branch = false;
       switch (inst)
@@ -365,7 +364,7 @@ namespace mewt::emu::chip::mos_65xx
    }
 
 
-   async::awaitable_func_t<> cpu_6502_t::handle_call(cpu_6502::call_instruction_t inst, data_t immLow, data_t immHigh)
+   async::future<> cpu_6502_t::handle_call(cpu_6502::call_instruction_t inst, data_t immLow, data_t immHigh)
    {
       switch (inst)
       {
@@ -390,12 +389,11 @@ namespace mewt::emu::chip::mos_65xx
       co_return;
    }
 
-   async::awaitable_func_t<> cpu_6502_t::handle_jump(cpu_6502::jump_instruction_t inst, address_t immAddr)
+   async::future<> cpu_6502_t::handle_jump(cpu_6502::jump_instruction_t inst, address_t immAddr)
    {
       switch (inst)
       {
 		case cpu_6502::jump_instruction_t::JMP_Absolute:
-         co_await read_data(_pc);   // todo: should not need this - need to figure out why co-routine promise triggers address sanitizer when this is not here
          _pc = immAddr;
       break;
 		case cpu_6502::jump_instruction_t::JMP_Indirect:
@@ -406,12 +404,12 @@ namespace mewt::emu::chip::mos_65xx
       }
    }
 
-   async::awaitable_func_t<> cpu_6502_t::push(data_t data)
+   async::future<> cpu_6502_t::push(data_t data)
    {
       co_await write_data(0x100 + _reg_s--, data);
    }
 
-   async::awaitable_func_t<data_t> cpu_6502_t::pop()
+   async::future<data_t> cpu_6502_t::pop()
    {
       co_return co_await read_data(0x100 + ++_reg_s);
    }

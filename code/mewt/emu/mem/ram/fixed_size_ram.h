@@ -12,8 +12,8 @@ namespace mewt::emu::mem::ram
 
 	public:
 
-		using data_t = memory_interface<_BusSpec>::data_t;
-		using address_t = memory_interface<_BusSpec>::address_t;
+		using data_t = typename memory_interface<_BusSpec>::data_t;
+		using address_t = typename memory_interface<_BusSpec>::address_t;
 
 		data_t read(address_t address) override
 		{

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "mewt/async/awaitable_func.decl.h"
+#include "mewt/async/future_promise.decl.h"
 #include "mewt/emu/chip/clock/clock.decl.h"
 #include "mewt/emu/chip/mos_65xx/mos_65xx.h"
 #include "mewt/emu/chip/mos_65xx/cpu_6502/cpu_6502_instructions.h"
@@ -41,19 +41,19 @@ namespace mewt::emu::chip::mos_65xx
 
    public:
       cpu_6502_t(const clock_source_t& clock, memory_interface_t& memory_interface);
-      async::awaitable_func_t<data_t> read_data(address_t address);
-      async::awaitable_func_t<address_t> read_address(address_t address);
-      async::awaitable_func_t<address_t> read_address_zp(data_t offset);
-      async::awaitable_func_t<> write_data(address_t address, data_t v);
-      async::awaitable_func_t<> run_inst();
-      async::awaitable_func_t<> run_cpu();
+      async::future<data_t> read_data(address_t address);
+      async::future<address_t> read_address(address_t address);
+      async::future<address_t> read_address_zp(data_t offset);
+      async::future<> write_data(address_t address, data_t v);
+      async::future<> run_inst();
+      async::future<> run_cpu();
 
-      async::awaitable_func_t<> handle_branch(cpu_6502::branch_instruction_t inst, data_t immLow);
-		async::awaitable_func_t<> handle_call(cpu_6502::call_instruction_t inst, data_t immLow, data_t immHigh);
-		async::awaitable_func_t<> handle_jump(cpu_6502::jump_instruction_t inst, address_t immPtr);
+      async::future<> handle_branch(cpu_6502::branch_instruction_t inst, data_t immLow);
+		async::future<> handle_call(cpu_6502::call_instruction_t inst, data_t immLow, data_t immHigh);
+		async::future<> handle_jump(cpu_6502::jump_instruction_t inst, address_t immPtr);
 
-      async::awaitable_func_t<> push(data_t data);
-      async::awaitable_func_t<data_t> pop();
+      async::future<> push(data_t data);
+      async::future<data_t> pop();
 
    };
 

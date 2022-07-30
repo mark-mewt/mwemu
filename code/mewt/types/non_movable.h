@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace mewt
+namespace mewt::types
 {
 
    struct non_movable_t

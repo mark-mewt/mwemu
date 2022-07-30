@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "mewt/async/awaitable_func.decl.h"
+#include "mewt/async/future_promise.decl.h"
 #include "mewt/emu/chip/clock/clock.decl.h"
 #include "mewt/emu/chip/mos_65xx/mos_65xx.h"
 
@@ -67,9 +67,9 @@ namespace mewt::emu::chip::mos_65xx
 		io_controller_t _io_controller{ *this };
 
 		vic2_656x_t(const clock_source_t& clock);
-      async::awaitable_func_t<> read_mem();
-      async::awaitable_func_t<> run_inst();
-      async::awaitable_func_t<> run_gpu();
+      async::future<> read_mem();
+      async::future<> run_inst();
+      async::future<> run_gpu();
    };
 
 }
