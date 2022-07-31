@@ -32,9 +32,8 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		ZppX, // contents of zero page at offset determined by adding the X register to the 2nd byte of instruction [X-Indexed Zero Page]
 		ZppY, // contents of zero page at offset determined by adding the Y register to the 2nd byte of instruction [Y-Indexed Zero Page]
 		Zpge, // contents of zero page at offset determined by the 2nd byte of instruction [Zero Page]
-		Stus, // status register
 		Stck, // stack - post decrements on write, pre-increments on read
-		ToDo, // we can possibly be clever about this
+		TODO, // we can possibly be clever about this
 		Flag, // Flags register
 		Bit0, // = 0x01
 		Bit1, // = 0x01
@@ -49,7 +48,8 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 
 	enum class operation_t
 	{
-		ToDo,
+		TODO,
+		____,
 		Copy,
 		Or__,
 		And_,
@@ -59,25 +59,34 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		Dec_, // sub ref from src and place in dest. set only N and Z flags
 		Inc_, // add ref to src and place in dest. set only N and Z flags
 		Rol_,	// rotate left via the carry flag
+		Asl_,	// arithmetic shuift left - top bit out into carry flag
+		Lsr_,	// logical shift right - bottom bit out into carry flag
+		BTst,	// bit test
+		Xor_,
 	};
 
 	enum class flag_action_t
 	{
 		____,
-		ToDo,
+		TODO,
 		Nrml,
 		None,
+		Inst,
 	};
 
 	struct instruction_t
 	{
 		uint8_t hex;
-		opcode_t opcode;
-		data_loc_t src;
-		data_loc_t dest;
-		data_loc_t ref;
-		operation_t oper;
-		flag_action_t flag;
+		opcode_t opcode = opcode_t::___;
+		data_loc_t src = data_loc_t::____;
+		data_loc_t dest = data_loc_t::____;
+		data_loc_t ref = data_loc_t::____;
+		operation_t oper = operation_t::____;
+		flag_action_t flag = flag_action_t::____;
+		uint8_t size = 0;
+		uint8_t cycles = 0;
+		bool page_straddle_cycle = false;
+		bool branch_taken_cycle = false;
 		inline bool is_branch() const { return (hex & 0x1f) == 0x10; }
 		inline bool is_call() const { return (hex & 0x9f) == 0; }
 		inline bool is_jump() const { return (hex & 0xdf) == 0x4c; }

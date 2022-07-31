@@ -168,6 +168,7 @@
     <ClInclude Include="emu\mem\rom\fixed_size_rom.h" />
     <ClInclude Include="emu\sys\c64\c64.h" />
     <ClInclude Include="io\reader.h" />
+    <ClInclude Include="types\bitfield.h" />
     <ClInclude Include="types\concepts.h" />
     <ClInclude Include="types\coroutine.h" />
     <ClInclude Include="types\flags.h" />

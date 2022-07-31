@@ -165,6 +165,9 @@ namespace mewt::emu::chip::mos_65xx
 		case data_loc_t::IndY:
          val = co_await read_data(co_await read_address_zp(immLow) + _reg_y);
          break;
+		case data_loc_t::Stck:
+			val = co_await pop();
+			break;
       default:
          throw std::exception("implement");
       }
@@ -245,21 +248,38 @@ namespace mewt::emu::chip::mos_65xx
       case operation_t::Inc_:
          val += ref;
          break;
-      case operation_t::Rol_:
-      {
-         auto old_carry = carry_flag;
-         carry_flag = (val & 0x80) != 0;
-         val = (val << 1) | (old_carry ? 1 : 0);
-      }
-         break;
-      default:
+		case operation_t::Rol_: {
+			auto old_carry = carry_flag;
+			carry_flag = (val & 0x80) != 0;
+			val = (val << 1) | (old_carry ? 1 : 0);
+		} break;
+		case operation_t::Asl_: {
+			carry_flag = (val & 0x80) != 0;
+			val = (val << 1);
+		} break;
+		case operation_t::Lsr_: {
+			carry_flag = (val & 0x1) != 0;
+			val = (val >> 1);
+		} break;
+		case operation_t::Xor_:
+			val ^= ref;
+			break;
+		case operation_t::BTst: {
+			_reg_flags[flag_t::Negative] = (val & 0x80) != 0; // set negative flag if value is negative
+			_reg_flags[flag_t::Overflow] = (val & 0x40) != 0;
+			val &= ref;
+			_reg_flags[flag_t::Zero] = (val == 0); // set zero flag if value is zero
+		} break;
+		default:
          throw std::exception("implement");
       }
       switch (inst.flag)
       {
-      case flag_action_t::None:
-         break;
-      case flag_action_t::Nrml:
+		case flag_action_t::None:
+			break;
+		case flag_action_t::Inst:
+			break;
+		case flag_action_t::Nrml:
          _reg_flags[flag_t::Zero] = (val == 0);          // set zero flag if value is zero
          _reg_flags[flag_t::Negative] = (val & 0x80) != 0;   // set negative flag if value is negative
          _reg_flags[flag_t::Carry] = carry_flag;
@@ -308,6 +328,9 @@ namespace mewt::emu::chip::mos_65xx
 		case data_loc_t::IndY:
          co_await write_data(co_await read_address_zp(immLow) + _reg_y, val);
          break;
+		case data_loc_t::Stck:
+			co_await push(val);
+			break;
       default:
          throw std::exception("implement");
       }
