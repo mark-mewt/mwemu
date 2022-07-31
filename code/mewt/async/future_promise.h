@@ -9,105 +9,135 @@
 
 namespace mewt::async {
 
-	template <typename _ReturnType>
-	struct future_base;
-
-	template <typename _ReturnType>
-	struct promise_base : types::non_movable_t {
-
-		using future_type = future<_ReturnType>;
-		using future_base_type = future_base<_ReturnType>;
-
-		inline future_type get_return_object() noexcept { return *this; }
-		inline void unhandled_exception() noexcept { _future->_value = std::current_exception(); }
-		inline auto initial_suspend() noexcept { return std::suspend_never{}; }
-		inline auto final_suspend() noexcept {
-			if (_continuation)
-				_continuation.resume();
-			return std::suspend_never{};
-		}
-		inline ~promise_base() {
-			if (_future)
-				_future->_promise = nullptr;
-		}
-
-	protected:
-		inline auto& future_value() { return _future->_value; }
-
-	private:
-		friend future_base_type;
-		future_base_type* _future = nullptr;
-		std::coroutine_handle<> _continuation;
-	};
-
 	struct void_type_t {};
-	template <typename _ReturnType>
-	using result_type = std::conditional_t<std::is_void_v<_ReturnType>, void_type_t, _ReturnType>;
 
-
+	// future_base determines the functionality of a future, regardless of the return type.
+	// We'll specialize this later to handle the void return type.
 	template <typename _ReturnType>
 	struct future_base {
 
-		using promise_type = promise<_ReturnType>;
-		using promise_base_type = promise_base<_ReturnType>;
+		// Our promise promises to:
+		// (a) Not change address - we do this by making it a non_movable_t.
+		// (b) Notify the future on destruction (this combined with (a) prevents a dangling reference).
+		// (c) Pass the return value of the co-routine back to the future.
+		// (d) Capture any exception that is thrown and re-throw it in the frame of the caller.
+		// (e) Resume the caller once this co-routine completes.
+		struct promise_base_t : types::non_movable_t {
 
-		inline future_base(promise_base_type& promise) noexcept : _promise(std::addressof(promise)) { _promise->_future = this; }
+			// The return type of the co-routine is the future. We initialize it with a reference to
+			// this promise. The future will then tell us what it's address is, and will update this
+			// whenever it moves. The future we return here won't actually be returned to the calling
+			// function until after the co-routine suspends, which may not be until the co-routine
+			// completes, which may be after this promise is destroyed.
+			inline future<_ReturnType> get_return_object() noexcept { return *this; }
+
+			// If an exception is thrown in the co-routine, we pass it on to the future to be re-thrown.
+			inline void unhandled_exception() noexcept { _future->_value = std::current_exception(); }
+
+			// We want the co-routine to start immediately, so we won't suspend initially.
+			inline auto initial_suspend() noexcept { return std::suspend_never{}; }
+
+			// When the co-routine finishes, at the final suspend point we resume the continuation.
+			inline auto final_suspend() noexcept {
+				if (_continuation)
+					_continuation.resume();
+				return std::suspend_never{};
+			}
+
+			// When the promise is destroyed, inform the future.
+			inline ~promise_base_t() {
+				if (_future)
+					_future->_promise = nullptr;
+			}
+
+			// Reference the return value stored in the future.
+			inline auto& future_value() { return _future->_value; }
+
+			// Pointer to the future. The future itself will update this on construction, destruction, and whenever it moves.
+			future_base* _future = nullptr;
+
+			// The continuation to allow us to resume the caller when we are done.
+			std::coroutine_handle<> _continuation;
+		};
+
+		// Every future is created by its promise. We must tell the promise where we are.
+		inline future_base(promise_base_t& promise) noexcept : _promise(std::addressof(promise)) { _promise->_future = this; }
+
+		// If the future moves, we must inform the promise of our new location.
 		inline future_base(future_base&& rhs) noexcept : _value(std::move(rhs._value)), _promise(rhs._promise) {
 			rhs._promise = nullptr;
 			if (_promise)
 				_promise->_future = this;
 		}
 
-		inline future_base& operator=(future_base&& rhs) noexcept {
-			_value = std::move(rhs._value);
-			_promise = rhs._promise;
-			rhs._promise = nullptr;
-			if (_promise)
-				_promise->_future = this;
-		}
-
+		// If the future is destroyed before the promise, we must tell it.
 		inline ~future_base() noexcept {
 			if (_promise)
 				_promise->_future = nullptr;
 		}
 
+		// When the future is awaited, if the promise has already finished then we don't need to suspend.
 		inline bool await_ready() noexcept { return _promise == nullptr; }
+
+		// When we do suspend, we store the continuation in the promise so it can resume once the co-routine finishes.
 		inline bool await_suspend(std::coroutine_handle<> continuation) noexcept {
 			_promise->_continuation = continuation;
 			return true;
 		}
 
+		// We don't allow copying or assignment of the future.
 		future_base(const future_base&) = delete;
 		future_base& operator=(const future_base&) = delete;
+		future_base& operator=(future_base&&) = delete;
 
 	protected:
-		std::variant<std::monostate, result_type<_ReturnType>, std::exception_ptr> _value;
+		// We can't store void in a variant so we'll replace that with void_type_t.
+		using result_type = std::conditional_t<std::is_void_v<_ReturnType>, void_type_t, _ReturnType>;
+
+		// The value of the future is one of std::monostate (not yet completed), the result of the co-routine, or the exception it threw.
+		std::variant<std::monostate, result_type, std::exception_ptr> _value;
 
 	private:
-		friend promise_base_type;
-		promise_base_type* _promise = nullptr;
+		// The promise we are linked to.
+		promise_base_t* _promise = nullptr;
 	};
 
+	// Here we provide the future/promise functionality for a return type other than void.
 	template <typename _ReturnType>
 	struct future : public future_base<_ReturnType> {
+
+		// Defer construction to future_base.
 		using future_base<_ReturnType>::future_base;
+
+		// When the awaiter resumes, we return the value that the co-routine returned.
+		// ToDo: Re-throw exeption here if one was stored.
 		inline _ReturnType await_resume() { return std::get<_ReturnType>(this->_value); }
+
+		// The promise for a non-void return type.
+		struct promise_type : public future_base<_ReturnType>::promise_base_t {
+
+			// When the co-routine returns, store its return value in the future.
+			inline void return_value(_ReturnType v) { this->future_value() = std::move(v); }
+		};
 	};
 
+	// And this is the functionality specifically for a void return type.
 	template <>
 	struct future<void> : public future_base<void> {
+
+		// Defer construction to future_base.
 		using future_base<void>::future_base;
+
+		// Nothing is returned to the awaiter here.
+		// ToDo: Re-throw exeption here if one was stored.
 		inline void await_resume() noexcept {}
-	};
 
-	template <typename _ReturnType>
-	struct promise : public promise_base<_ReturnType> {
-		inline void return_value(_ReturnType v) { this->future_value() = std::move(v); }
-	};
+		// The promise for a void return type.
+		struct promise_type : promise_base_t {
 
-	template <>
-	struct promise<void> : promise_base<void> {
-		inline void return_void() noexcept { this->future_value() = result_type<void>(); }
+			// When the co-routine completes, switch the return value stored in the future to the void type.
+			inline void return_void() noexcept { this->future_value() = void_type_t(); }
+		};
 	};
 
 }
