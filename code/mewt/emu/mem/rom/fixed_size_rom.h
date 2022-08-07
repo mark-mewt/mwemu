@@ -35,7 +35,7 @@ namespace mewt::emu::mem::rom
 
 	private:
 
-		char _data[_Size];
+		char _data[_Size]{ 0 };
 
 	};
 

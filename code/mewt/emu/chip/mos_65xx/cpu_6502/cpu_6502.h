@@ -19,7 +19,7 @@ namespace mewt::emu::chip::mos_65xx
       const clock_source_t& _clock;
       memory_interface_t& _memory_interface;
 
-      enum class flag_t
+      enum class flag_t : std::uint8_t
       {
          Carry,
          Zero,
@@ -30,13 +30,13 @@ namespace mewt::emu::chip::mos_65xx
          Overflow,
          Negative
       };
-      using flags_reg_t = types::flags<flag_t, 8>;
+      using flags_reg_t = types::flags<flag_t>;
 
-      address_t _pc;
-      data_t _reg_a;
-      data_t _reg_x;
-      data_t _reg_y;
-      data_t _reg_s;
+      address_t _pc = 0;
+      data_t _reg_a = 0;
+      data_t _reg_x = 0;
+      data_t _reg_y = 0;
+      data_t _reg_s = 0;
       flags_reg_t _reg_flags{ 0 };
 
    public:

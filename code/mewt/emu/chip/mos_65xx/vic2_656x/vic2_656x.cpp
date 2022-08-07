@@ -11,10 +11,9 @@ namespace mewt::emu::chip::mos_65xx
 
 	/*
 	*
-	* todo
-	* - both vic2 and 6510 make a memory access in every cycle
-	* - vic2 accesses memory in first half of cpu cycle, 6510 accesses it in second half
-	* - set ba low 3 cycles before vic2 needs to steal bus access from cpu. 6510 should check this when reading data only, and stop until it goes high again.
+	* #todo: both vic2 and 6510 make a memory access in every cycle
+	* #todo: vic2 accesses memory in first half of cpu cycle, 6510 accesses it in second half
+	* #todo: set ba low 3 cycles before vic2 needs to steal bus access from cpu. 6510 should check this when reading data only, and stop until it goes high again.
 	* 
 	*/
 

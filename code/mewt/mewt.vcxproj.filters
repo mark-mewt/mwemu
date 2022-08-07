@@ -45,6 +45,18 @@
     <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="os\app_context\win\win_app_context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\window_manager\win\win_window_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\window\win\win_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\sdl\sdl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="types\intrusive_stack.h">
@@ -123,6 +135,48 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\bitfield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="os\app_context\app_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="os\app_context\win\win_app_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="os\base\win_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window_manager\window_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\data_stack_ptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window_manager\win\win_window_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="os\app_context\app_context.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window\window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window\win\win_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window_manager\win\win_window_manager.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window_manager\window_manager.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\sdl\sdl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\arithmetic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

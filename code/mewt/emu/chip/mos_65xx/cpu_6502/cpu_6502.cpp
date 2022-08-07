@@ -8,21 +8,19 @@
 
 /*
 * 
-* ToDo:
-* 
-* - Write a splitter for clock cycles, so we can run things on sub-cycles.
-* - Can we separate the list of awaiters from the clock source (and remove the mutable)?
-* - Get C64 rom and start emulating it
-* - Start emulating the Vic-2
-* - Enable all warnings in compiler - need to shift out the win32 stuff first
-* - Make address sanitizer work
+* #todo: Write a splitter for clock cycles, so we can run things on sub-cycles.
+* #todo: Can we separate the list of awaiters from the clock source (and remove the mutable)?
+* #todo: Get C64 rom and start emulating it
+* #todo: Start emulating the Vic-2
+* #todo: Enable all warnings in compiler - need to shift out the win32 stuff first
+* #todo: Make address sanitizer work
 * 
 */
 
 namespace mewt::emu::chip::mos_65xx
 {
 
-   // todo: move these elsewhere
+   // #todo: move these elsewhere
    constexpr std::uint8_t highbyte(uint16_t x) { return x >> 8; }
    constexpr std::uint8_t lowbyte(uint16_t x) { return x & 0xff; }
    constexpr std::uint16_t makeword(uint8_t low, uint8_t high) { return ((uint16_t)high << 8) | low; }
@@ -130,7 +128,7 @@ namespace mewt::emu::chip::mos_65xx
          val = immLow;
          break;
 		case data_loc_t::Flag:
-         val = _reg_flags;
+			val = _reg_flags.raw_bits();
          break;
 		case data_loc_t::RegX:
          val = _reg_x;
@@ -177,7 +175,7 @@ namespace mewt::emu::chip::mos_65xx
       case data_loc_t::None:
          break;
       case data_loc_t::Flag:
-         ref = _reg_flags;
+			ref = _reg_flags.raw_bits();
          break;
 		case data_loc_t::RegA:
 			ref = _reg_a;
@@ -293,7 +291,7 @@ namespace mewt::emu::chip::mos_65xx
       case data_loc_t::None:
          break;
       case data_loc_t::Flag:
-         _reg_flags = val;
+			_reg_flags.raw_bits() = val;
          break;
       case data_loc_t::RegA:
          _reg_a = val;
@@ -380,9 +378,6 @@ namespace mewt::emu::chip::mos_65xx
          auto new_page = _pc & 0xf0;
          if(new_page != page)
             co_await _clock.next_tick();
-      }
-      else {
-         co_return;
       }
    }
 

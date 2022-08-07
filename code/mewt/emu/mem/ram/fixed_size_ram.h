@@ -17,19 +17,19 @@ namespace mewt::emu::mem::ram
 
 		data_t read(address_t address) override
 		{
-			address &= (_Size - 1); // todo: specify number of address line bits and use that instead.
+			address &= (_Size - 1); // #todo: specify number of address line bits and use that instead.
 			return *(data_t*)(_data + address);
 		}
 
 		void write(address_t address, data_t data) override
 		{
-			address &= (_Size - 1); // todo: specify number of address line bits and use that instead.
+			address &= (_Size - 1); // #todo: specify number of address line bits and use that instead.
 			*(data_t*)(_data + address) = data;
 		}
 
 	private:
 
-		char _data[_Size];
+		char _data[_Size]{ 0 };
 
 	};
 

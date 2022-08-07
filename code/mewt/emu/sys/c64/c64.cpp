@@ -124,9 +124,9 @@ namespace mewt::emu::sys::c64
    data_t c64_t::cpu_memory_controller_t::read(address_t address)
    {
       if (address == 0)
-         return _sys._port_write_enable;
+			return _sys._port_write_enable.raw_bits();
       if (address == 1)
-         return _sys._port_bits;
+			return _sys._port_bits.raw_bits();
       auto region = address_region(address);
       auto device = mapped_device(region);
       address &= address_mask(device);
@@ -168,9 +168,9 @@ namespace mewt::emu::sys::c64
    void c64_t::cpu_memory_controller_t::write(address_t address, data_t data)
    {
       if (address == 0)
-         _sys._port_write_enable = data;
+			_sys._port_write_enable.raw_bits() = data;
       else if (address == 1)
-         _sys._port_bits = data;
+			_sys._port_bits.raw_bits() = data;
       auto region = address_region(address);
       auto device = mapped_device(region);
       address &= address_mask(device);

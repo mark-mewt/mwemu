@@ -5,4 +5,17 @@
 		<DisplayString>{opcode,en}[{hex,x}] {src,en} -&gt; {oper,en}({ref,en}) -&gt; {dest,en} [flag: {flag,en}]</DisplayString>
 	</Type>
 
+	<Type Name="mewt::types::flags&lt;*&gt;">
+		<Expand HideRawView="true">
+			<CustomListItems>
+				<Variable Name="bit" InitialValue="0" />
+				<Loop>
+					<Break Condition="bit&gt;31" />
+					<Item Condition="(_bits&amp;(1&lt;&lt;bit))!=0" Name="{(1&lt;&lt;bit),x}">($T1)bit,en</Item>
+					<Exec>bit = bit+1</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
+	
 </AutoVisualizer>

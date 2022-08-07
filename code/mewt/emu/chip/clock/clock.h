@@ -8,7 +8,7 @@
 namespace mewt::emu::chip
 {
 
-   // todo: tidy this up!
+   // #todo: tidy this up!
 
    class clock_tick_awaiter_t;
 

@@ -27,7 +27,7 @@ namespace mewt::emu::chip::mos_65xx
 			data_t _control_timer_a;
 			data_t _control_timer_b;
 		};
-		regs_t _regs;
+		regs_t _regs{ 0 };
 		data_t read(address_t address) override final;
 		void write(address_t address, data_t data) override final;
 	};

@@ -92,7 +92,7 @@ namespace mewt::emu::sys::c64
 		dummy_controller_t _io1_controller;
 		dummy_controller_t _io2_controller;
 
-		enum class port_reg_t
+		enum class port_reg_t : std::uint8_t
 		{
 			LoRam,
 			HiRam,
@@ -102,16 +102,16 @@ namespace mewt::emu::sys::c64
 			CassetteMotor, // 0 = motor spind
 		};
 
-		types::flags<port_reg_t, 8> _port_write_enable{ 0x2f };
-		types::flags<port_reg_t, 8> _port_bits{ 0x7 };
+		types::flags<port_reg_t> _port_write_enable{ 0x2f };
+		types::flags<port_reg_t> _port_bits{ 0x7 };
 
-		enum class system_flag_t
+		enum class system_flag_t : std::uint8_t
 		{
 			ExpansionRom,	// Expansion Port _EXROM
 			ExpansionGame,	// Expansion Port _GAME
 		};
 
-		types::flags<system_flag_t, 8> _system_flags{ 0x3 };
+		types::flags<system_flag_t> _system_flags{ 0x3 };
 
 		//data_t _data_direction_reg = 0x2f;
 		//data_t _io_port_reg = 0x7;

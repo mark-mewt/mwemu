@@ -58,7 +58,7 @@ namespace mewt::emu::chip::mos_65xx
 			uint8_t _vm1 : 4;
 		};
 
-		enum interrupt_t {
+		enum interrupt_t : std::uint8_t {
 			RST,
 			MBC,
 			MMC,
@@ -86,8 +86,8 @@ namespace mewt::emu::chip::mos_65xx
 			control_reg_2_t _control_reg_2;
 			types::bitfield<8> _sprite_y_expand;
 			memory_pointers_t _memory_pointers;
-			types::flags<interrupt_t, 8> _interrupt_register{ 0 };
-			types::flags<interrupt_t, 8> _interrupt_enabled{ 0 };
+			types::flags<interrupt_t> _interrupt_register{ 0 };
+			types::flags<interrupt_t> _interrupt_enabled{ 0 };
 			types::bitfield<8> _sprite_data_priority;
 			types::bitfield<8> _sprite_multicolor;
 			types::bitfield<8> _sprite_x_expand;
@@ -109,7 +109,7 @@ namespace mewt::emu::chip::mos_65xx
 			uint4_t _sprite_6_color;
 			uint4_t _sprite_7_color;
 		};
-		regs_t _regs;
+		regs_t _regs{ };
 
 	};
 

@@ -41,7 +41,7 @@ namespace mewt::emu::chip::mos_65xx
 				data_t _envelope_voice_3;
 			};
 			static_assert(sizeof(regs_t) == 0x1d);
-			regs_t _regs;
+			regs_t _regs{ };
 			io_controller_t(sid_6581_t& sys) : _sys(sys) { }
 			data_t read(address_t address) override final;
 			void write(address_t address, data_t data) override final;
