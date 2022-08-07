@@ -110,7 +110,7 @@ namespace mewt::async {
 		using future_base<_ReturnType>::future_base;
 
 		// When the awaiter resumes, we return the value that the co-routine returned.
-		// #todo: Re-throw exeption here if one was stored.
+		// mwToDo: Re-throw exeption here if one was stored.
 		inline _ReturnType await_resume() { return std::get<_ReturnType>(this->_value); }
 
 		// The promise for a non-void return type.
@@ -129,7 +129,7 @@ namespace mewt::async {
 		using future_base<void>::future_base;
 
 		// Nothing is returned to the awaiter here.
-		// #todo: Re-throw exeption here if one was stored.
+		// mwToDo: Re-throw exeption here if one was stored.
 		inline void await_resume() noexcept {}
 
 		// The promise for a void return type.

@@ -19,7 +19,7 @@ namespace mewt::types {
 	struct arithmetic_operations_t {
 
 		constexpr static auto subtract(IS_custom_arithmetic auto lhs, IS_custom_arithmetic auto rhs) {
-			return copy_of(lhs) -= rhs;  // todo: don't copy when lhs is an r-value
+			return copy_of(lhs) -= rhs;  // mwToDo: don't copy when lhs is an r-value
 		}
 	};
 

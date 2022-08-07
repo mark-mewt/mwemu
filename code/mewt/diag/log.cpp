@@ -10,7 +10,7 @@
 namespace mewt::diag
 {
 
-   log_context_t::log_context_t(std::source_location loc)
+   log_context_t::log_context_t(source_location_t loc)
       : _loc(loc)
    {
    }
@@ -30,6 +30,6 @@ namespace mewt::diag
 			::Sleep(1);
    }
 
-	log_context_t logger(std::source_location loc) { return loc; }
+	log_context_t logger(source_location_t loc) { return loc; }
 
 }

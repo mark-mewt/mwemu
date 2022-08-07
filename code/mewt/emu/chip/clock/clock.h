@@ -8,7 +8,7 @@
 namespace mewt::emu::chip
 {
 
-   // #todo: tidy this up!
+   // mwToDo: tidy this up!
 
    class clock_tick_awaiter_t;
 
@@ -54,7 +54,7 @@ namespace mewt::emu::chip
          _tick_count._clock._awaiters.push(*this);
          return true;
       }
-      //private: todo: make this whole class a private inner class, and eliminate any reason for the following to be private
+      //private: mwToDo: make this whole class a private inner class, and eliminate any reason for the following to be private
       std::coroutine_handle<void> _continuation;
       clock_tick_count_t _tick_count;
    };

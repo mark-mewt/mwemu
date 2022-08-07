@@ -6,7 +6,7 @@
 namespace mewt::emu::chip::mos_65xx
 {
 
-	// todo: implement specific differences for this particular model
+	// mwToDo: implement specific differences for this particular model
 	using cpu_6510_t = cpu_6502_t;
 
 }

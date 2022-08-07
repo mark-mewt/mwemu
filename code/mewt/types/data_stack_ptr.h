@@ -8,14 +8,14 @@ namespace mewt::types {
 	struct delegate_t {
 		virtual void invoke() = 0;
 		virtual ~delegate_t() = default;
-	};	// #todo: move elsewhere
+	};	// mwToDo: move elsewhere
 
 	struct allocator_t {
 		virtual void* allocate(size_t size, std::align_val_t align) = 0;
 		virtual void deallocate(void* ptr) = 0;
 		virtual ~allocator_t() = default;
 		static allocator_t& get_global(); // bad
-	}; // #todo: move elsewhere
+	}; // mwToDo: move elsewhere
 
 	template <typename _Type>
 	class data_stack_ptr {
@@ -56,7 +56,7 @@ namespace mewt::types {
 
 		template<typename ... _Args>
 		inline static data_stack_ptr allocate(allocator_t& allocator, _Args&&... args) {
-			// #todo: move all this and the utility include to a .impl.h file
+			// mwToDo: move all this and the utility include to a .impl.h file
 			struct destroyer_t : public delegate_t {
 				allocator_t& _allocator;
 				_Type* _object;

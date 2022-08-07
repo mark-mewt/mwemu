@@ -8,19 +8,19 @@
 
 /*
 * 
-* #todo: Write a splitter for clock cycles, so we can run things on sub-cycles.
-* #todo: Can we separate the list of awaiters from the clock source (and remove the mutable)?
-* #todo: Get C64 rom and start emulating it
-* #todo: Start emulating the Vic-2
-* #todo: Enable all warnings in compiler - need to shift out the win32 stuff first
-* #todo: Make address sanitizer work
+* mwToDo: Write a splitter for clock cycles, so we can run things on sub-cycles.
+* mwToDo: Can we separate the list of awaiters from the clock source (and remove the mutable)?
+* mwToDo: Get C64 rom and start emulating it
+* mwToDo: Start emulating the Vic-2
+* mwToDo: Enable all warnings in compiler - need to shift out the win32 stuff first
+* mwToDo: Make address sanitizer work
 * 
 */
 
 namespace mewt::emu::chip::mos_65xx
 {
 
-   // #todo: move these elsewhere
+   // mwToDo: move these elsewhere
    constexpr std::uint8_t highbyte(uint16_t x) { return x >> 8; }
    constexpr std::uint8_t lowbyte(uint16_t x) { return x & 0xff; }
    constexpr std::uint16_t makeword(uint8_t low, uint8_t high) { return ((uint16_t)high << 8) | low; }

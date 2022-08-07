@@ -73,7 +73,7 @@ namespace mewt::gui {
 		case WM_CLOSE:
 		case WM_DESTROY:
 		case WM_NCDESTROY:
-			// todo: handle
+			// mwToDo: handle
 			break;
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
@@ -100,9 +100,9 @@ namespace mewt::gui {
 			.cbClsExtra = 0,
 			.cbWndExtra = 0,
 			.hInstance = app_context.init_data()._instance,
-			.hIcon = nullptr,	// todo: get icon
+			.hIcon = nullptr,	// mwToDo: get icon
 			.hCursor = LoadCursorW(app_context.init_data()._instance, IDC_HAND),
-			.hbrBackground = nullptr, // todo: need to handle WM_ERASEBKGND
+			.hbrBackground = nullptr, // mwToDo: need to handle WM_ERASEBKGND
 			.lpszMenuName = nullptr,
 			.lpszClassName = L"mewt_window_class",
 			.hIconSm = nullptr,

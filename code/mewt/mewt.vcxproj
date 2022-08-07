@@ -73,7 +73,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Clang|x64'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-MSVC|x64'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
@@ -196,7 +195,12 @@
     <ClCompile Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\cia_6526\cia_6526.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp" />
-    <ClCompile Include="ext\sdl\sdl.cpp" />
+    <ClCompile Include="ext\sdl\sdl_engine.cpp" />
+    <ClCompile Include="ext\sdl\sdl_error.cpp" />
+    <ClCompile Include="ext\sdl\sdl_pixel_format.cpp" />
+    <ClCompile Include="ext\sdl\sdl_renderer.cpp" />
+    <ClCompile Include="ext\sdl\sdl_texture.cpp" />
+    <ClCompile Include="ext\sdl\sdl_window.cpp" />
     <ClCompile Include="gui\window\win\win_window.cpp" />
     <ClCompile Include="gui\window_manager\win\win_window_manager.cpp" />
     <ClCompile Include="io\reader.cpp" />
@@ -211,6 +215,7 @@
     <ClInclude Include="async\future_promise.decl.h" />
     <ClInclude Include="async\future_promise.h" />
     <ClInclude Include="diag\log.h" />
+    <ClInclude Include="diag\source_location.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
     <ClInclude Include="emu\mem\bus_spec.h" />
     <ClInclude Include="emu\chip\clock\clock.h" />
@@ -225,6 +230,19 @@
     <ClInclude Include="emu\mem\ram\fixed_size_ram.h" />
     <ClInclude Include="emu\mem\rom\fixed_size_rom.h" />
     <ClInclude Include="emu\sys\c64\c64.h" />
+    <ClInclude Include="ext\sdl\sdl_engine.h" />
+    <ClInclude Include="ext\sdl\sdl_error.h" />
+    <ClInclude Include="ext\sdl\sdl_error.impl.h" />
+    <ClInclude Include="ext\sdl\sdl_image.h" />
+    <ClInclude Include="ext\sdl\sdl_image.impl.h" />
+    <ClInclude Include="ext\sdl\sdl_pixel_format.h" />
+    <ClInclude Include="ext\sdl\sdl_renderer.decl.h" />
+    <ClInclude Include="ext\sdl\sdl_renderer.h" />
+    <ClInclude Include="ext\sdl\sdl_texture.decl.h" />
+    <ClInclude Include="ext\sdl\sdl_texture.h" />
+    <ClInclude Include="ext\sdl\sdl_types.h" />
+    <ClInclude Include="ext\sdl\sdl_window.decl.h" />
+    <ClInclude Include="ext\sdl\sdl_window.h" />
     <ClInclude Include="gui\window\window.h" />
     <ClInclude Include="gui\window\win\win_window.h" />
     <ClInclude Include="gui\window_manager\window_manager.decl.h" />
@@ -236,7 +254,6 @@
     <ClInclude Include="os\app_context\app_context.h" />
     <ClInclude Include="os\app_context\win\win_app_context.h" />
     <ClInclude Include="os\base\win_base.h" />
-    <ClInclude Include="ext\sdl\sdl.h" />
     <ClInclude Include="types\arithmetic.h" />
     <ClInclude Include="types\bitfield.h" />
     <ClInclude Include="types\concepts.h" />
@@ -246,6 +263,8 @@
     <ClInclude Include="types\intrusive_stack.h" />
     <ClInclude Include="types\int_types.h" />
     <ClInclude Include="types\non_movable.h" />
+    <ClInclude Include="types\opaque.h" />
+    <ClInclude Include="types\scale_factor.h" />
     <ClInclude Include="types\traits.h" />
     <ClInclude Include="types\unique_referencable.h" />
   </ItemGroup>

@@ -38,7 +38,7 @@ namespace mewt::gui {
 				DispatchMessageW(&msg);
 			}
 		}
-		// todo: put msg.wParam into app context so it can be returned from WinMain.
+		// mwToDo: put msg.wParam into app context so it can be returned from WinMain.
 
 	}
 
