@@ -197,6 +197,8 @@
     <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp" />
     <ClCompile Include="ext\sdl\sdl_engine.cpp" />
     <ClCompile Include="ext\sdl\sdl_error.cpp" />
+    <ClCompile Include="ext\sdl\sdl_event_dispatch.cpp" />
+    <ClCompile Include="ext\sdl\sdl_main_loop.cpp" />
     <ClCompile Include="ext\sdl\sdl_pixel_format.cpp" />
     <ClCompile Include="ext\sdl\sdl_renderer.cpp" />
     <ClCompile Include="ext\sdl\sdl_texture.cpp" />
@@ -233,8 +235,10 @@
     <ClInclude Include="ext\sdl\sdl_engine.h" />
     <ClInclude Include="ext\sdl\sdl_error.h" />
     <ClInclude Include="ext\sdl\sdl_error.impl.h" />
+    <ClInclude Include="ext\sdl\sdl_event_dispatch.h" />
     <ClInclude Include="ext\sdl\sdl_image.h" />
     <ClInclude Include="ext\sdl\sdl_image.impl.h" />
+    <ClInclude Include="ext\sdl\sdl_main_loop.h" />
     <ClInclude Include="ext\sdl\sdl_pixel_format.h" />
     <ClInclude Include="ext\sdl\sdl_renderer.decl.h" />
     <ClInclude Include="ext\sdl\sdl_renderer.h" />

@@ -9,6 +9,7 @@
 #include "mewt/ext/sdl/sdl_renderer.h"
 #include "mewt/ext/sdl/sdl_texture.h"
 #include "mewt/types/scale_factor.h"
+#include "mewt/ext/sdl/sdl_main_loop.h"
 
 // mwToDo: Abstract these away
 #include "SDL/SDL_events.h"
@@ -77,6 +78,13 @@ namespace mewt {
 													 ._width = sdl::image_t::width_t(10),
 													 ._height = sdl::image_t::height_t(10)
 		};
+
+		sdl::event_dispatch_t event_dispatch;
+
+		sdl::main_loop_t main_loop(event_dispatch);
+		for (auto& frame : main_loop) {
+			(void)frame;
+		}
 
 		// animation loop
 		while (!close) {
