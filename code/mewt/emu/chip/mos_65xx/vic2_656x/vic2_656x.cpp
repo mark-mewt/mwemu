@@ -60,6 +60,8 @@ namespace mewt::emu::chip::mos_65xx
 		for (;;) {
 			co_await run_scanline(raster_y);
 			raster_y = (raster_y + 1) & 0x1ff;
+			if (raster_y == 0)
+				break;
 		}
    }
 	async::future<> vic2_656x_t::run_gpu()

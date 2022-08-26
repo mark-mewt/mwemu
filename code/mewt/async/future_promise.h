@@ -40,10 +40,11 @@ namespace mewt::async {
 
 			// When the co-routine finishes, at the final suspend point we resume the continuation.
 			inline auto final_suspend() noexcept {
-				return resumer_t(_continuation);
-				//if (_continuation)
-				//	_continuation.resume();
-				//return std::suspend_never{};
+				auto continuation = _continuation;
+				//auto hh = std::coroutine_handle<promise_base_t>::from_promise(*this);
+				
+				//hh.destroy();
+				return resumer_t(continuation);
 			}
 
 			// When the promise is destroyed, inform the future.
@@ -103,6 +104,7 @@ namespace mewt::async {
 		// The value of the future is one of std::monostate (not yet completed), the result of the co-routine, or the exception it threw.
 		std::variant<std::monostate, result_type, std::exception_ptr> _value;
 
+		inline auto* promise() const { return _promise; }	// mwToDo: Should be able to get rid of this.
 	private:
 		// The promise we are linked to.
 		promise_base_t* _promise = nullptr;
@@ -117,7 +119,13 @@ namespace mewt::async {
 
 		// When the awaiter resumes, we return the value that the co-routine returned.
 		// mwToDo: Re-throw exeption here if one was stored.
-		inline _ReturnType await_resume() { return std::get<_ReturnType>(this->_value); }
+		inline _ReturnType await_resume()
+		{
+			// mwToDo: Tidy this up - there should be a better place to do this.
+			if (this->promise())
+				std::coroutine_handle<typename future_base<_ReturnType>::promise_base_t>::from_promise(*this->promise()).destroy();
+			return std::get<_ReturnType>(this->_value);
+		}
 
 		// The promise for a non-void return type.
 		struct promise_type : public future_base<_ReturnType>::promise_base_t {
@@ -137,7 +145,12 @@ namespace mewt::async {
 
 		// Nothing is returned to the awaiter here.
 		// mwToDo: Re-throw exeption here if one was stored.
-		inline void await_resume() noexcept {}
+		inline void await_resume() noexcept
+		{
+			// mwToDo: Tidy this up - there should be a better place to do this.
+			if (this->promise())
+				std::coroutine_handle<promise_base_t>::from_promise(*this->promise()).destroy();
+		}
 
 		// The promise for a void return type.
 		struct promise_type : promise_base_t {

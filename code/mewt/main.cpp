@@ -1,27 +1,10 @@
 
 #include "mewt/app/test_app/test_app.h"
+#include "mewt/app/c64_emu/c64_emu.h"
 #include "mewt/app_type/realtime/realtime_app.impl.h"
 
 
-#include "mewt/emu/sys/c64/c64.h"
 
-#include "mewt/os/app_context/app_context.h"
-#include "mewt/gui/window_manager/window_manager.h"
-#include "mewt/gui/window/window.h"
-#include "mewt/ext/sdl/sdl_engine.h"
-#include "mewt/ext/sdl/sdl_window.h"
-#include "mewt/ext/sdl/sdl_renderer.h"
-#include "mewt/ext/sdl/sdl_texture.h"
-#include "mewt/ext/sdl/sdl_event_manager.h"
-#include "mewt/ext/sdl/sdl_scancode.h"
-#include "mewt/types/scale_factor.h"
-#include "mewt/async/future_promise.h"
-#include "mewt/async/generator.h"
-#include "mewt/diag/log.h"
-#include "mewt/types/intrusive_stack.h"
-#include "mewt/async/event_dispatch.h"
-
-#include "SDL/SDL_timer.h"
 
 namespace mewt {
 
@@ -31,7 +14,11 @@ namespace mewt {
 
 		// sdl::event_dispatch_t event_dispatch;
 
+		#if 1
+		run_app(app_context, types::class_id_of<app::c64_emu::c64_emu_t>());
+		#else
 		run_app(app_context, types::class_id_of<app::test_app::test_app_t>());
+		#endif
 
 
 

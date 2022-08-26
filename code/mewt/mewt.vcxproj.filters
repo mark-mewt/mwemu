@@ -84,6 +84,9 @@
     <ClCompile Include="app\test_app\test_app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="app\c64_emu\c64_emu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="types\intrusive_stack.h">
@@ -294,6 +297,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app_type\realtime\realtime_app.impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\c64_emu\c64_emu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
