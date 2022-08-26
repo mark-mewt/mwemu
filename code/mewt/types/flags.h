@@ -71,6 +71,9 @@ namespace mewt::types
 			return flags(*this) |= en;
 		}
 
+		constexpr flags intersect(flags rhs) const { return flags(_bits & rhs._bits); }
+
+		constexpr bool is_empty() const { return _bits == 0; }
 	private:
 
 		data_t _bits = 0;

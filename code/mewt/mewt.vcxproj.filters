@@ -72,10 +72,16 @@
     <ClCompile Include="ext\sdl\sdl_pixel_format.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ext\sdl\sdl_main_loop.cpp">
+    <ClCompile Include="ext\sdl\sdl_event_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ext\sdl\sdl_event_dispatch.cpp">
+    <ClCompile Include="app_type\realtime\realtime_app_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app_type\realtime\realtime_app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\test_app\test_app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -245,10 +251,49 @@
     <ClInclude Include="diag\source_location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ext\sdl\sdl_main_loop.h">
+    <ClInclude Include="async\generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ext\sdl\sdl_event_dispatch.h">
+    <ClInclude Include="async\generator.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\resumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\enum_traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="async\event_dispatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\sdl\sdl_event_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\sdl\sdl_scancode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app_init.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app_phase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app_render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app_update.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\test_app\test_app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app_type\realtime\realtime_app.impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

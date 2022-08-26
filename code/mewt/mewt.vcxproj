@@ -191,14 +191,16 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app\test_app\test_app.cpp" />
+    <ClCompile Include="app_type\realtime\realtime_app.cpp" />
+    <ClCompile Include="app_type\realtime\realtime_app_state.cpp" />
     <ClCompile Include="diag\log.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\cia_6526\cia_6526.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp" />
     <ClCompile Include="ext\sdl\sdl_engine.cpp" />
     <ClCompile Include="ext\sdl\sdl_error.cpp" />
-    <ClCompile Include="ext\sdl\sdl_event_dispatch.cpp" />
-    <ClCompile Include="ext\sdl\sdl_main_loop.cpp" />
+    <ClCompile Include="ext\sdl\sdl_event_manager.cpp" />
     <ClCompile Include="ext\sdl\sdl_pixel_format.cpp" />
     <ClCompile Include="ext\sdl\sdl_renderer.cpp" />
     <ClCompile Include="ext\sdl\sdl_texture.cpp" />
@@ -214,8 +216,20 @@
     <ClCompile Include="os\app_context\win\win_app_context.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="app\test_app\test_app.h" />
+    <ClInclude Include="app_type\realtime\realtime_app.h" />
+    <ClInclude Include="app_type\realtime\realtime_app.impl.h" />
+    <ClInclude Include="app_type\realtime\realtime_app_init.h" />
+    <ClInclude Include="app_type\realtime\realtime_app_phase.h" />
+    <ClInclude Include="app_type\realtime\realtime_app_render.h" />
+    <ClInclude Include="app_type\realtime\realtime_app_state.h" />
+    <ClInclude Include="app_type\realtime\realtime_app_update.h" />
+    <ClInclude Include="async\event_dispatch.h" />
     <ClInclude Include="async\future_promise.decl.h" />
     <ClInclude Include="async\future_promise.h" />
+    <ClInclude Include="async\generator.decl.h" />
+    <ClInclude Include="async\generator.h" />
+    <ClInclude Include="async\resumer.h" />
     <ClInclude Include="diag\log.h" />
     <ClInclude Include="diag\source_location.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
@@ -235,13 +249,13 @@
     <ClInclude Include="ext\sdl\sdl_engine.h" />
     <ClInclude Include="ext\sdl\sdl_error.h" />
     <ClInclude Include="ext\sdl\sdl_error.impl.h" />
-    <ClInclude Include="ext\sdl\sdl_event_dispatch.h" />
+    <ClInclude Include="ext\sdl\sdl_event_manager.h" />
     <ClInclude Include="ext\sdl\sdl_image.h" />
     <ClInclude Include="ext\sdl\sdl_image.impl.h" />
-    <ClInclude Include="ext\sdl\sdl_main_loop.h" />
     <ClInclude Include="ext\sdl\sdl_pixel_format.h" />
     <ClInclude Include="ext\sdl\sdl_renderer.decl.h" />
     <ClInclude Include="ext\sdl\sdl_renderer.h" />
+    <ClInclude Include="ext\sdl\sdl_scancode.h" />
     <ClInclude Include="ext\sdl\sdl_texture.decl.h" />
     <ClInclude Include="ext\sdl\sdl_texture.h" />
     <ClInclude Include="ext\sdl\sdl_types.h" />
@@ -263,6 +277,7 @@
     <ClInclude Include="types\concepts.h" />
     <ClInclude Include="types\coroutine.h" />
     <ClInclude Include="types\data_stack_ptr.h" />
+    <ClInclude Include="types\enum_traits.h" />
     <ClInclude Include="types\flags.h" />
     <ClInclude Include="types\intrusive_stack.h" />
     <ClInclude Include="types\int_types.h" />

@@ -4,6 +4,7 @@
 #include "mewt/async/future_promise.decl.h"
 #include "mewt/types/non_movable.h"
 #include "mewt/types/coroutine.h"
+#include "mewt/async/resumer.h"
 
 #include <variant>
 
@@ -39,9 +40,10 @@ namespace mewt::async {
 
 			// When the co-routine finishes, at the final suspend point we resume the continuation.
 			inline auto final_suspend() noexcept {
-				if (_continuation)
-					_continuation.resume();
-				return std::suspend_never{};
+				return resumer_t(_continuation);
+				//if (_continuation)
+				//	_continuation.resume();
+				//return std::suspend_never{};
 			}
 
 			// When the promise is destroyed, inform the future.
@@ -51,7 +53,11 @@ namespace mewt::async {
 			}
 
 			// Reference the return value stored in the future.
-			inline auto& future_value() { return _future->_value; }
+			template<typename _Value>
+			inline void set_future_value(_Value&& value) {
+				if (_future)
+					_future->_value.template emplace<result_type>(std::forward<_Value>(value));
+			}
 
 			// Pointer to the future. The future itself will update this on construction, destruction, and whenever it moves.
 			future_base* _future = nullptr;
@@ -117,7 +123,8 @@ namespace mewt::async {
 		struct promise_type : public future_base<_ReturnType>::promise_base_t {
 
 			// When the co-routine returns, store its return value in the future.
-			inline void return_value(_ReturnType v) { this->future_value() = std::move(v); }
+			template<typename _Value>
+			inline void return_value(_Value&& value) { this->set_future_value(std::forward<_Value>(value)); }
 		};
 	};
 
@@ -136,7 +143,7 @@ namespace mewt::async {
 		struct promise_type : promise_base_t {
 
 			// When the co-routine completes, switch the return value stored in the future to the void type.
-			inline void return_void() noexcept { this->future_value() = void_type_t(); }
+			inline void return_void() noexcept { if(this->_future) this->set_future_value(void_type_t()); }
 		};
 	};
 
