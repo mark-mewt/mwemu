@@ -8,22 +8,35 @@ namespace mewt::emu::sys::c64
 
 	// https://www.pagetable.com/c64ref/c64disasm/
 
-   void c64_t::run_sys()
-   {
+	/*void c64_t::run_sys() {
 
-      _basic_rom.load_rom("emu/sys/c64/64c.251913-01.bin");
-      _kernel_rom.load_rom("emu/sys/c64/64c.251913-01.bin", 8 * 1024);
+		_basic_rom.load_rom("emu/sys/c64/64c.251913-01.bin");
+		_kernel_rom.load_rom("emu/sys/c64/64c.251913-01.bin", 8 * 1024);
 
 
-      logger().log("%s: %d", __FUNCTION__, 0);
-      auto cr = _cpu.run_cpu();
-      auto gr = _vic2.run_gpu();
-      logger().log("%s: %d", __FUNCTION__, 1);
-      _clock.run();
-      logger().log("%s: %d", __FUNCTION__, 2);
-   }
+		logger().log("%s: %d", __FUNCTION__, 0);
+		auto cr = _cpu.run_cpu();
+		auto gr = _vic2.run_gpu();
+		logger().log("%s: %d", __FUNCTION__, 1);
+		_clock.run();
+		logger().log("%s: %d", __FUNCTION__, 2);
+	}*/
 
-   memory_interface_t& c64_t::memory_device(memory_device_t device_type)
+   void c64_t::init_sys() {
+
+		_basic_rom.load_rom("emu/sys/c64/64c.251913-01.bin");
+		_kernel_rom.load_rom("emu/sys/c64/64c.251913-01.bin", 8 * 1024);
+
+
+		logger().log("%s: %d", __FUNCTION__, 0);
+		auto cr = _cpu.run_cpu();
+		auto gr = _vic2.run_gpu();
+		logger().log("%s: %d", __FUNCTION__, 1);
+		//_clock.run();
+		//logger().log("%s: %d", __FUNCTION__, 2);
+	}
+
+	memory_interface_t& c64_t::memory_device(memory_device_t device_type)
    {
       switch (device_type)
       {

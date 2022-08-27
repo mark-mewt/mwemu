@@ -20,7 +20,8 @@ namespace mewt::emu::sys::c64
 
 	public:
 
-		void run_sys();
+		//void run_sys();
+		void init_sys();
 
 	private:
 

@@ -295,6 +295,10 @@
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include=".editorconfig" />
+    <None Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

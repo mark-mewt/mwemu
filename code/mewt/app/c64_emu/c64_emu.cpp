@@ -16,7 +16,7 @@ namespace mewt::app::c64_emu {
 		run_updater();
 		run_input();
 		run_renderer();
-		_c64.run_sys();
+		_c64.init_sys();
 	}
 
 	async::future<> c64_emu_t::run_renderer() {
