@@ -199,6 +199,7 @@
     <ClCompile Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\cia_6526\cia_6526.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp" />
+    <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.cpp" />
     <ClCompile Include="ext\sdl\sdl_engine.cpp" />
     <ClCompile Include="ext\sdl\sdl_error.cpp" />
     <ClCompile Include="ext\sdl\sdl_event_manager.cpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="ext\sdl\sdl_renderer.cpp" />
     <ClCompile Include="ext\sdl\sdl_texture.cpp" />
     <ClCompile Include="ext\sdl\sdl_window.cpp" />
+    <ClCompile Include="gfx\video_output.cpp" />
     <ClCompile Include="gui\window\win\win_window.cpp" />
     <ClCompile Include="gui\window_manager\win\win_window_manager.cpp" />
     <ClCompile Include="io\reader.cpp" />
@@ -235,6 +237,8 @@
     <ClInclude Include="diag\log.h" />
     <ClInclude Include="diag\source_location.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.decl.h" />
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.h" />
     <ClInclude Include="emu\mem\bus_spec.h" />
     <ClInclude Include="emu\chip\clock\clock.h" />
     <ClInclude Include="emu\chip\clock\clock.decl.h" />
@@ -263,6 +267,8 @@
     <ClInclude Include="ext\sdl\sdl_types.h" />
     <ClInclude Include="ext\sdl\sdl_window.decl.h" />
     <ClInclude Include="ext\sdl\sdl_window.h" />
+    <ClInclude Include="gfx\image.h" />
+    <ClInclude Include="gfx\video_output.h" />
     <ClInclude Include="gui\window\window.h" />
     <ClInclude Include="gui\window\win\win_window.h" />
     <ClInclude Include="gui\window_manager\window_manager.decl.h" />

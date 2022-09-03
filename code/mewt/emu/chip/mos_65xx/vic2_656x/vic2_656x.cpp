@@ -3,6 +3,7 @@
 #include "mewt/diag/log.h"
 #include "mewt/async/future_promise.h"
 #include "mewt/emu/chip/clock/clock.h"
+#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x_config.h"
 
 namespace mewt::emu::chip::mos_65xx
 {
@@ -17,7 +18,14 @@ namespace mewt::emu::chip::mos_65xx
 	* 
 	*/
 
-   data_t vic2_656x_t::io_controller_t::read(address_t address)
+	gfx::image_t::size_t vic2_656x_t::display_size() const {
+		return gfx::image_t::size_t{
+			._width = gfx::image_t::width_t(_config.visible_scanline_width()),
+			._height = gfx::image_t::height_t(_config.visible_scanline_count())
+		};
+	}
+
+	data_t vic2_656x_t::io_controller_t::read(address_t address)
    {
       // https://www.c64-wiki.com/wiki/Page_208-211
       address &= 0x3f;
@@ -34,8 +42,8 @@ namespace mewt::emu::chip::mos_65xx
       *((data_t*)&_chip._regs + address) = data;
    }
 
-   vic2_656x_t::vic2_656x_t(const clock_source_t& clock)
-      : _clock(clock)
+   vic2_656x_t::vic2_656x_t(const clock_source_t& clock, vic2_model_t model)
+		 : _clock(clock), _model(model), _config(vic2_config_t::get(model))
    {
       logger().log("vic2_656x_t::construct");
    }

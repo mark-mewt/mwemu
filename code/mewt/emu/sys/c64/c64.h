@@ -9,11 +9,16 @@
 #include "mewt/types/flags.h"
 #include "mewt/emu/chip/mos_65xx/cia_6526/cia_6526.h"
 #include "mewt/emu/chip/mos_65xx/sid_6581/sid_6581.h"
+#include "mewt/gfx/image.h"
 
 namespace mewt::emu::sys::c64
 {
 
 	using namespace chip::mos_65xx;
+
+	struct c64_config_t {
+		vic2_model_t _vic2_model;
+	};
 
 	class c64_t
 	{
@@ -22,6 +27,8 @@ namespace mewt::emu::sys::c64
 
 		//void run_sys();
 		void init_sys();
+
+		gfx::image_t::size_t display_size() const;
 
 	private:
 
@@ -75,10 +82,11 @@ namespace mewt::emu::sys::c64
 			void write(address_t address, data_t data) override final;
 		};
 
+		c64_config_t _config;
 		cpu_memory_controller_t _cpu_memory_controller{ *this };
 		chip::clock_source_t _clock;
 		chip::mos_65xx::cpu_6510_t _cpu{ _clock, _cpu_memory_controller };
-		chip::mos_65xx::vic2_656x_t _vic2{ _clock };
+		chip::mos_65xx::vic2_656x_t _vic2{ _clock, _config._vic2_model };
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _basic_rom;
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _kernel_rom;
 		mem::rom::fixed_size_rom<4 * 1024, bus_spec_t> _character_rom;

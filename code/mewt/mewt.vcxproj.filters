@@ -87,6 +87,12 @@
     <ClCompile Include="app\c64_emu\c64_emu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gfx\video_output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="types\intrusive_stack.h">
@@ -300,6 +306,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app\c64_emu\c64_emu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gfx\image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gfx\video_output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.decl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

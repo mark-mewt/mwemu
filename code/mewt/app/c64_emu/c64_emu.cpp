@@ -24,11 +24,12 @@ namespace mewt::app::c64_emu {
 		auto& init_state = co_await phase_manager().phase<phase_manager_t::phase_type_t::Init>();
 
 		using namespace ext::sdl;
-		texture_config_t texture_config{
+		texture_config_t texture_config {
 			._format = pixel_format_t::coded<pixel_format_t::preset_t::ARGB8888>(),
 			._access = texture_config_t::access_t::Streaming,
-			._size = { ._width = image_t::width_t(32),
-						  ._height = image_t::height_t(32) }
+			._size = _c64.display_size()
+			//{ ._width = image_t::width_t(32),
+				//		  ._height = image_t::height_t(32) }
 		};
 
 		texture_t sdl_texture(init_state.renderer(), texture_config);

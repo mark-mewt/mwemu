@@ -36,6 +36,10 @@ namespace mewt::emu::sys::c64
 		//logger().log("%s: %d", __FUNCTION__, 2);
 	}
 
+	gfx::image_t::size_t c64_t::display_size() const {
+		return _vic2.display_size();
+	}
+
 	memory_interface_t& c64_t::memory_device(memory_device_t device_type)
    {
       switch (device_type)
