@@ -4,7 +4,7 @@
 #include <exception>
 
 namespace mewt::emu::chip::mos_65xx {
-
+	/*
 	template<vic2_model_t _Model>
 	struct vic2_model_info;
 
@@ -80,6 +80,6 @@ namespace mewt::emu::chip::mos_65xx {
 			return vic2_config<vic2_model_t::VIC2_6569>;
 		}
 		throw std::exception("Unknown Vic-II model.");
-	}
+	}*/
 
 }

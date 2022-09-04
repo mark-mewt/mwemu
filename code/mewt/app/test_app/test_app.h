@@ -9,7 +9,7 @@ namespace mewt::app::test_app {
 	class test_app_t : public app_type::realtime::realtime_app_t {
 	protected:
 		using realtime_app_t::realtime_app_t;
-		void init_app(const init_state_t& init_state) override final;
+		void init_app() override final;
 
 	private:
 		async::future<> run_input_loop();

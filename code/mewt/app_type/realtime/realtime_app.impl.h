@@ -18,4 +18,16 @@ namespace mewt::app_type::realtime {
 		// an exit signal to do the real exit.
 	}
 
+	inline auto realtime_app_t::init_phase() {
+		return _phase_manager.phase<phase_type_t::Init>();
+	}
+
+	inline auto realtime_app_t::update_phase() {
+		return _phase_manager.phase<phase_type_t::Update>();
+	}
+
+	inline auto realtime_app_t::render_phase() {
+		return _phase_manager.phase<phase_type_t::Render>();
+	}
+
 }

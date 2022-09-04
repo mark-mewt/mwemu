@@ -8,6 +8,7 @@
 #include "mewt/types/flags.h"
 #include "mewt/types/bitfield.h"
 #include "mewt/gfx/image.h"
+#include "mewt/emu/host/host.h"
 
 namespace mewt::emu::chip::mos_65xx
 {
@@ -98,9 +99,9 @@ namespace mewt::emu::chip::mos_65xx
 	class vic2_656x_t
    {
    private:
-      const clock_source_t& _clock;
-		vic2_model_t _model;
-		const vic2_config_t& _config;
+      //const clock_source_t& _clock;
+		//vic2_model_t _model;
+		//const vic2_config_t& _config;
 
    public:
 
@@ -114,16 +115,21 @@ namespace mewt::emu::chip::mos_65xx
 
 		io_controller_t _io_controller{ *this };
 
-		vic2_656x_t(const clock_source_t& clock, vic2_model_t model);
-      async::future<> run_gpu();
+		//vic2_656x_t(const clock_source_t& clock);//, vic2_model_t model);
+		async::future<> run_gpu(host_t& host);
 
-		gfx::image_t::size_t display_size() const;
+		//gfx::image_t::size_t display_size() const;
+
+	protected:
+
+		virtual const vic2_config_t& get_config() const = 0;
 
 	private:
 
       async::future<> read_mem();
 		async::future<> run_frame();
 		async::future<> run_scanline(uint16_t raster_y);
+		void generate_frame(host_t::frame_t& frame);
 
 		struct sprite_pos_t {
 			uint8_t _x;

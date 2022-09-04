@@ -192,6 +192,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app\c64_emu\c64_emu.cpp" />
+    <ClCompile Include="app\c64_emu\c64_emu_host.cpp" />
     <ClCompile Include="app\test_app\test_app.cpp" />
     <ClCompile Include="app_type\realtime\realtime_app.cpp" />
     <ClCompile Include="app_type\realtime\realtime_app_state.cpp" />
@@ -199,7 +200,11 @@
     <ClCompile Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\cia_6526\cia_6526.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\sid_6581\sid_6581.cpp" />
+    <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r56a.cpp" />
+    <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r8.cpp" />
+    <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_6569.cpp" />
     <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.cpp" />
+    <ClCompile Include="emu\host\host.cpp" />
     <ClCompile Include="ext\sdl\sdl_engine.cpp" />
     <ClCompile Include="ext\sdl\sdl_error.cpp" />
     <ClCompile Include="ext\sdl\sdl_event_manager.cpp" />
@@ -220,7 +225,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\c64_emu\c64_emu.h" />
+    <ClInclude Include="app\c64_emu\c64_emu_host.h" />
     <ClInclude Include="app\test_app\test_app.h" />
+    <ClInclude Include="app_type\realtime\realtime_app.decl.h" />
     <ClInclude Include="app_type\realtime\realtime_app.h" />
     <ClInclude Include="app_type\realtime\realtime_app.impl.h" />
     <ClInclude Include="app_type\realtime\realtime_app_init.h" />
@@ -228,6 +235,7 @@
     <ClInclude Include="app_type\realtime\realtime_app_render.h" />
     <ClInclude Include="app_type\realtime\realtime_app_state.h" />
     <ClInclude Include="app_type\realtime\realtime_app_update.h" />
+    <ClInclude Include="async\event.h" />
     <ClInclude Include="async\event_dispatch.h" />
     <ClInclude Include="async\future_promise.decl.h" />
     <ClInclude Include="async\future_promise.h" />
@@ -237,8 +245,12 @@
     <ClInclude Include="diag\log.h" />
     <ClInclude Include="diag\source_location.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r56a.h" />
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r8.h" />
+    <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_6569.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.decl.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.h" />
+    <ClInclude Include="emu\host\host.h" />
     <ClInclude Include="emu\mem\bus_spec.h" />
     <ClInclude Include="emu\chip\clock\clock.h" />
     <ClInclude Include="emu\chip\clock\clock.decl.h" />
@@ -252,6 +264,8 @@
     <ClInclude Include="emu\mem\ram\fixed_size_ram.h" />
     <ClInclude Include="emu\mem\rom\fixed_size_rom.h" />
     <ClInclude Include="emu\sys\c64\c64.h" />
+    <ClInclude Include="emu\sys\c64\c64_ntsc.h" />
+    <ClInclude Include="emu\sys\c64\c64_pal.h" />
     <ClInclude Include="ext\sdl\sdl_engine.h" />
     <ClInclude Include="ext\sdl\sdl_error.h" />
     <ClInclude Include="ext\sdl\sdl_error.impl.h" />
@@ -282,6 +296,7 @@
     <ClInclude Include="os\base\win_base.h" />
     <ClInclude Include="types\arithmetic.h" />
     <ClInclude Include="types\bitfield.h" />
+    <ClInclude Include="types\colour.h" />
     <ClInclude Include="types\concepts.h" />
     <ClInclude Include="types\coroutine.h" />
     <ClInclude Include="types\data_stack_ptr.h" />
@@ -292,6 +307,7 @@
     <ClInclude Include="types\non_movable.h" />
     <ClInclude Include="types\opaque.h" />
     <ClInclude Include="types\scale_factor.h" />
+    <ClInclude Include="types\span_2d.h" />
     <ClInclude Include="types\traits.h" />
     <ClInclude Include="types\unique_referencable.h" />
   </ItemGroup>

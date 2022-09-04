@@ -31,6 +31,21 @@ namespace mewt::gfx {
 				return tags_t::Height;
 			}
 		}
+		constexpr friend auto get_opaque_index(tags_t tag) {
+			switch (tag) {
+			case tags_t::X:
+				return tags_t::X;
+			case tags_t::Y:
+				return tags_t::Y;
+			case tags_t::Width:
+				return tags_t::X;
+			case tags_t::Height:
+				return tags_t::Y;
+			}
+		}
+		constexpr friend bool can_increment(tags_t tag) {
+			return (tag == tags_t::X) || (tag == tags_t::Y);
+		}
 		struct position_t {
 			x_position_t _x;
 			y_position_t _y;

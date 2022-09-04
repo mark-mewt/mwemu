@@ -15,15 +15,30 @@ namespace mewt::types {
 		constexpr friend auto operator<=>(opaque lhs, opaque rhs) {
 			return lhs._value <=> rhs._value;
 		}
+		constexpr friend bool operator==(opaque lhs, opaque rhs) {
+			return lhs._value == rhs._value;
+		}
 
 	private:
 		value_type_t _value;
 	};
 
 	template <auto _Tag>
+	constexpr auto to_index(opaque<_Tag> lhs) {
+		constexpr auto index = get_opaque_index(_Tag);
+		return opaque<index>(lhs.get());
+	}
+
+	template <auto _Tag>
 	constexpr auto operator-(opaque<_Tag> lhs, opaque<_Tag> rhs) {
 		constexpr auto diff = get_opaque_difference(_Tag);
 		return opaque<diff>(lhs.get() - rhs.get());
+	}
+
+	template <auto _Tag>
+	requires(can_increment(_Tag))
+	constexpr auto operator++(opaque<_Tag>& lhs) {
+		return (lhs = opaque<_Tag>(lhs.get() + 1));
 	}
 
 	template <auto _TagL, auto _TagR>

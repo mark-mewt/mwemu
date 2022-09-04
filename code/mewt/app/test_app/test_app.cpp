@@ -33,7 +33,7 @@ namespace mewt::app::test_app {
 	}
 
 
-	void test_app_t::init_app(const init_state_t& init_state) {
+	void test_app_t::init_app() {
 		run_update_loop();
 		run_input_loop();
 		run_renderer();
@@ -41,7 +41,7 @@ namespace mewt::app::test_app {
 
 	async::future<> test_app_t::run_renderer() {
 
-		auto& init_state = co_await phase_manager().phase<phase_manager_t::phase_type_t::Init>();
+		auto& init_state = co_await phase_manager().phase<phase_type_t::Init>();
 
 		using namespace ext::sdl;
 		texture_config_t texture_config{
@@ -63,7 +63,7 @@ namespace mewt::app::test_app {
 		};
 
 		for (;;) {
-			co_await phase_manager().phase<phase_manager_t::phase_type_t::Update>();
+			co_await phase_manager().phase<phase_type_t::Update>();
 			// mwToDo: This needs to move out of here. Ultimately, it will be the emulated GPU that does this.
 			char* pixels = 0;
 			int pitch = 0;
@@ -73,7 +73,7 @@ namespace mewt::app::test_app {
 			for (int i = 0; i < 32 * 32; ++i)
 				pixels[i] = i + kk;
 			SDL_UnlockTexture(sdl_texture.get());
-			auto& render_data = co_await phase_manager().phase<phase_manager_t::phase_type_t::Render>();
+			auto& render_data = co_await phase_manager().phase<phase_type_t::Render>();
 			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = _rect });
 		}
 	}
@@ -121,7 +121,7 @@ namespace mewt::app::test_app {
 												  ._height = image_t::height_t(10)
 		};
 		for (;;) {
-			co_await phase_manager().phase<phase_manager_t::phase_type_t::Update>();
+			co_await phase_manager().phase<phase_type_t::Update>();
 			if (_keypresses[keypress_t::Up])
 				_rect._position._y -= frame_delta._height;
 			if (_keypresses[keypress_t::Left])

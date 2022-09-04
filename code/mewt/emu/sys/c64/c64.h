@@ -10,15 +10,16 @@
 #include "mewt/emu/chip/mos_65xx/cia_6526/cia_6526.h"
 #include "mewt/emu/chip/mos_65xx/sid_6581/sid_6581.h"
 #include "mewt/gfx/image.h"
+#include "mewt/emu/host/host.h"
 
 namespace mewt::emu::sys::c64
 {
 
 	using namespace chip::mos_65xx;
 
-	struct c64_config_t {
-		vic2_model_t _vic2_model;
-	};
+	//struct c64_config_t {
+	//	vic2_model_t _vic2_model;
+	//};
 
 	class c64_t
 	{
@@ -26,9 +27,15 @@ namespace mewt::emu::sys::c64
 	public:
 
 		//void run_sys();
-		void init_sys();
+		void init_sys(host_t& host);
 
-		gfx::image_t::size_t display_size() const;
+		//gfx::image_t::size_t display_size() const;
+
+		virtual ~c64_t() = default;
+
+	protected:
+
+		virtual chip::mos_65xx::vic2_656x_t& get_vic2() = 0;
 
 	private:
 
@@ -82,11 +89,11 @@ namespace mewt::emu::sys::c64
 			void write(address_t address, data_t data) override final;
 		};
 
-		c64_config_t _config;
+		//c64_config_t _config;
 		cpu_memory_controller_t _cpu_memory_controller{ *this };
 		chip::clock_source_t _clock;
 		chip::mos_65xx::cpu_6510_t _cpu{ _clock, _cpu_memory_controller };
-		chip::mos_65xx::vic2_656x_t _vic2{ _clock, _config._vic2_model };
+		//chip::mos_65xx::vic2_656x_t _vic2{ _clock, _config._vic2_model };
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _basic_rom;
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _kernel_rom;
 		mem::rom::fixed_size_rom<4 * 1024, bus_spec_t> _character_rom;

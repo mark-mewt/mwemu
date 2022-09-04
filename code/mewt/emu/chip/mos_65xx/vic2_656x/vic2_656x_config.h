@@ -6,6 +6,8 @@
 
 namespace mewt::emu::chip::mos_65xx {
 
+	// mwToDo: Get rid of this and replace with virtual implementation overrides instead.
+
 	struct vic2_config_t {
 
 		// Video signal standard (PAL/NTSC) supported by this model of the Vic-II.
@@ -42,7 +44,7 @@ namespace mewt::emu::chip::mos_65xx {
 		constexpr uint16_t visible_scanline_width() const { return (_xpos_display_off + total_pixels_per_scanline() - _xpos_display_on) % total_pixels_per_scanline(); }
 
 		// Get the config for a particular Vic-II model.
-		static const vic2_config_t& get(vic2_model_t model);
+		//static const vic2_config_t& get(vic2_model_t model);
 
 	};
 

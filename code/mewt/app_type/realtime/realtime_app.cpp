@@ -14,19 +14,19 @@ namespace mewt::app_type::realtime {
 
 	async::future<> realtime_app_t::run_core() {
 		using namespace ext::sdl;
+
+		init_app();
+
 		state_t app_state;
-
-		init_app(app_state);
-
-		_phase_manager._event_dispatch.dispatch(phase_manager_t::phase_type_t::Init, app_state);
+		_phase_manager._event_dispatch.dispatch(phase_type_t::Init, app_state);
 
 		auto frame_generator = generate_frames(app_state.renderer());
 
 		for (;;) {
 			co_await _event_manager.pump();
 
-			_phase_manager._event_dispatch.dispatch(phase_manager_t::phase_type_t::Update, app_state);
-			_phase_manager._event_dispatch.dispatch(phase_manager_t::phase_type_t::Render, app_state);
+			_phase_manager._event_dispatch.dispatch(phase_type_t::Update, app_state);
+			_phase_manager._event_dispatch.dispatch(phase_type_t::Render, app_state);
 			co_await frame_generator;
 		}
 	}

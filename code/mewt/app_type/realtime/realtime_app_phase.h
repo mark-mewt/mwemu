@@ -5,14 +5,14 @@
 
 namespace mewt::app_type::realtime {
 
+	enum class realtime_app_t::phase_type_t {
+		Init,
+		Update,
+		Render
+	};
+
 	class realtime_app_t::phase_manager_t {
 	public:
-		enum class phase_type_t {
-			Init,
-			Update,
-			Render
-		};
-
 		template <phase_type_t _Phase>
 		struct event_data_type;
 

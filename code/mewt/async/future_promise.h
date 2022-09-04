@@ -33,7 +33,11 @@ namespace mewt::async {
 			inline future<_ReturnType> get_return_object() noexcept { return *this; }
 
 			// If an exception is thrown in the co-routine, we pass it on to the future to be re-thrown.
-			inline void unhandled_exception() noexcept { _future->_value = std::current_exception(); }
+			inline void unhandled_exception() noexcept {
+				if (_future == nullptr)
+					abort();
+				_future->_value = std::current_exception();
+			}
 
 			// We want the co-routine to start immediately, so we won't suspend initially.
 			inline auto initial_suspend() noexcept { return std::suspend_never{}; }

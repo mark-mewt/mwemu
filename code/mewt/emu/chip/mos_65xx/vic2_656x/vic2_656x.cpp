@@ -18,12 +18,12 @@ namespace mewt::emu::chip::mos_65xx
 	* 
 	*/
 
-	gfx::image_t::size_t vic2_656x_t::display_size() const {
-		return gfx::image_t::size_t{
-			._width = gfx::image_t::width_t(_config.visible_scanline_width()),
-			._height = gfx::image_t::height_t(_config.visible_scanline_count())
-		};
-	}
+	//gfx::image_t::size_t vic2_656x_t::display_size() const {
+	//	return gfx::image_t::size_t{
+	//		._width = gfx::image_t::width_t(_config.visible_scanline_width()),
+	//		._height = gfx::image_t::height_t(_config.visible_scanline_count())
+	//	};
+	//}
 
 	data_t vic2_656x_t::io_controller_t::read(address_t address)
    {
@@ -42,12 +42,12 @@ namespace mewt::emu::chip::mos_65xx
       *((data_t*)&_chip._regs + address) = data;
    }
 
-   vic2_656x_t::vic2_656x_t(const clock_source_t& clock, vic2_model_t model)
-		 : _clock(clock), _model(model), _config(vic2_config_t::get(model))
+   /* vic2_656x_t::vic2_656x_t(const clock_source_t& clock) //, vic2_model_t model)
+		 : _clock(clock)//, _model(model)//, _config(vic2_config_t::get(model))
    {
       logger().log("vic2_656x_t::construct");
-   }
-	async::future<> vic2_656x_t::read_mem()
+   }*/
+	/*async::future<> vic2_656x_t::read_mem()
    {
       logger().log("%s: %d", __FUNCTION__, 0);
       co_await _clock.next_tick();
@@ -71,11 +71,71 @@ namespace mewt::emu::chip::mos_65xx
 			if (raster_y == 0)
 				break;
 		}
-   }
-	async::future<> vic2_656x_t::run_gpu()
+   }*/
+
+
+	/*
+	
+0	Black	#000000
+1	White	#FFFFFF
+2	Red	#9F4E44
+3	Cyan	#6ABFC6
+4	Purple	#A057A3
+5	Green	#5CAB5E
+6	Blue	#50459B
+7	Yellow	#C9D487
+8	Orange	#a1683c
+9	Brown	#6D5412
+10	Light Red	#CB7E75
+11	Dark-Gray	#626262
+12	Mid-Gray	#898989
+13	Light Green	#9AE29B
+14	Light Blue	#887ECB
+15	Light-Gray	#ADADAD
+
+	*/
+
+	static types::colour_t vic2_colours[] = {
+		{ 0x00, 0x00, 0x00 },
+		{ 0xff, 0xff, 0xff },
+		{ 0x9f, 0x4e, 0x44 },
+		{ 0x6a, 0xbf, 0xc6 },
+		{ 0xa0, 0x57, 0xa3 },
+		{ 0x5c, 0xab, 0x5e },
+		{ 0x50, 0x45, 0x9b },
+		{ 0xc9, 0xd4, 0x87 },
+		{ 0xa1, 0x68, 0x3c },
+		{ 0x6d, 0x54, 0x12 },
+		{ 0xcb, 0x7e, 0x75 },
+		{ 0x62, 0x62, 0x62 },
+		{ 0x89, 0x89, 0x89 },
+		{ 0x9a, 0xe2, 0x9b },
+		{ 0x88, 0x7e, 0xcb },
+		{ 0xad, 0xad, 0xad },
+	};
+
+	void vic2_656x_t::generate_frame(host_t::frame_t& frame) {
+		// tick some clock cycles...
+		for (auto& row : frame._pixels.rows()) {
+			for (auto& pixel : row) {
+				pixel = vic2_colours[14];
+			}
+		}
+	}
+
+	async::future<> vic2_656x_t::run_gpu(host_t& host)
    {
+
+		auto& config = co_await host.events.initialising;
+		auto& vic_config = get_config();
+		config.display_size = {
+			._width = gfx::image_t::width_t(vic_config.visible_scanline_width()),
+			._height = gfx::image_t::height_t(vic_config.visible_scanline_count())
+		};
+
 		for (;;) {
-			co_await run_frame();
+			auto& frame = co_await host.events.need_frame;
+			generate_frame(frame);
 		}
    }
 
