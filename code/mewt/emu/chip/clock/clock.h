@@ -33,6 +33,7 @@ namespace mewt::emu::chip
    public:
       inline clock_tick_count_t next_tick() const { return { *this, 1 }; }
       void run();
+		void tick();
    private:
       friend clock_tick_awaiter_t;
       //inline void add_awaiter(clock_tick_awaiter_t& awaiter) const { _awaiters.push(awaiter); }

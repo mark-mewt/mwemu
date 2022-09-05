@@ -115,12 +115,75 @@ namespace mewt::emu::chip::mos_65xx
 	};
 
 	void vic2_656x_t::generate_frame(host_t::frame_t& frame) {
-		// tick some clock cycles...
-		for (auto& row : frame._pixels.rows()) {
-			for (auto& pixel : row) {
-				pixel = vic2_colours[14];
+		auto& config = get_config();
+		bool scanline_visible = false;
+		bool raster_visible = false;
+
+		auto output_pixels = frame._pixels.rows().begin();
+		types::colour_t* current_pixel = nullptr;
+
+		bool main_border_flip_flop = true;
+		bool vert_border_flip_flop = true;
+
+		for (uint16_t raster_y = 0; raster_y < config._total_scanlines_per_frame; ++raster_y) {
+			_regs._raster = (raster_y & 0xff);
+			_regs._control_reg_1._rst8 = (raster_y & 0x100) ? 1 : 0;
+
+			for (uint16_t cycle_x = 0; cycle_x < config._cycles_per_scanline; ++cycle_x) {
+
+				_cpu_clock.tick();
+				for (uint16_t cell_x = 0; cell_x < 8; ++cell_x) {
+					auto raster_x = cell_x | (cycle_x << 3);
+
+					if (raster_x == config._xpos_raster_irq) {
+						// mwToDo: Fire raster irq.
+						if (raster_y == border_bottom_compare()) // border #2
+							vert_border_flip_flop = true;
+						if ((raster_y == border_top_compare()) && _regs._control_reg_1._den)	// border #3
+							vert_border_flip_flop = false;
+						if (scanline_visible) {
+							++output_pixels;
+						}
+						if (raster_y == config._raster_display_on)
+							scanline_visible = true;
+						else if (raster_y == config._raster_display_off)
+							scanline_visible = false;
+						current_pixel = (*output_pixels).data();
+					}
+
+					if (raster_x == config._xpos_display_on)
+						raster_visible = scanline_visible;
+					else if (raster_x == config._xpos_display_off)
+						raster_visible = false;
+
+					if (raster_x == border_right_compare())	// border #1
+						main_border_flip_flop = true;
+					if (raster_x == border_left_compare()) {
+						if (raster_y == border_bottom_compare())	// border #4
+							vert_border_flip_flop = true;
+						if ((raster_y == border_top_compare()) && _regs._control_reg_1._den) // border #5
+							vert_border_flip_flop = false;
+						if (!vert_border_flip_flop)
+							main_border_flip_flop = false;
+					}
+
+
+					if (raster_visible) {
+						*current_pixel++ = vic2_colours[main_border_flip_flop ? 14 : 6];
+					}
+
+				}
+
 			}
+
 		}
+
+		// tick some clock cycles...
+		//for (auto& row : frame._pixels.rows()) {
+		//	for (auto& pixel : row) {
+		//		pixel = vic2_colours[14];
+		//	}
+		//}
 	}
 
 	async::future<> vic2_656x_t::run_gpu(host_t& host)

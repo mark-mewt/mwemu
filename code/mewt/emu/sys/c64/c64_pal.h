@@ -8,8 +8,8 @@ namespace mewt::emu::sys::c64 {
 
 	class c64_pal_t : public c64_t {
 
-	protected:
-		inline chip::mos_65xx::vic2_6569_t& get_vic2() override { return _vic2; }
+	public:
+		inline c64_pal_t() : c64_t(_vic2) { }
 
 	private:
 

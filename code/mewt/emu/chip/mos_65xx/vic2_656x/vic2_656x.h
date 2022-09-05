@@ -9,6 +9,7 @@
 #include "mewt/types/bitfield.h"
 #include "mewt/gfx/image.h"
 #include "mewt/emu/host/host.h"
+#include "mewt/emu/chip/clock/clock.h"
 
 namespace mewt::emu::chip::mos_65xx
 {
@@ -120,6 +121,8 @@ namespace mewt::emu::chip::mos_65xx
 
 		//gfx::image_t::size_t display_size() const;
 
+		inline const chip::clock_source_t& cpu_clock() const { return _cpu_clock; }
+
 	protected:
 
 		virtual const vic2_config_t& get_config() const = 0;
@@ -131,20 +134,24 @@ namespace mewt::emu::chip::mos_65xx
 		async::future<> run_scanline(uint16_t raster_y);
 		void generate_frame(host_t::frame_t& frame);
 
+		chip::clock_source_t _cpu_clock;
+
 		struct sprite_pos_t {
-			uint8_t _x;
-			uint8_t _y;
+			uint8_t _x;		// Lower 8-bits of sprite x-coord.
+			uint8_t _y;		// Sprite y-coord.
 		};
+
+		// $d011:
 		struct control_reg_1_t {
-			int8_t _y_scroll : 3;
+			int8_t _y_scroll : 3;	// Fine y-scroll of display window.
 			bool _rsel : 1;			// 0: 24 text lines/192 pixels, Raster lines 55-246; 1: 25 text lines/200 pixels, Raster lines 51-250
-			bool _den : 1;
-			bool _bmm : 1;
-			bool _emm : 1;
-			bool _rst8 : 1;
+			bool _den : 1;				// Display ENable - 1 to enable display, 0 to display only border colour
+			bool _bmm : 1;				// ???
+			bool _ecm : 1;				// ???
+			bool _rst8 : 1;			// Most significant bit of raster-y position.
 		};
 		struct control_reg_2_t {
-			int8_t _x_scroll : 3;
+			int8_t _x_scroll : 3;	// Fine x-scroll of display window.
 			bool _csel : 1;			// 0: 38 characters/304 pixels wide, LPX 31-334; 1: 40 characters/320 pixels wide, LPX 24-343
 			bool _mcm : 1;
 			bool _res : 1;
@@ -173,9 +180,9 @@ namespace mewt::emu::chip::mos_65xx
 		struct regs_t {
 			// https://www.c64-wiki.com/wiki/Page_208-211
 			sprite_pos_t _sprite_pos[8];
-			types::bitfield<8> _sprite_x_msbs;
-			control_reg_1_t _control_reg_1;
-			uint8_t _raster;
+			types::bitfield<8> _sprite_x_msbs;	// $d010: Most significant bits of sprite x-coords
+			control_reg_1_t _control_reg_1;		// $d011: 
+			uint8_t _raster;							// $d012: Low 8-bits of raster y-position.
 			uint8_t _lightpen_x;
 			uint8_t _lightpen_y;
 			types::bitfield<8> _sprite_enabled;
@@ -206,6 +213,11 @@ namespace mewt::emu::chip::mos_65xx
 			uint4_t _sprite_7_color;
 		};
 		regs_t _regs{ };
+
+		inline uint16_t border_left_compare() const { return _regs._control_reg_2._csel ? 0x18 : 0x1f; }
+		inline uint16_t border_right_compare() const { return _regs._control_reg_2._csel ? 0x158 : 0x14f; }
+		inline uint16_t border_top_compare() const { return _regs._control_reg_1._rsel ? 0x33 : 0x37; }
+		inline uint16_t border_bottom_compare() const { return _regs._control_reg_1._rsel ? 0xfb : 0xf7; }
 
 	};
 

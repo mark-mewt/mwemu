@@ -22,7 +22,11 @@ namespace mewt::emu::sys::c64
 		logger().log("%s: %d", __FUNCTION__, 2);
 	}*/
 
-   void c64_t::init_sys(host_t& host) {
+	c64_t::c64_t(chip::mos_65xx::vic2_656x_t& vic2)
+		 : _vic2(vic2) {
+	}
+
+	void c64_t::init_sys(host_t& host) {
 
 		_basic_rom.load_rom("emu/sys/c64/64c.251913-01.bin");
 		_kernel_rom.load_rom("emu/sys/c64/64c.251913-01.bin", 8 * 1024);
@@ -30,7 +34,7 @@ namespace mewt::emu::sys::c64
 
 		logger().log("%s: %d", __FUNCTION__, 0);
 		auto cr = _cpu.run_cpu();
-		auto gr = get_vic2().run_gpu(host);
+		auto gr = _vic2.run_gpu(host);
 		logger().log("%s: %d", __FUNCTION__, 1);
 		//_clock.run();
 		//logger().log("%s: %d", __FUNCTION__, 2);
@@ -214,7 +218,7 @@ namespace mewt::emu::sys::c64
    {
       auto page = (address >> 8) & 0xf;
       if (page < 4)
-			return _sys.get_vic2()._io_controller;
+			return _sys._vic2._io_controller;
       else if (page < 8)
          return _sys._sid._io_controller;
       else if (page < 12)

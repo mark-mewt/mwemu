@@ -3,7 +3,6 @@
 
 #include "mewt/emu/mem/rom/fixed_size_rom.h"
 #include "mewt/emu/mem/ram/fixed_size_ram.h"
-#include "mewt/emu/chip/clock/clock.h"
 #include "mewt/emu/chip/mos_65xx/cpu_6510/cpu_6510.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
 #include "mewt/types/flags.h"
@@ -26,6 +25,8 @@ namespace mewt::emu::sys::c64
 
 	public:
 
+		c64_t(chip::mos_65xx::vic2_656x_t& vic2);
+
 		//void run_sys();
 		void init_sys(host_t& host);
 
@@ -35,7 +36,7 @@ namespace mewt::emu::sys::c64
 
 	protected:
 
-		virtual chip::mos_65xx::vic2_656x_t& get_vic2() = 0;
+		//virtual chip::mos_65xx::vic2_656x_t& get_vic2() = 0;
 
 	private:
 
@@ -91,8 +92,9 @@ namespace mewt::emu::sys::c64
 
 		//c64_config_t _config;
 		cpu_memory_controller_t _cpu_memory_controller{ *this };
-		chip::clock_source_t _clock;
-		chip::mos_65xx::cpu_6510_t _cpu{ _clock, _cpu_memory_controller };
+		chip::mos_65xx::vic2_656x_t& _vic2;
+		//chip::clock_source_t _clock;
+		chip::mos_65xx::cpu_6510_t _cpu{ _vic2.cpu_clock(), _cpu_memory_controller };
 		//chip::mos_65xx::vic2_656x_t _vic2{ _clock, _config._vic2_model };
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _basic_rom;
 		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _kernel_rom;
@@ -101,7 +103,7 @@ namespace mewt::emu::sys::c64
 		mem::ram::fixed_size_ram<1 * 1024, bus_spec_t> _color_ram;
 		io_controller_t _io_controller{ *this };
 
-		chip::mos_65xx::sid_6581_t _sid{ _clock };
+		chip::mos_65xx::sid_6581_t _sid{ _vic2.cpu_clock() };
 
 		chip::mos_65xx::cia_6526_t _cia1_controller;
 		chip::mos_65xx::cia_6526_t _cia2_controller;
