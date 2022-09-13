@@ -1,1 +1,204 @@
-<mxfile host="app.diagrams.net" modified="2022-09-13T20:07:02.526Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36" version="18.0.2" etag="DftAWsjRLtpTEgmDnLf0" type="github"><diagram id="5dvReFa8cWKRPoNcWuKO">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-09-13T21:41:33.465Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36" etag="V9YDqZvMBmqhroCuYMDX" version="18.0.2" type="github">
+  <diagram id="5dvReFa8cWKRPoNcWuKO" name="Page-1">
+    <mxGraphModel dx="1213" dy="431" grid="1" gridSize="32" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="#171717" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-1" value="Interrupt Logic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="192" y="224" width="160" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-80" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-2" target="3THFW-7HDq8sBvEC2wa4-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-2" value="Refresh Counter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry y="224" width="160" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-46" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-4" target="3THFW-7HDq8sBvEC2wa4-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-49" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-4" target="3THFW-7HDq8sBvEC2wa4-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-50" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-4" target="3THFW-7HDq8sBvEC2wa4-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-53" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-4" target="3THFW-7HDq8sBvEC2wa4-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-54" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-4" target="3THFW-7HDq8sBvEC2wa4-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-4" value="Raster Counter X / Y" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="224" y="320" width="96" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-47" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-6" target="3THFW-7HDq8sBvEC2wa4-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-6" value="VC / RC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="352" y="320" width="96" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-45" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FFFF99;jumpStyle=gap;shape=flexArrow;startArrow=none;startFill=0;endSize=2;startSize=2;strokeWidth=1;width=4;startWidth=6;endWidth=6;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-8" target="3THFW-7HDq8sBvEC2wa4-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-48" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FFFF99;jumpStyle=gap;shape=flexArrow;startArrow=none;startFill=0;endSize=2;startSize=2;strokeWidth=1;width=4;startWidth=6;endWidth=6;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-8" target="3THFW-7HDq8sBvEC2wa4-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-8" value="Address Generator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;horizontal=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="352" width="32" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-77" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FFFF99;jumpStyle=gap;startArrow=classic;startFill=1;shape=flexArrow;endSize=2;startSize=2;strokeWidth=1;width=4;startWidth=6;endWidth=6;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-10" target="3THFW-7HDq8sBvEC2wa4-71">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-78" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.453;entryY=1.016;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;entryPerimeter=0;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-10" target="3THFW-7HDq8sBvEC2wa4-73">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-79" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-10" target="3THFW-7HDq8sBvEC2wa4-75">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-10" value="Memory Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;horizontal=0;" vertex="1" parent="1">
+          <mxGeometry y="352" width="32" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-12" value="40 x 12-bit Video Matrix / Color Line" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="576" y="448" width="96" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-14" value="8 x 24-bit Sprite Data Buffers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="352" y="512" width="96" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-55" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-16" target="3THFW-7HDq8sBvEC2wa4-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <UserObject label="MC0 - 7" tooltip="MOB DatEvery sprite has its own sprite data sequencer whose core is a 24 bit shift&#xa;register. Apart from that, there are two internal registers for every&#xa;sprite:&#xa;&#xa; · &quot;MC&quot; (MOB Data Counter) is a 6 bit counter that can be loaded from&#xa;   MCBASE.&#xa; · &quot;MCBASE&quot; (MOB Data Counter Base) is a 6 bit counter with reset input.a Counter" id="3THFW-7HDq8sBvEC2wa4-16">
+          <mxCell style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+            <mxGeometry x="128" y="640" width="96" height="64" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-41" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-18" target="3THFW-7HDq8sBvEC2wa4-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-18" value="Sprite Data Sequencer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="352" y="608" width="96" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-42" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-20" target="3THFW-7HDq8sBvEC2wa4-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-20" value="Graphics Data Sequencer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="576" y="608" width="96" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-40" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-22" target="3THFW-7HDq8sBvEC2wa4-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-22" value="MUX - Sprite Priorities &amp;amp; Collision Detection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="432" y="736" width="160" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-39" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-24" target="3THFW-7HDq8sBvEC2wa4-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-24" value="Border Unit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="448" y="864" width="128" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-37" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86A2FC;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-26" target="3THFW-7HDq8sBvEC2wa4-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-26" value="Color Generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="448" y="960" width="128" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-36" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86A2FC;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-28" target="3THFW-7HDq8sBvEC2wa4-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-28" value="Sync Generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="128" y="960" width="128" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-51" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-30" target="3THFW-7HDq8sBvEC2wa4-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-65" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-30" target="3THFW-7HDq8sBvEC2wa4-56">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="32" y="820" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-66" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-30" target="3THFW-7HDq8sBvEC2wa4-58">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-67" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-30" target="3THFW-7HDq8sBvEC2wa4-60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-30" value="Clock Generator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F1E4A;strokeColor=#4B4BBD;fontColor=#86A2FC;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="96" y="736" width="96" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-33" value="Video Output&lt;br&gt;(S/LUM and COLOR)" style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;autosize=1;resizeWidth=0;resizeHeight=0;expand=1;recursiveResize=1;" vertex="1" parent="1">
+          <mxGeometry x="256" y="1024" width="192" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-38" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-34" target="3THFW-7HDq8sBvEC2wa4-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-34" value="øCOLOR" style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+          <mxGeometry x="640" y="960" width="80" height="32" as="geometry" />
+        </mxCell>
+        <UserObject label="ø0" tooltip="From the pixel clock on øIN, the VIC generates the system clock of&#xa;1.023 MHz (NTSC) or 0.985 MHz (PAL) by dividing øIN by eight. It is&#xa;available on this pin and fed into the processor which in turn&#xa;generated the signal ø2 from it.&#xa;" id="3THFW-7HDq8sBvEC2wa4-56">
+          <mxCell style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+            <mxGeometry y="832" width="64" height="32" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-58" value="CAS" style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+          <mxGeometry x="-64" y="768" width="64" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-60" value="RAS" style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+          <mxGeometry y="704" width="64" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-64" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-62" target="3THFW-7HDq8sBvEC2wa4-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <UserObject label="øIN" tooltip="This is the feed for the pixel clock of 8.18 MHz (NTSC) or 7.88 MHz&#xa;(PAL) that is generated from the crystal frequency. Eight pixels&#xa;are displayed per bus clock cycle (ø2).&#xa;" id="3THFW-7HDq8sBvEC2wa4-62">
+          <mxCell style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+            <mxGeometry x="96" y="896" width="96" height="32" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-71" value="Address &amp;amp; Data" style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="448" width="96" height="64" as="geometry" />
+        </mxCell>
+        <UserObject label="BA" tooltip="With this signal, the VIC indicated that the bus is available to&#xa;the processor during the second clock phase (ø2 high). BA is&#xa;normally high as the VIC accesses the bus mostly during the first&#xa;phase. But for the character pointer and sprite data accesses, the&#xa;VIC also needs the bus sometimes during the second phase. In this&#xa;case, BA goes low three cycles before the VIC access. After that,&#xa;AEC remains low during the second phase and the VIC performs the&#xa;accesses. Why three cycles? BA is connected to the RDY line of the&#xa;processor as mentioned, but this line is ignored on write accesses&#xa;(the CPU can only be interrupted on reads), and the 6510 never does&#xa;more than three writes in sequence (see [5]).&#xa;" id="3THFW-7HDq8sBvEC2wa4-73">
+          <mxCell style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+            <mxGeometry x="-128" y="352" width="64" height="32" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="AEC" tooltip="This pin is wired to the processor signal with the same name (see&#xa;there). It reflects the state of the data and address line drivers&#xa;of the VIC. If AEC is high, they are in tri-state. AEC is normally&#xa;low during the first clock phase (ø2 low) and high during the&#xa;second phase so that the VIC can access the bus during the first&#xa;phase and the 6510 during the second phase. If the VIC also needs&#xa;the bus in the second phase, AEC remains low.&#xa;" id="3THFW-7HDq8sBvEC2wa4-75">
+          <mxCell style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+            <mxGeometry x="-128" y="576" width="64" height="32" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-81" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=14;fontColor=#86FCA2;strokeColor=#FFFF99;jumpStyle=gap;startArrow=classic;startFill=1;shape=flexArrow;endSize=2;startSize=2;strokeWidth=1;width=4;startWidth=6;endWidth=6;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-32" y="512" as="sourcePoint" />
+            <mxPoint x="32" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-82" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FFFF99;jumpStyle=gap;shape=flexArrow;startArrow=none;startFill=0;endSize=2;startSize=2;strokeWidth=1;width=4;startWidth=6;endWidth=6;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-12" target="3THFW-7HDq8sBvEC2wa4-20">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="128" y="511.9999999999999" as="sourcePoint" />
+            <mxPoint x="576" y="512" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-83" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FFFF99;jumpStyle=gap;shape=flexArrow;startArrow=none;startFill=0;endSize=2;startSize=2;strokeWidth=1;width=4;startWidth=6;endWidth=6;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-14" target="3THFW-7HDq8sBvEC2wa4-18">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="256" y="607.9999999999999" as="sourcePoint" />
+            <mxPoint x="704" y="608" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-52" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-4" target="3THFW-7HDq8sBvEC2wa4-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <UserObject label="IRQ" tooltip="This output is wired to the IRQ input on&#xa;the processor and makes it possible for&#xa;the VIC to trigger interrupts. The VIC&#xa;has four interrupt sources: On reaching a&#xa;certain raster line (raster interrupt),&#xa;on the collision of two or more sprites,&#xa;on the collision of sprites with graphics&#xa;data and on a negative edge on the light&#xa;pen input." id="3THFW-7HDq8sBvEC2wa4-84">
+          <mxCell style="text;html=1;strokeColor=#4BBD4B;fillColor=#1F4A1E;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontColor=#86FCA2;" vertex="1" parent="1">
+            <mxGeometry x="-128" y="160" width="64" height="32" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="3THFW-7HDq8sBvEC2wa4-87" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;fontColor=#86FCA2;strokeColor=#FF9999;jumpStyle=gap;" edge="1" parent="1" source="3THFW-7HDq8sBvEC2wa4-1" target="3THFW-7HDq8sBvEC2wa4-84">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="447.9999999999998" y="240" as="sourcePoint" />
+            <mxPoint x="448.0000000000002" y="176" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
