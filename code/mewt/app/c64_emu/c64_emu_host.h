@@ -1,28 +1,35 @@
 
 #pragma once
 
-#include "mewt/emu/sys/c64/c64.h"
-#include "mewt/emu/host/host.h"
 #include "mewt/app_type/realtime/realtime_app.decl.h"
+#include "mewt/emu/host/host.h"
+#include "mewt/emu/sys/c64/c64.h"
 
 #include <memory>
 
 namespace mewt::app::c64_emu {
 
-	class c64_emu_host_t : public emu::IHost {
+	class EmulatorHost : public emu::IHost
+	{
 
 	public:
 
-		c64_emu_host_t(app_type::realtime::realtime_app_t& app);
+		explicit EmulatorHost(app_type::realtime::realtime_app_t& app);
 
 	protected:
 
-		void initHost() override final;
+		void initHost() final;
 
 	private:
-		async::future<> run_input();
-		async::future<> run_updater();
-		async::future<> run_renderer();
+
+		auto runInput()
+			-> async::future<>;
+
+		auto runUpdater()
+			-> async::future<>;
+
+		auto runRenderer() 
+			-> async::future<>;
 
 		app_type::realtime::realtime_app_t& _app;
 		std::unique_ptr<emu::sys::c64::c64_t> _c64;

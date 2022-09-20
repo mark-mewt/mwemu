@@ -32,6 +32,8 @@ namespace mewt::emu {
 
 		void runEmuHost();
 
+		virtual ~IHost() = default;
+
 	protected:
 		virtual void initHost() = 0;
 

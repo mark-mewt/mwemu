@@ -12,9 +12,9 @@ namespace mewt {
 		// sdl::event_dispatch_t event_dispatch;
 
 		#if 1
-		run_app(app_context, types::ClassIdOf<app::c64_emu::c64_emu_t>());
+		runApp(app_context, types::ClassIdOf<app::c64_emu::c64_emu_t>());
 		#else
-		run_app(app_context, types::ClassIdOf<app::test_app::test_app_t>());
+		runApp(app_context, types::ClassIdOf<app::test_app::test_app_t>());
 		#endif
 
 

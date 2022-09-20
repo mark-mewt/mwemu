@@ -15,14 +15,15 @@
 
 namespace mewt::app::c64_emu {
 
-	c64_emu_host_t::c64_emu_host_t(app_type::realtime::realtime_app_t& app)
+	EmulatorHost::EmulatorHost(app_type::realtime::realtime_app_t& app)
 		 : _app(app) {
 	}
 
-	void c64_emu_host_t::initHost() {
-		run_updater();
-		run_input();
-		run_renderer();
+	void EmulatorHost::initHost()
+	{
+		runUpdater();
+		runInput();
+		runRenderer();
 		const bool use_pal = true;
 		if (use_pal)
 			_c64 = std::make_unique<emu::sys::c64::c64_pal_t>();
@@ -31,11 +32,11 @@ namespace mewt::app::c64_emu {
 		_c64->init_sys(*this);
 	}
 
-	auto c64_emu_host_t::run_renderer()
+	auto EmulatorHost::runRenderer()
 		-> async::future<>
 	{
 
-		const auto& init_state = co_await _app.init_phase();
+		const auto& init_state = co_await _app.initPhase();
 
 		using ext::sdl::texture_config_t;
 		using ext::sdl::pixel_format_t;
@@ -51,7 +52,7 @@ namespace mewt::app::c64_emu {
 		auto output_bounds = init_state.renderer().get_output_bounds();
 
 		for (;;) {
-			co_await _app.update_phase();
+			co_await _app.updatePhase();
 			void* pixels_void = nullptr;
 			int pitch = 0;
 			SDL_LockTexture(sdl_texture.get(), nullptr, &pixels_void, &pitch);
@@ -64,16 +65,16 @@ namespace mewt::app::c64_emu {
 			FrameT frame{ ._pixels = span };
 			events.need_frame.dispatch(frame);
 			SDL_UnlockTexture(sdl_texture.get());
-			const auto& render_data = co_await _app.render_phase();
+			const auto& render_data = co_await _app.renderPhase();
 			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = output_bounds });
 		}
 	}
 
-	auto c64_emu_host_t::run_input()
+	auto EmulatorHost::runInput()
 		-> async::future<>
 	{
 		for (;;) {
-			auto input_event = co_await _app.event_manager().keyboard_event();
+			auto input_event = co_await _app.eventManager().keyboard_event();
 			switch (input_event.event_type()) {
 			case ext::sdl::keyboard_event_t::event_type_t::KeyDown:
 			case ext::sdl::keyboard_event_t::event_type_t::KeyUp:
@@ -82,11 +83,11 @@ namespace mewt::app::c64_emu {
 		}
 	}
 
-	auto c64_emu_host_t::run_updater()
+	auto EmulatorHost::runUpdater()
 		 -> async::future<>
 	{
 		for (;;) {
-			co_await _app.update_phase();
+			co_await _app.updatePhase();
 		}
 	}
 

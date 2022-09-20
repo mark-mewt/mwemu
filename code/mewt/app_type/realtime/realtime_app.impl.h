@@ -6,11 +6,11 @@
 
 namespace mewt::app_type::realtime {
 
-	template <std::derived_from<realtime_app_t> _App>
-	void run_app(const os::app_context_i& app_context, types::ClassId<_App>) {
+	template <std::derived_from<realtime_app_t> TApp>
+	void runApp(const os::app_context_i& app_context, types::ClassId<TApp>) {
 		realtime_app_t::phase_manager_t phase_manager;
-		_App app(phase_manager);
-		auto app_coro = app.run_core();
+		TApp app(phase_manager);
+		auto app_coro = app.runCore();
 		// mwToDo: The coro will only run until the first suspend point, and then it will bail.
 		// This means if it co_awaits any event that is external to this thread, this will exit.
 		// Ultimately, we want a scheduler here that will allow continuations to be scheduled
@@ -18,16 +18,16 @@ namespace mewt::app_type::realtime {
 		// an exit signal to do the real exit.
 	}
 
-	inline auto realtime_app_t::init_phase() {
-		return _phase_manager.phase<phase_type_t::Init>();
+	inline auto realtime_app_t::initPhase() {
+		return _phase_manager.phase<PhaseType::Init>();
 	}
 
-	inline auto realtime_app_t::update_phase() {
-		return _phase_manager.phase<phase_type_t::Update>();
+	inline auto realtime_app_t::updatePhase() {
+		return _phase_manager.phase<PhaseType::Update>();
 	}
 
-	inline auto realtime_app_t::render_phase() {
-		return _phase_manager.phase<phase_type_t::Render>();
+	inline auto realtime_app_t::renderPhase() {
+		return _phase_manager.phase<PhaseType::Render>();
 	}
 
 }

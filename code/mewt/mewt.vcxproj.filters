@@ -368,6 +368,12 @@
     <ClInclude Include="types\span_2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="app\c64_emu\c64_emu.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="mewt.natvis" />

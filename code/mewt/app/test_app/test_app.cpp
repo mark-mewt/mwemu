@@ -37,17 +37,18 @@ namespace mewt::app::test_app {
 	}
 
 
-	void test_app_t::init_app() {
-		run_update_loop();
-		run_input_loop();
-		run_renderer();
+	void TestApp::initApp()
+	{
+		runUpdateLoop();
+		runInputLoop();
+		runRenderer();
 	}
 
-	auto test_app_t::run_renderer()
+	auto TestApp::runRenderer()
 		 -> async::future<>
 	{
 
-		const auto& init_state = co_await phase_manager().phase<phase_type_t::Init>();
+		const auto& init_state = co_await phaseManager().phase<PhaseType::Init>();
 
 		const int test_image_size = 32;
 		const int test_pixel_count = test_image_size * test_image_size;
@@ -75,7 +76,7 @@ namespace mewt::app::test_app {
 		};
 
 		for (;;) {
-			co_await phase_manager().phase<phase_type_t::Update>();
+			co_await phaseManager().phase<PhaseType::Update>();
 			// mwToDo: This needs to move out of here. Ultimately, it will be the emulated GPU that does this.
 			void* pixel_data = nullptr;
 			int pitch = 0;
@@ -86,16 +87,16 @@ namespace mewt::app::test_app {
 			for (int i = 0; i < test_pixel_count; ++i)
 				pixels[i] = i + rolling_offset;
 			SDL_UnlockTexture(sdl_texture.get());
-			const auto& render_data = co_await phase_manager().phase<phase_type_t::Render>();
+			const auto& render_data = co_await phaseManager().phase<PhaseType::Render>();
 			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = _rect });
 		}
 	}
 
-	auto test_app_t::run_input_loop()
+	auto TestApp::runInputLoop()
 		 -> async::future<>
 	{
 		for (;;) {
-			auto input_event = co_await event_manager().keyboard_event();
+			auto input_event = co_await eventManager().keyboard_event();
 			bool pressed = false;
 			switch (input_event.event_type()) {
 
@@ -106,19 +107,19 @@ namespace mewt::app::test_app {
 				switch (input_event.scancode()) {
 				case ext::sdl::keyboard::scancode_t::W:
 				case ext::sdl::keyboard::scancode_t::Up:
-					_keypresses[keypress_t::Up] = pressed;
+					_keypresses[Keypress::Up] = pressed;
 					break;
 				case ext::sdl::keyboard::scancode_t::A:
 				case ext::sdl::keyboard::scancode_t::Left:
-					_keypresses[keypress_t::Left] = pressed;
+					_keypresses[Keypress::Left] = pressed;
 					break;
 				case ext::sdl::keyboard::scancode_t::S:
 				case ext::sdl::keyboard::scancode_t::Down:
-					_keypresses[keypress_t::Down] = pressed;
+					_keypresses[Keypress::Down] = pressed;
 					break;
 				case ext::sdl::keyboard::scancode_t::D:
 				case ext::sdl::keyboard::scancode_t::Right:
-					_keypresses[keypress_t::Right] = pressed;
+					_keypresses[Keypress::Right] = pressed;
 					break;
 				default:
 					break;
@@ -128,7 +129,7 @@ namespace mewt::app::test_app {
 		}
 	}
 
-	auto test_app_t::run_update_loop()
+	auto TestApp::runUpdateLoop()
 		 -> async::future<>
 	{
 		using ext::sdl::image_t;
@@ -139,14 +140,14 @@ namespace mewt::app::test_app {
 												._height = image_t::Height(box_speed)
 		};
 		for (;;) {
-			co_await phase_manager().phase<phase_type_t::Update>();
-			if (_keypresses[keypress_t::Up])
+			co_await phaseManager().phase<PhaseType::Update>();
+			if (_keypresses[Keypress::Up])
 				_rect._position._y -= frame_delta._height;
-			if (_keypresses[keypress_t::Left])
+			if (_keypresses[Keypress::Left])
 				_rect._position._x -= frame_delta._width;
-			if (_keypresses[keypress_t::Down])
+			if (_keypresses[Keypress::Down])
 				_rect._position._y += frame_delta._height;
-			if (_keypresses[keypress_t::Right])
+			if (_keypresses[Keypress::Right])
 				_rect._position._x += frame_delta._width;
 			if (_rect.right() > _output_bounds.right())
 				_rect._position._x = _output_bounds.right() - _rect._size._width; // mwToDo: dest.right() = output_bounds.right() - dest.width()

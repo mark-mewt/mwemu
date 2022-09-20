@@ -12,7 +12,7 @@
 
 namespace mewt::app::c64_emu {
 
-	void c64_emu_t::init_app() {
+	void c64_emu_t::initApp() {
 		_host.runEmuHost();
 	}
 

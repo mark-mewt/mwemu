@@ -12,22 +12,22 @@ namespace mewt::app_type::realtime {
 		 : _phase_manager(phase_manager) {
 	}
 
-	auto realtime_app_t::run_core()
+	auto realtime_app_t::runCore()
 		 -> async::future<>
 	{
 
-		init_app();
+		initApp();
 
 		state_t app_state;
-		_phase_manager._event_dispatch.dispatch(phase_type_t::Init, app_state);
+		_phase_manager._event_dispatch.dispatch(PhaseType::Init, app_state);
 
-		auto frame_generator = generate_frames(app_state.renderer());
+		auto frame_generator = generateFrames(app_state.renderer());
 
 		for (;;) {
 			co_await _event_manager.pump();
 
-			_phase_manager._event_dispatch.dispatch(phase_type_t::Update, app_state);
-			_phase_manager._event_dispatch.dispatch(phase_type_t::Render, app_state);
+			_phase_manager._event_dispatch.dispatch(PhaseType::Update, app_state);
+			_phase_manager._event_dispatch.dispatch(PhaseType::Render, app_state);
 			co_await frame_generator;
 		}
 	}
@@ -39,7 +39,7 @@ namespace mewt::app_type::realtime {
 		co_await std::suspend_never();
 	}
 
-	auto realtime_app_t::generate_frames(ext::sdl::renderer_t& sdl_renderer)
+	auto realtime_app_t::generateFrames(ext::sdl::renderer_t& sdl_renderer)
 		 -> async::generator<int>
 	{
 

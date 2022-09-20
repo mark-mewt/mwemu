@@ -309,6 +309,7 @@
     <ClCompile Include="os\app_context\win\win_app_context.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="app\c64_emu\c64_emu.decl.h" />
     <ClInclude Include="app\c64_emu\c64_emu.h" />
     <ClInclude Include="app\c64_emu\c64_emu_host.h" />
     <ClInclude Include="app\test_app\test_app.h" />
@@ -387,6 +388,7 @@
     <ClInclude Include="types\data_stack_ptr.h" />
     <ClInclude Include="types\enum_traits.h" />
     <ClInclude Include="types\flags.h" />
+    <ClInclude Include="types\interface.h" />
     <ClInclude Include="types\intrusive_stack.h" />
     <ClInclude Include="types\int_types.h" />
     <ClInclude Include="types\non_movable.h" />
