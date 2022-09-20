@@ -22,10 +22,10 @@ namespace mewt::ext::sdl {
 		enum tags_t {
 			DriverIndex
 		};
-		constexpr friend auto get_opaque_value_type(tags_t) -> int;
+		constexpr friend auto getOpaqueValueType(tags_t) -> int;
 
 	public:
-		using driver_index_t = types::opaque<tags_t::DriverIndex>;
+		using driver_index_t = types::Opaque<tags_t::DriverIndex>;
 		static constexpr driver_index_t FirstDriver{ -1 };
 		enum class flag_t {
 			Software = 0,

@@ -5,3 +5,8 @@
 indent_style = tab
 indent_size = 3
 
+[.yaml]
+[.clang-tidy]
+indent_style = space
+indent_size = 4
+

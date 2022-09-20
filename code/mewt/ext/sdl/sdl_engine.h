@@ -28,7 +28,7 @@ namespace mewt::ext::sdl {
 		void start_subsystems(subsystems_t subsystems);
 		void stop_subsystems(subsystems_t subsystems);
 
-		subsystems_t query_started_subsystems(subsystems_t query_mask = types::no_flags_t{});
+		subsystems_t query_started_subsystems(subsystems_t query_mask = types::NoFlags{});
 
 		~engine_t();
 	};

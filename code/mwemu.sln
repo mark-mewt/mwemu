@@ -11,6 +11,8 @@ Global
 		Debug|MSVC = Debug|MSVC
 		Release|Clang = Release|Clang
 		Release|MSVC = Release|MSVC
+		Sanitise|Clang = Sanitise|Clang
+		Sanitise|MSVC = Sanitise|MSVC
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Debug|Clang.ActiveCfg = Debug-Clang|x64
@@ -21,6 +23,10 @@ Global
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|Clang.Build.0 = Release-Clang|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|MSVC.ActiveCfg = Release-MSVC|x64
 		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Release|MSVC.Build.0 = Release-MSVC|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Sanitise|Clang.ActiveCfg = Sanitise-Clang|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Sanitise|Clang.Build.0 = Sanitise-Clang|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Sanitise|MSVC.ActiveCfg = Sanitise-MSVC|x64
+		{4A3931E6-71BB-4949-8BD1-8143DF35A494}.Sanitise|MSVC.Build.0 = Sanitise-MSVC|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

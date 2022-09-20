@@ -5,9 +5,9 @@
 
 namespace mewt::emu::chip::mos_65xx {
 
-	const vic2_config_t& vic2_6569_t::get_config() const {
+	const vic2_config_t& vic2_6569_t::getConfig() const {
 		static constexpr vic2_config_t config = {
-			._video_standard = gfx::video_output::standard_t::NTSC_M,
+			._video_standard = gfx::video_output::StandardT::NtscM,
 			._cycles_per_scanline = 63,
 			._total_scanlines_per_frame = 312,
 			._raster_display_on = 16,

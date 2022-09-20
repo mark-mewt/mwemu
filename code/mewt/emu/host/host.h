@@ -8,31 +8,53 @@
 
 namespace mewt::emu {
 
-	class host_t {
+	class IHost
+	{
 	public:
-
-		struct config_t {
-			gfx::image_t::size_t display_size;
+		struct ConfigT
+		{
+			gfx::Image::Size display_size;
 		};
 
-		struct frame_t {
-			types::span_2d_t<types::colour_t, gfx::image_t::width_t, gfx::image_t::height_t> _pixels;
+		struct FrameT
+		{
+			using PixelStoreT = types::Span2dT<types::ColourT, gfx::Image::Width, gfx::Image::Height>;
+			PixelStoreT _pixels;
+			struct scan_out_t;
 		};
 
-		struct events_t {
-			async::event_t<config_t> initialising;
-			async::event_t<frame_t> need_frame;
+		struct EventsT
+		{
+			async::EventT<ConfigT> initialising;
+			async::EventT<FrameT> need_frame;
 		};
-		events_t events;
+		EventsT events;
 
-		void run_emu_host();
+		void runEmuHost();
 
 	protected:
+		virtual void initHost() = 0;
 
-		virtual void init_host() = 0;
-
-		config_t _host_config;
-
+		ConfigT _host_config;
 	};
 
+	struct IHost::FrameT::scan_out_t
+	{
+		const FrameT& _frame;
+		decltype(_frame._pixels.rows().begin()) _row = _frame._pixels.rows().begin();
+		types::ColourT* _pixel = std::addressof(*(*_row).begin());
+		explicit scan_out_t(const FrameT& frame) : _frame(frame) {}
+		inline auto operator*() const -> auto& { return *_pixel; }
+		inline auto operator++() -> auto&
+		{
+			++_pixel;
+			return *this;
+		}
+		inline void nextScanline()
+		{
+			++_row;
+			_pixel = std::addressof(*(*_row).begin());
+		}
+		[[nodiscard]] inline auto isEndOfFrame() const -> bool { return _row == _frame._pixels.rows().end(); }
+	};
 }

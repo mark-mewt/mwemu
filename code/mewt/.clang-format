@@ -12,13 +12,13 @@ AllowShortBlocksOnASingleLine: true
 AllowShortFunctionsOnASingleLine: All
 BasedOnStyle: LLVM
 BraceWrapping:
-  AfterClass: false    # TODO: verify
-  AfterControlStatement: false    # TODO: verify
-  AfterEnum: false    # TODO: verify
-  AfterFunction: false    # TODO: verify
-  AfterNamespace: false    # TODO: verify
-  AfterStruct: false    # TODO: verify
-  AfterUnion: false    # TODO: verify
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
   BeforeCatch: true
   BeforeElse: true
   IndentBraces: false
@@ -30,11 +30,13 @@ Cpp11BracedListStyle: false
 FixNamespaceComments: false
 IndentCaseLabels: false
 IndentPPDirectives: None
+IndentRequiresClause: true
 IndentWidth: 3
 Standard: c++20
 MaxEmptyLinesToKeep: 10
 NamespaceIndentation: All
 PointerAlignment: Left
+RequiresClausePosition: OwnLine
 SortIncludes: false
 SortUsingDeclarations: false
 SpaceAfterCStyleCast: false

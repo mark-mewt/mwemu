@@ -9,7 +9,7 @@ namespace mewt::types
 	template<int _BitWidth>
 	struct integer_info;
 
-	template<int _BitWidth>
+	template <int _BitWidth>
 	using uint = typename integer_info<_BitWidth>::uint;
 
 	template<>

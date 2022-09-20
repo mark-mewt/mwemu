@@ -5,10 +5,10 @@
 
 namespace mewt::emu::chip::mos_65xx {
 
-	class vic2_6567r56a_t : public vic2_656x_t {
+	class Vic26567r56aT : public vic2_656x_t
+	{
 
 	protected:
-		const vic2_config_t& get_config() const override final;
+		auto getConfig() const -> const vic2_config_t& final;
 	};
-
 }

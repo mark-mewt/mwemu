@@ -21,7 +21,7 @@ namespace mewt::ext::sdl {
 		};
 		pixel_format_t::coded_t _format;
 		access_t _access;
-		image_t::size_t _size;
+		image_t::Size _size;
 	};
 
 	class texture_t : public sdl_pointer<SDL_Texture> {

@@ -26,16 +26,16 @@ namespace mewt::emu::sys::c64
 		 : _vic2(vic2) {
 	}
 
-	void c64_t::init_sys(host_t& host) {
+	void c64_t::init_sys(IHost& host) {
 
 		_basic_rom.load_rom("emu/sys/c64/64c.251913-01.bin");
 		_kernel_rom.load_rom("emu/sys/c64/64c.251913-01.bin", 8 * 1024);
 
 
-		logger().log("%s: %d", __FUNCTION__, 0);
+		//logger().log("%s: %d", __FUNCTION__, 0);
 		auto cr = _cpu.run_cpu();
-		auto gr = _vic2.run_gpu(host);
-		logger().log("%s: %d", __FUNCTION__, 1);
+		auto gr = _vic2.runGpu(host);
+		//logger().log("%s: %d", __FUNCTION__, 1);
 		//_clock.run();
 		//logger().log("%s: %d", __FUNCTION__, 2);
 	}
@@ -44,7 +44,7 @@ namespace mewt::emu::sys::c64
 	//	return _vic2.display_size();
 	//}
 
-	memory_interface_t& c64_t::memory_device(memory_device_t device_type)
+	MemoryInterface& c64_t::memory_device(memory_device_t device_type)
    {
       switch (device_type)
       {
@@ -61,7 +61,7 @@ namespace mewt::emu::sys::c64
       }
    }
 
-   c64_t::cpu_memory_controller_t::memory_region_t c64_t::cpu_memory_controller_t::address_region(address_t address)
+   c64_t::cpu_memory_controller_t::memory_region_t c64_t::cpu_memory_controller_t::address_region(Address address)
    {
       using mr = memory_region_t;
       static mr regions[] = {
@@ -73,10 +73,10 @@ namespace mewt::emu::sys::c64
       return regions[address >> 12];
    }
 
-   address_t c64_t::cpu_memory_controller_t::address_mask(memory_device_t device)
+   Address c64_t::cpu_memory_controller_t::address_mask(memory_device_t device)
    {
-      static data_t blocks[] = { 0, 16, 13, 13, 13, 12, 13, 12 };
-      return (address_t)((1 << blocks[(data_t)device]) - 1);
+      static Data blocks[] = { 0, 16, 13, 13, 13, 12, 13, 12 };
+      return (Address)((1 << blocks[(Data)device]) - 1);
    }
 
    c64_t::memory_device_t c64_t::cpu_memory_controller_t::mapped_device(memory_region_t region)
@@ -142,12 +142,12 @@ namespace mewt::emu::sys::c64
       }
    }
 
-   data_t c64_t::cpu_memory_controller_t::read(address_t address)
+   Data c64_t::cpu_memory_controller_t::read(Address address)
    {
       if (address == 0)
-			return _sys._port_write_enable.raw_bits();
+			return _sys._port_write_enable.rawBits();
       if (address == 1)
-			return _sys._port_bits.raw_bits();
+			return _sys._port_bits.rawBits();
       auto region = address_region(address);
       auto device = mapped_device(region);
       address &= address_mask(device);
@@ -186,12 +186,12 @@ namespace mewt::emu::sys::c64
       return mem_interface->read(address - address_offset);*/
    }
 
-   void c64_t::cpu_memory_controller_t::write(address_t address, data_t data)
+   void c64_t::cpu_memory_controller_t::write(Address address, Data data)
    {
       if (address == 0)
-			_sys._port_write_enable.raw_bits() = data;
+			_sys._port_write_enable.rawBits() = data;
       else if (address == 1)
-			_sys._port_bits.raw_bits() = data;
+			_sys._port_bits.rawBits() = data;
       auto region = address_region(address);
       auto device = mapped_device(region);
       address &= address_mask(device);
@@ -204,17 +204,17 @@ namespace mewt::emu::sys::c64
          _sys._ram.write(address, data);*/
    }
 
-   data_t c64_t::io_controller_t::read(address_t address)
+   Data c64_t::io_controller_t::read(Address address)
    {
       return device_at(address).read(address);
    }
 
-   void c64_t::io_controller_t::write(address_t address, data_t data)
+   void c64_t::io_controller_t::write(Address address, Data data)
    {
       device_at(address).write(address, data);
    }
 
-   memory_interface_t& c64_t::io_controller_t::device_at(address_t address)
+   MemoryInterface& c64_t::io_controller_t::device_at(Address address)
    {
       auto page = (address >> 8) & 0xf;
       if (page < 4)
@@ -233,12 +233,12 @@ namespace mewt::emu::sys::c64
          return _sys._io2_controller;
    }
 
-   data_t c64_t::dummy_controller_t::read(address_t address)
+   Data c64_t::dummy_controller_t::read(Address address)
    {
       throw std::exception("implement");
    }
 
-   void c64_t::dummy_controller_t::write(address_t address, data_t data)
+   void c64_t::dummy_controller_t::write(Address address, Data data)
    {
       throw std::exception("implement");
    }

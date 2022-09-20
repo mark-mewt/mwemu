@@ -17,7 +17,7 @@ namespace mewt::ext::sdl {
 	}
 
 	renderer_t::renderer_t(const window_t& window, driver_index_t driver_index, flags_t flags)
-		 : super_t(check_pointer(SDL_CreateRenderer(window.get(), driver_index.get(), flags.raw_bits()))) {
+		 : super_t(check_pointer(SDL_CreateRenderer(window.get(), driver_index.get(), flags.rawBits()))) {
 	}
 
 	void renderer_t::copy(const texture_t& texture, copy_args_t copy_args) const {
@@ -29,9 +29,9 @@ namespace mewt::ext::sdl {
 		check_status(SDL_GetRendererOutputSize(get(), &width, &height));
 		return image_t::rect_t{
 			._position = {
-				 ._x = image_t::x_position_t(0),
-				 ._y = image_t::y_position_t(0) },
-			._size = { ._width = image_t::width_t(width), ._height = image_t::height_t(height) }
+				 ._x = image_t::XPosition(0),
+				 ._y = image_t::YPosition(0) },
+			._size = { ._width = image_t::Width(width), ._height = image_t::Height(height) }
 		};
 	}
 

@@ -376,6 +376,8 @@
     <None Include=".clang-format" />
     <None Include=".editorconfig" />
     <None Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.md" />
+    <None Include=".clang-tidy" />
+    <None Include="Directory.build.props" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.txt" />

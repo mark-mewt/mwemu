@@ -17,7 +17,7 @@ namespace mewt::emu::chip::mos_65xx
    private:
 
       const clock_source_t& _clock;
-      memory_interface_t& _memory_interface;
+      MemoryInterface& _memory_interface;
 
       enum class flag_t : std::uint8_t
       {
@@ -32,28 +32,30 @@ namespace mewt::emu::chip::mos_65xx
       };
       using flags_reg_t = types::flags<flag_t>;
 
-      address_t _pc = 0;
-      data_t _reg_a = 0;
-      data_t _reg_x = 0;
-      data_t _reg_y = 0;
-      data_t _reg_s = 0;
+      Address _pc = 0;
+      Data _reg_a = 0;
+      Data _reg_x = 0;
+      Data _reg_y = 0;
+      Data _reg_s = 0;
       flags_reg_t _reg_flags{ 0 };
 
+		class InstructionUnit;
+
    public:
-      cpu_6502_t(const clock_source_t& clock, memory_interface_t& memory_interface);
-      async::future<data_t> read_data(address_t address);
-      async::future<address_t> read_address(address_t address);
-      async::future<address_t> read_address_zp(data_t offset);
-      async::future<> write_data(address_t address, data_t v);
+      cpu_6502_t(const clock_source_t& clock, MemoryInterface& memory_interface);
+      async::future<Data> read_data(Address address);
+      async::future<Address> read_address(Address address);
+      async::future<Address> read_address_zp(Data offset);
+      async::future<> write_data(Address address, Data data);
       async::future<> run_inst();
       async::future<> run_cpu();
 
-      async::future<> handle_branch(cpu_6502::branch_instruction_t inst, data_t immLow);
-		async::future<> handle_call(cpu_6502::call_instruction_t inst, data_t immLow, data_t immHigh);
-		async::future<> handle_jump(cpu_6502::jump_instruction_t inst, address_t immPtr);
+      async::future<> handle_branch(cpu_6502::Instruction::Branch::Op inst, Data imm_low);
+		async::future<> handle_call(cpu_6502::Instruction::Call::Op inst, Data imm_low, Data imm_high);
+		async::future<> handle_jump(cpu_6502::Instruction::Jump::Op inst, Address imm_addr);
 
-      async::future<> push(data_t data);
-      async::future<data_t> pop();
+      async::future<> push(Data data);
+      async::future<Data> pop();
 
    };
 

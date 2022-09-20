@@ -5,9 +5,10 @@
 
 namespace mewt::emu::chip::mos_65xx {
 
-	const vic2_config_t& vic2_6567r56a_t::get_config() const {
-		static constexpr vic2_config_t config = {
-			._video_standard = gfx::video_output::standard_t::NTSC_M,
+	auto Vic26567r56aT::getConfig() const -> const vic2_config_t&
+	{
+		static constexpr vic2_config_t kConfig = {
+			._video_standard = gfx::video_output::StandardT::NtscM,
 			._cycles_per_scanline = 64,
 			._total_scanlines_per_frame = 262,
 			._raster_display_on = 41,
@@ -16,7 +17,6 @@ namespace mewt::emu::chip::mos_65xx {
 			._xpos_display_on = 488,
 			._xpos_display_off = 387, // 388,
 		};
-		return config;
+		return kConfig;
 	}
-
 }

@@ -3,64 +3,75 @@
 
 namespace mewt::types {
 
-	template <auto _Tag>
-	class opaque {
+	template <auto TTag>
+	class Opaque
+	{
 	public:
-		using tag_type_t = decltype(_Tag);
-		using value_type_t = decltype(get_opaque_value_type(_Tag));
+		using TagType = decltype(TTag);
+		using ValueType = decltype(getOpaqueValueType(TTag));
 		template <typename... _Args>
-		constexpr explicit opaque(_Args&&... args) : _value(std::forward<_Args>(args)...) {}
-		constexpr explicit operator const value_type_t&() const { return _value; }
-		constexpr const value_type_t& get() const { return _value; }
-		constexpr friend auto operator<=>(opaque lhs, opaque rhs) {
+		constexpr explicit Opaque(_Args&&... args) : _value(std::forward<_Args>(args)...) {}
+		constexpr explicit operator const ValueType&() const { return _value; }
+		[[nodiscard]] constexpr auto get() const -> const ValueType& { return _value; }
+		constexpr friend auto operator<=>(Opaque lhs, Opaque rhs)
+		{
 			return lhs._value <=> rhs._value;
 		}
-		constexpr friend bool operator==(opaque lhs, opaque rhs) {
+		constexpr friend auto operator==(Opaque lhs, Opaque rhs) -> bool
+		{
 			return lhs._value == rhs._value;
 		}
 
 	private:
-		value_type_t _value;
+		ValueType _value;
 	};
 
-	template <auto _Tag>
-	constexpr auto to_index(opaque<_Tag> lhs) {
-		constexpr auto index = get_opaque_index(_Tag);
-		return opaque<index>(lhs.get());
+	template <auto TTag>
+	constexpr auto toIndex(Opaque<TTag> lhs)
+	{
+		constexpr auto kIndex = getOpaqueIndex(TTag);
+		return Opaque<kIndex>(lhs.get());
 	}
 
-	template <auto _Tag>
-	constexpr auto operator-(opaque<_Tag> lhs, opaque<_Tag> rhs) {
-		constexpr auto diff = get_opaque_difference(_Tag);
-		return opaque<diff>(lhs.get() - rhs.get());
+	template <auto TTag>
+	constexpr auto operator-(Opaque<TTag> lhs, Opaque<TTag> rhs)
+	{
+		constexpr auto kDiff = getOpaqueDifference(TTag);
+		return Opaque<kDiff>(lhs.get() - rhs.get());
 	}
 
-	template <auto _Tag>
-	requires(can_increment(_Tag))
-	constexpr auto operator++(opaque<_Tag>& lhs) {
-		return (lhs = opaque<_Tag>(lhs.get() + 1));
+	template <auto TTag>
+		requires(canIncrement(TTag))
+	constexpr auto operator++(Opaque<TTag>& lhs)
+	{
+		return (lhs = Opaque<TTag>(lhs.get() + 1));
 	}
 
-	template <auto _TagL, auto _TagR>
-	requires(get_opaque_difference(_TagL) == _TagR) constexpr auto& operator-=(opaque<_TagL>& lhs, opaque<_TagR> rhs) {
-		lhs = opaque<_TagL>(lhs.get() - rhs.get());
+	template <auto TTagL, auto TTagR>
+	requires(getOpaqueDifference(TTagL) == TTagR)
+	constexpr auto operator-=(Opaque<TTagL>& lhs, Opaque<TTagR> rhs) -> auto&
+	{
+			lhs = Opaque<TTagL>(lhs.get() - rhs.get());
 		return lhs;
 	}
 
-	template <auto _TagL, auto _TagR>
-	requires(get_opaque_difference(_TagL) == _TagR) constexpr auto& operator+=(opaque<_TagL>& lhs, opaque<_TagR> rhs) {
-		lhs = opaque<_TagL>(lhs.get() + rhs.get());
+	template <auto TTagL, auto TTagR>
+	requires(getOpaqueDifference(TTagL) == TTagR) constexpr auto operator+=(Opaque<TTagL>& lhs, Opaque<TTagR> rhs) -> auto&
+	{
+		lhs = Opaque<TTagL>(lhs.get() + rhs.get());
 		return lhs;
 	}
 
-	template <auto _TagL, auto _TagR>
-	requires(get_opaque_difference(_TagL) == _TagR) constexpr auto operator-(opaque<_TagL> lhs, opaque<_TagR> rhs) {
-		return opaque<_TagL>(lhs.get() - rhs.get());
+	template <auto TTagL, auto TTagR>
+	requires(getOpaqueDifference(TTagL) == TTagR) constexpr auto operator-(Opaque<TTagL> lhs, Opaque<TTagR> rhs)
+	{
+		return Opaque<TTagL>(lhs.get() - rhs.get());
 	}
 
-	template <auto _TagL, auto _TagR>
-	requires(get_opaque_difference(_TagL) == _TagR) constexpr auto operator+(opaque<_TagL> lhs, opaque<_TagR> rhs) {
-		return opaque<_TagL>(lhs.get() + rhs.get());
+	template <auto TTagL, auto TTagR>
+	requires(getOpaqueDifference(TTagL) == TTagR)
+	constexpr auto operator+(Opaque<TTagL> lhs, Opaque<TTagR> rhs)
+	{
+		return Opaque<TTagL>(lhs.get() + rhs.get());
 	}
-
 }

@@ -1,8 +1,8 @@
 
 #include "mewt/io/reader.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 namespace mewt::io {
 

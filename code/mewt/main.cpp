@@ -3,21 +3,18 @@
 #include "mewt/app/c64_emu/c64_emu.h"
 #include "mewt/app_type/realtime/realtime_app.impl.h"
 
-
-
-
 namespace mewt {
 
 
 
-	int mewt_main(const os::app_context_i& app_context) {
+	auto mewtMain(const os::app_context_i& app_context) -> int {
 
 		// sdl::event_dispatch_t event_dispatch;
 
 		#if 1
-		run_app(app_context, types::class_id_of<app::c64_emu::c64_emu_t>());
+		run_app(app_context, types::ClassIdOf<app::c64_emu::c64_emu_t>());
 		#else
-		run_app(app_context, types::class_id_of<app::test_app::test_app_t>());
+		run_app(app_context, types::ClassIdOf<app::test_app::test_app_t>());
 		#endif
 
 
@@ -38,3 +35,4 @@ namespace mewt {
  *
  *
  */
+

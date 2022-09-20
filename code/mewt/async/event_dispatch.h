@@ -17,9 +17,9 @@ namespace mewt::async {
 		void dispatch(event_types_t event_types, const _EventData& event_data) {
 			_event_data = &event_data;
 			auto dispatch_stack = std::move(_handlers);
-			while (!dispatch_stack.is_empty()) {
+			while (!dispatch_stack.isEmpty()) {
 				auto& handler = *dispatch_stack.pop();
-				if (handler._event_types.intersect(event_types).is_empty())
+				if (handler._event_types.intersect(event_types).isEmpty())
 					_handlers.push(handler);
 				else
 					handler._continuation();
@@ -29,10 +29,10 @@ namespace mewt::async {
 
 	protected:
 		const _EventData* _event_data = nullptr;
-		struct handler_t;
-		intrusive_stack<handler_t> _handlers;
-		struct handler_t : public intrusive_stack<handler_t>::node_t {
-			handler_t(event_dispatch_t& event_dispatch, event_types_t event_types) : _event_dispatch(event_dispatch), _event_types(event_types) {}
+		struct Handler;
+		IntrusiveStack<Handler> _handlers;
+		struct Handler : public IntrusiveStack<Handler>::Node {
+			Handler(event_dispatch_t& event_dispatch, event_types_t event_types) : _event_dispatch(event_dispatch), _event_types(event_types) {}
 			inline bool await_ready() { return false; }
 			inline bool await_suspend(std::coroutine_handle<> continuation) {
 				_continuation = continuation;
@@ -46,8 +46,8 @@ namespace mewt::async {
 
 	public:
 		template <_EventTypes _Event>
-		struct single_handler_t : public handler_t {
-			inline single_handler_t(event_dispatch_t& event_dispatch) : handler_t(event_dispatch, _Event) {}
+		struct single_handler_t : public Handler {
+			inline single_handler_t(event_dispatch_t& event_dispatch) : Handler(event_dispatch, event_types_t(_Event)) {}
 			inline decltype(auto) await_resume() {
 				if (!this->_event_dispatch._event_data)
 					throw std::exception();

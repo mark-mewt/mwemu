@@ -1,35 +1,39 @@
 
 #include "mewt/app/test_app/test_app.h"
-#include "mewt/async/future_promise.h"
 #include "mewt/app_type/realtime/realtime_app_phase.h"
-#include "mewt/ext/sdl/sdl_texture.h"
 #include "mewt/app_type/realtime/realtime_app_state.h"
-#include "mewt/types/scale_factor.h"
+#include "mewt/async/future_promise.h"
 #include "mewt/ext/sdl/sdl_scancode.h"
+#include "mewt/ext/sdl/sdl_texture.h"
+#include "mewt/types/scale_factor.h"
 
 // mwToDo: Abstract these away
 #include "SDL/SDL_render.h"
+
+#include <span>
 
 namespace mewt::app::test_app {
 
 		// mwToDo: Remove these...
 
-	template <typename _Type>
-	auto componentwise_subtract(_Type lhs, _Type rhs) {
-		_Type ret;
-		_Type::with_components([&](auto cmp) { ret.*cmp = lhs.*cmp - rhs.*cmp; });
+	template <typename TType>
+	auto componentwiseSubtract(TType lhs, TType rhs) {
+		TType ret;
+		TType::withComponents([&](auto cmp) { ret.*cmp = lhs.*cmp - rhs.*cmp; });
 		return ret;
 	}
 
-	template <typename _Type>
-	auto componentwise_scale(_Type lhs, types::scale_factor_t scale) {
-		_Type ret;
-		_Type::with_components([&](auto cmp) { ret.*cmp = scale.scale(lhs.*cmp); });
+	template <typename TType>
+	auto componentwiseScale(TType lhs, types::scale_factor_t scale) {
+		TType ret;
+		TType::withComponents([&](auto cmp) { ret.*cmp = scale.scale(lhs.*cmp); });
 		return ret;
 	}
 
-	constexpr ext::sdl::image_t::position_t size_to_position(ext::sdl::image_t::size_t s) {
-		return ext::sdl::image_t::position_t{ ._x = ext::sdl::image_t::x_position_t(s._width.get()), ._y = ext::sdl::image_t::y_position_t(s._height.get()) };
+	constexpr auto sizeToPosition(ext::sdl::image_t::Size size)
+		 -> ext::sdl::image_t::Position
+	{
+		return ext::sdl::image_t::Position{ ._x = ext::sdl::image_t::XPosition(size._width.get()), ._y = ext::sdl::image_t::YPosition(size._height.get()) };
 	}
 
 
@@ -39,16 +43,24 @@ namespace mewt::app::test_app {
 		run_renderer();
 	}
 
-	async::future<> test_app_t::run_renderer() {
+	auto test_app_t::run_renderer()
+		 -> async::future<>
+	{
 
-		auto& init_state = co_await phase_manager().phase<phase_type_t::Init>();
+		const auto& init_state = co_await phase_manager().phase<phase_type_t::Init>();
 
-		using namespace ext::sdl;
+		const int test_image_size = 32;
+		const int test_pixel_count = test_image_size * test_image_size;
+
+		using ext::sdl::texture_config_t;
+		using ext::sdl::pixel_format_t;
+		using ext::sdl::texture_t;
+		using ext::sdl::image_t;
 		texture_config_t texture_config{
 			._format = pixel_format_t::coded<pixel_format_t::preset_t::ARGB8888>(),
 			._access = texture_config_t::access_t::Streaming,
-			._size = { ._width = image_t::width_t(32),
-						  ._height = image_t::height_t(32) }
+			._size = { ._width = image_t::Width(test_image_size),
+						  ._height = image_t::Height(test_image_size) }
 		};
 
 		texture_t sdl_texture(init_state.renderer(), texture_config);
@@ -58,27 +70,30 @@ namespace mewt::app::test_app {
 		auto texture_size = sdl_texture.get_config()._size;
 		_output_bounds = init_state.renderer().get_output_bounds();
 		_rect = {
-			._position = size_to_position(componentwise_scale(componentwise_subtract(_output_bounds._size, texture_size), types::scale_factor_t::Half())),
+			._position = sizeToPosition(componentwiseScale(componentwiseSubtract(_output_bounds._size, texture_size), types::scale_factor_t::Half())),
 			._size = texture_size
 		};
 
 		for (;;) {
 			co_await phase_manager().phase<phase_type_t::Update>();
 			// mwToDo: This needs to move out of here. Ultimately, it will be the emulated GPU that does this.
-			char* pixels = 0;
+			void* pixel_data = nullptr;
 			int pitch = 0;
-			SDL_LockTexture(sdl_texture.get(), nullptr, (void**)&pixels, &pitch);
-			static int kk = 0;
-			kk++;
-			for (int i = 0; i < 32 * 32; ++i)
-				pixels[i] = i + kk;
+			SDL_LockTexture(sdl_texture.get(), nullptr, &pixel_data, &pitch);
+			auto pixels = std::span(static_cast<unsigned char*>(pixel_data), test_pixel_count);
+			static int rolling_offset = 0;
+			rolling_offset++;
+			for (int i = 0; i < test_pixel_count; ++i)
+				pixels[i] = i + rolling_offset;
 			SDL_UnlockTexture(sdl_texture.get());
-			auto& render_data = co_await phase_manager().phase<phase_type_t::Render>();
+			const auto& render_data = co_await phase_manager().phase<phase_type_t::Render>();
 			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = _rect });
 		}
 	}
 
-	async::future<> test_app_t::run_input_loop() {
+	auto test_app_t::run_input_loop()
+		 -> async::future<>
+	{
 		for (;;) {
 			auto input_event = co_await event_manager().keyboard_event();
 			bool pressed = false;
@@ -113,12 +128,15 @@ namespace mewt::app::test_app {
 		}
 	}
 
-	async::future<> test_app_t::run_update_loop() {
-		using namespace ext::sdl;
+	auto test_app_t::run_update_loop()
+		 -> async::future<>
+	{
+		using ext::sdl::image_t;
 		// speed of box
-		image_t::size_t frame_delta = { // mwToDo: we can have a speed metric, (size/time_unit), then we can multiply by time unit to get the frame delta
-												  ._width = image_t::width_t(10),
-												  ._height = image_t::height_t(10)
+		const int box_speed = 10;
+		image_t::Size frame_delta = { // mwToDo: we can have a speed metric, (size/time_unit), then we can multiply by time unit to get the frame delta
+												._width = image_t::Width(box_speed),
+												._height = image_t::Height(box_speed)
 		};
 		for (;;) {
 			co_await phase_manager().phase<phase_type_t::Update>();

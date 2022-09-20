@@ -5,68 +5,77 @@
 
 namespace mewt::gfx {
 
-	class image_t {
-		enum class tags_t {
+	class Image
+	{
+		enum class Tags
+		{
 			X,
 			Y,
 			Width,
 			Height
 		};
-		constexpr friend auto get_opaque_value_type(tags_t) -> int;
+		constexpr friend auto getOpaqueValueType(Tags) -> int;
 
 	public:
-		using x_position_t = types::opaque<tags_t::X>;
-		using y_position_t = types::opaque<tags_t::Y>;
-		using width_t = types::opaque<tags_t::Width>;
-		using height_t = types::opaque<tags_t::Height>;
-		constexpr friend auto get_opaque_difference(tags_t tag) {
+		using XPosition = types::Opaque<Tags::X>;
+		using YPosition = types::Opaque<Tags::Y>;
+		using Width = types::Opaque<Tags::Width>;
+		using Height = types::Opaque<Tags::Height>;
+		constexpr friend auto getOpaqueDifference(Tags tag)
+		{
 			switch (tag) {
-			case tags_t::X:
-				return tags_t::Width;
-			case tags_t::Y:
-				return tags_t::Height;
-			case tags_t::Width:
-				return tags_t::Width;
-			case tags_t::Height:
-				return tags_t::Height;
+			case Tags::X:
+				return Tags::Width;
+			case Tags::Y:
+				return Tags::Height;
+			case Tags::Width:
+				return Tags::Width;
+			case Tags::Height:
+				return Tags::Height;
 			}
 		}
-		constexpr friend auto get_opaque_index(tags_t tag) {
+		constexpr friend auto getOpaqueIndex(Tags tag)
+		{
 			switch (tag) {
-			case tags_t::X:
-				return tags_t::X;
-			case tags_t::Y:
-				return tags_t::Y;
-			case tags_t::Width:
-				return tags_t::X;
-			case tags_t::Height:
-				return tags_t::Y;
+			case Tags::X:
+				return Tags::X;
+			case Tags::Y:
+				return Tags::Y;
+			case Tags::Width:
+				return Tags::X;
+			case Tags::Height:
+				return Tags::Y;
 			}
 		}
-		constexpr friend bool can_increment(tags_t tag) {
-			return (tag == tags_t::X) || (tag == tags_t::Y);
+		constexpr friend auto canIncrement(Tags tag) -> bool
+		{
+			return (tag == Tags::X) || (tag == Tags::Y);
 		}
-		struct position_t {
-			x_position_t _x;
-			y_position_t _y;
+		struct Position
+		{
+			XPosition _x;
+			YPosition _y;
 		};
-		struct size_t {
-			width_t _width;
-			height_t _height;
-			constexpr static void with_components(auto fn) {
-				fn(&size_t::_width);
-				fn(&size_t::_height);
+		struct Size
+		{
+			Width _width;
+			Height _height;
+			constexpr static void withComponents(auto fn)
+			{
+				fn(&Size::_width);
+				fn(&Size::_height);
 			}
 		};
 		struct rect_t;
 	};
-	struct image_t::rect_t {
-		position_t _position;
-		size_t _size;
-		constexpr auto& left() const { return _position._x; }
-		constexpr auto right() const { return _position._x + _size._width; } // mwToDo: add proxy to non-const version so we can assign to it
-		constexpr auto& top() const { return _position._y; }
-		constexpr auto bottom() const { return _position._y + _size._height; }
+	struct Image::rect_t
+	{
+		Position _position;
+		Size _size;
+		[[nodiscard]] constexpr auto left() const -> auto& { return _position._x; }
+		[[nodiscard]] constexpr auto right() const { return _position._x + _size._width; } // mwToDo: add proxy to non-const version so we can assign to it
+		[[nodiscard]] constexpr auto top() const -> auto& { return _position._y; }
+		[[nodiscard]] constexpr auto bottom() const { return _position._y + _size._height; }
 	};
 	/* constexpr auto operator-(image_t::size_t lhs, image_t::size_t rhs) {
 		auto x = lhs._width - rhs._width;

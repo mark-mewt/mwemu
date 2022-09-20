@@ -13,7 +13,7 @@ namespace mewt::ext::sdl {
 	}
 
 	window_t::window_t(std::string_view title, x_position_t x, y_position_t y, width_t w, height_t h, flags_t flags)
-		 : super_t(check_pointer(SDL_CreateWindow(title.data(), x.get(), y.get(), w.get(), h.get(), flags.raw_bits()))) {
+		 : super_t(check_pointer(SDL_CreateWindow(title.data(), x.get(), y.get(), w.get(), h.get(), flags.rawBits()))) {
 	}
 
 	window_t::centered_t::operator window_t::x_position_t() const { return x_position_t(SDL_WINDOWPOS_CENTERED); }

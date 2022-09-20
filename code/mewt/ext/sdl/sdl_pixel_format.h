@@ -14,13 +14,13 @@ namespace mewt::ext::sdl {
 			Coded,
 		};
 		enum class sdl_format;
-		constexpr friend auto get_opaque_value_type(tag_t) -> sdl_format;
+		constexpr friend auto getOpaqueValueType(tag_t) -> sdl_format;
 
 	public:
 		enum class preset_t {
 			ARGB8888
 		};
-		using coded_t = types::opaque<tag_t::Coded>;
+		using coded_t = types::Opaque<tag_t::Coded>;
 		template <preset_t _Preset>
 		inline static coded_t coded() { return preset_map_t<_Preset>::get_coded(); }
 

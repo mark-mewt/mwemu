@@ -2,9 +2,9 @@
 #pragma once
 
 #include "mewt/async/future_promise.decl.h"
-#include "mewt/types/non_movable.h"
-#include "mewt/types/coroutine.h"
 #include "mewt/async/resumer.h"
+#include "mewt/types/coroutine.h"
+#include "mewt/types/non_movable.h"
 
 #include <variant>
 

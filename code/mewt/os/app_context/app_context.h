@@ -14,5 +14,5 @@ namespace mewt::os {
 }
 
 namespace mewt {
-	extern int mewt_main(const os::app_context_i& app_context);
+	extern int mewtMain(const os::app_context_i& app_context);
 }

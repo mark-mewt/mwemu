@@ -1,4 +1,5 @@
 
+#if 0
 #include "mewt/diag/log.h"
 
 #include <stdarg.h>
@@ -33,3 +34,4 @@ namespace mewt::diag
 	log_context_t logger(source_location_t loc) { return loc; }
 
 }
+#endif

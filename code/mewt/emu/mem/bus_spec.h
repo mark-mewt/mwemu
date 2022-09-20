@@ -1,28 +1,25 @@
 
 #pragma once
 
-#include "mewt/types/int_types.h"
 #include "mewt/types/concepts.h"
+#include "mewt/types/int_types.h"
 
 namespace mewt::emu::mem
 {
 
-	template<int _AddressBits, int _DataBits>
-	struct bus_spec
+	template <int NAddressBits, int NDataBits>
+	struct BusSpec
 	{
-		inline static int address_bits = _AddressBits;
-		inline static int data_bits = _DataBits;
-		using address_t = types::uint<_AddressBits>;
-		using data_t = types::uint<_DataBits>;
+		const int kAddressBits = NAddressBits;
+		const int kDataBits = NDataBits;
+		using Address = types::uint<NAddressBits>;
+		using Data = types::uint<NDataBits>;
 	};
 
-	namespace detail
+	template <typename TType>
+	concept is_bus_spec = requires(TType x)
 	{
-		template<int _AddressBits, int _DataBits>
-		constexpr bool is_bus_spec_func(const bus_spec<_AddressBits, _DataBits>&) { return true; }
-	}
-
-	template<typename _Type>
-	concept is_bus_spec = requires(_Type x) { detail::is_bus_spec_func(x); };
+		requires std::is_same_v<decltype(BusSpec(x)), TType>;
+	};
 
 }

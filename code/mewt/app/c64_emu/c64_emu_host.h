@@ -9,7 +9,7 @@
 
 namespace mewt::app::c64_emu {
 
-	class c64_emu_host_t : public emu::host_t {
+	class c64_emu_host_t : public emu::IHost {
 
 	public:
 
@@ -17,7 +17,7 @@ namespace mewt::app::c64_emu {
 
 	protected:
 
-		void init_host() override final;
+		void initHost() override final;
 
 	private:
 		async::future<> run_input();

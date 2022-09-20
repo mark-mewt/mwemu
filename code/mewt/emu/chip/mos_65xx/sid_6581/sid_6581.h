@@ -14,7 +14,7 @@ namespace mewt::emu::chip::mos_65xx
       const clock_source_t& _clock;
    public:
 
-		struct io_controller_t : public memory_interface_t
+		struct io_controller_t : public MemoryInterface
 		{
 			sid_6581_t& _sys;
 			struct regs_t
@@ -22,29 +22,29 @@ namespace mewt::emu::chip::mos_65xx
 				// https://www.c64-wiki.com/wiki/SID
 				struct voice_t
 				{
-					data_t _frequency_low;
-					data_t _frequency_high;
-					data_t _pulse_wave_duty_cycle_low;
-					data_t _pulse_wave_duty_cycle_high;
-					data_t _control_register;
-					data_t _attack_decay;
-					data_t _sustain_release;
+					Data _frequency_low;
+					Data _frequency_high;
+					Data _pulse_wave_duty_cycle_low;
+					Data _pulse_wave_duty_cycle_high;
+					Data _control_register;
+					Data _attack_decay;
+					Data _sustain_release;
 				};
 				voice_t _voice[3];
-				data_t _filter_cutoff_freq_low;
-				data_t _filter_cutoff_freq_high;
-				data_t _filter_resonance_routing;
-				data_t _filter_mode_volume;
-				data_t _paddle_x;
-				data_t _paddle_y;
-				data_t _oscillator_voice_3;
-				data_t _envelope_voice_3;
+				Data _filter_cutoff_freq_low;
+				Data _filter_cutoff_freq_high;
+				Data _filter_resonance_routing;
+				Data _filter_mode_volume;
+				Data _paddle_x;
+				Data _paddle_y;
+				Data _oscillator_voice_3;
+				Data _envelope_voice_3;
 			};
 			static_assert(sizeof(regs_t) == 0x1d);
 			regs_t _regs{ };
 			io_controller_t(sid_6581_t& sys) : _sys(sys) { }
-			data_t read(address_t address) override final;
-			void write(address_t address, data_t data) override final;
+			Data read(Address address) override final;
+			void write(Address address, Data data) override final;
 		};
 
 		io_controller_t _io_controller{ *this };

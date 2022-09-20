@@ -3,8 +3,9 @@
 
 namespace mewt::emu {
 
-	void host_t::run_emu_host() {
-		init_host();
+	void IHost::runEmuHost()
+	{
+		initHost();
 		events.initialising.dispatch(_host_config);
 	}
 

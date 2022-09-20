@@ -5,7 +5,7 @@ namespace mewt::emu::chip
 {
 
    void clock_source_t::run() {
-		while (!_awaiters.is_empty())
+		while (!_awaiters.isEmpty())
 			tick();
 	}
 

@@ -21,13 +21,13 @@ namespace mewt::ext::sdl {
 			Width,
 			Height
 		};
-		constexpr friend auto get_opaque_value_type(tags_t) -> int;
+		constexpr friend auto getOpaqueValueType(tags_t) -> int;
 
 	public:
-		using x_position_t = types::opaque<tags_t::XPosition>;
-		using y_position_t = types::opaque<tags_t::YPosition>;
-		using width_t = types::opaque<tags_t::Width>;
-		using height_t = types::opaque<tags_t::Height>;
+		using x_position_t = types::Opaque<tags_t::XPosition>;
+		using y_position_t = types::Opaque<tags_t::YPosition>;
+		using width_t = types::Opaque<tags_t::Width>;
+		using height_t = types::Opaque<tags_t::Height>;
 		struct centered_t {
 			operator x_position_t() const;
 			operator y_position_t() const;

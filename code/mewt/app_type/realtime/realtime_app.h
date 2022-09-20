@@ -24,7 +24,7 @@ namespace mewt::app_type::realtime {
 		async::future<> run_core();
 
 		template <std::derived_from<realtime_app_t> _App>
-		inline friend void run_app(const os::app_context_i& app_context, types::class_id<_App>);
+		inline friend void run_app(const os::app_context_i& app_context, types::ClassId<_App>);
 
 		inline phase_manager_t& phase_manager() { return _phase_manager; }
 		inline ext::sdl::event_manager_t& event_manager() { return _event_manager; }
@@ -43,7 +43,7 @@ namespace mewt::app_type::realtime {
 		phase_manager_t& _phase_manager;
 		ext::sdl::event_manager_t _event_manager;
 
-		async::generator<int> generate_frames(ext::sdl::renderer_t& sdl_renderer);
+		static async::generator<int> generate_frames(ext::sdl::renderer_t& sdl_renderer);
 	};
 
 }

@@ -10,13 +10,13 @@ namespace mewt::emu::mem::rom
 {
 
 	template<int _Size, is_bus_spec _BusSpec>
-	class fixed_size_rom : public memory_interface<_BusSpec>
+	class fixed_size_rom : public IMemoryInterface<_BusSpec>
 	{
 
 	public:
 
-		using data_t = typename memory_interface<_BusSpec>::data_t;
-		using address_t = typename memory_interface<_BusSpec>::address_t;
+		using Data = typename IMemoryInterface<_BusSpec>::Data;
+		using Address = typename IMemoryInterface<_BusSpec>::Address;
 
 		inline void load_rom(const std::string_view& name, size_t offset = 0)
 		{
@@ -24,12 +24,12 @@ namespace mewt::emu::mem::rom
 			reader.read_data(name, _data, _Size, offset);
 		}
 
-		data_t read(address_t address) override
+		Data read(Address address) override
 		{
-			return *(data_t*)(_data + address);
+			return *(Data*)(_data + address);
 		}
 
-		void write(address_t address, data_t data) override
+		void write(Address address, Data data) override
 		{
 		}
 

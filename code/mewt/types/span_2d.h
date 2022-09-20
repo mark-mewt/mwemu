@@ -5,18 +5,21 @@
 
 namespace mewt::types {
 
-	template<typename _Type, typename _Width, typename _Height>
-	class span_2d_t {
+	template <typename _Type, typename _Width, typename _Height>
+	class Span2dT
+	{
 
 		struct row_range_t;
 
 	public:
-		inline span_2d_t(_Type* data, _Width width, _Height height, _Width pitch)
-			 : _data(data), _width(width), _height(height), _pitch(pitch) {
+		inline Span2dT(_Type* data, _Width width, _Height height, _Width pitch)
+			 : _data(data), _width(width), _height(height), _pitch(pitch)
+		{
 		}
 
-		inline auto rows() const {
-			return row_range_t{ *this };
+		[[nodiscard]] inline auto rows() const
+		{
+			return RowRangeT{ *this };
 		}
 
 	private:
@@ -26,34 +29,38 @@ namespace mewt::types {
 		_Height _height;
 		_Width _pitch;
 
-		using row_index_t = decltype(to_index(std::declval<_Height>()));
+		using RowIndex = decltype(toIndex(std::declval<_Height>()));
 
 		struct row_proxy_t {
-			const span_2d_t& _span;
-			row_index_t _row;
+			const Span2dT& _span;
+			RowIndex _row;
 			std::span<_Type> _row_span;
-			inline bool operator!=(const row_proxy_t& rhs) const { return _row != rhs._row; }
-			inline row_proxy_t& operator++() {
+			inline auto operator!=(const row_proxy_t& rhs) const -> bool { return _row != rhs._row; }
+			inline auto operator==(const row_proxy_t& rhs) const -> bool { return _row == rhs._row; }
+			inline auto operator++() -> row_proxy_t&
+			{
 				++_row;
 				return *this;
 			}
-			inline auto& operator*() {
+			inline auto operator*() -> auto&
+			{
 				auto* data_start = _span._data + (static_cast<size_t>(_row.get()) * static_cast<size_t>(_span._pitch.get()));
 				_row_span = std::span(data_start, data_start + _span._width.get());
 				return _row_span;
 			}
 		};
 
-		struct row_range_t {
-			const span_2d_t& _span;
-			inline auto begin() const {
-				return row_proxy_t{ _span, row_index_t(0) };
+		struct RowRangeT
+		{
+			const Span2dT& _span;
+			[[nodiscard]] inline auto begin() const
+			{
+				return row_proxy_t{ _span, RowIndex(0) };
 			}
-			inline auto end() const {
-				return row_proxy_t{ _span, to_index(_span._height) };
+			[[nodiscard]] inline auto end() const
+			{
+				return row_proxy_t{ _span, toIndex(_span._height) };
 			}
 		};
-
 	};
-
 }

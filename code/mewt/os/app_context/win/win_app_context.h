@@ -11,7 +11,7 @@ namespace mewt::os::win {
 	public:
 		inline const auto& init_data() const { return _init_data; }
 
-	private:
+	protected:
 		struct init_data_t {
 			HINSTANCE _instance;
 			HINSTANCE _previous_instance;
@@ -23,7 +23,7 @@ namespace mewt::os::win {
 
 		inline app_context_t(init_data_t init_data) : _init_data(init_data) {}
 
-		friend int APIENTRY ::WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow);
+		//friend int APIENTRY ::WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nShowCmd);
 	};
 
 }

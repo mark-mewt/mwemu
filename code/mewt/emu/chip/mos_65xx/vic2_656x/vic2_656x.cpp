@@ -1,8 +1,8 @@
 
-#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
-#include "mewt/diag/log.h"
 #include "mewt/async/future_promise.h"
+#include "mewt/diag/log.h"
 #include "mewt/emu/chip/clock/clock.h"
+#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x_config.h"
 
 namespace mewt::emu::chip::mos_65xx
@@ -25,21 +25,21 @@ namespace mewt::emu::chip::mos_65xx
 	//	};
 	//}
 
-	data_t vic2_656x_t::io_controller_t::read(address_t address)
+	auto vic2_656x_t::IoControllerT::read(Address address) -> Data
    {
       // https://www.c64-wiki.com/wiki/Page_208-211
       address &= 0x3f;
       if (address >= 0x30)
          return 0xff;
-      return *((data_t*)&_chip._regs + address);
+      return *((Data*)&_chip._regs + address);
    }
 
-   void vic2_656x_t::io_controller_t::write(address_t address, data_t data)
+   void vic2_656x_t::IoControllerT::write(Address address, Data data)
    {
       address &= 0x3f;
       if (address >= 0x30)
          return;
-      *((data_t*)&_chip._regs + address) = data;
+      *((Data*)&_chip._regs + address) = data;
    }
 
    /* vic2_656x_t::vic2_656x_t(const clock_source_t& clock) //, vic2_model_t model)
@@ -95,7 +95,7 @@ namespace mewt::emu::chip::mos_65xx
 
 	*/
 
-	static types::colour_t vic2_colours[] = {
+	static const types::ColourT vic2_colours[] = {
 		{ 0x00, 0x00, 0x00 },
 		{ 0xff, 0xff, 0xff },
 		{ 0x9f, 0x4e, 0x44 },
@@ -114,16 +114,54 @@ namespace mewt::emu::chip::mos_65xx
 		{ 0xad, 0xad, 0xad },
 	};
 
-	void vic2_656x_t::generate_frame(host_t::frame_t& frame) {
-		auto& config = get_config();
+	class VicII
+	{
+	public:
+		VicII(vic2_config_t config);
+		void generate_frame(IHost::FrameT::scan_out_t pixels);
+
+	protected:
+		void generate_scanline(IHost::FrameT::scan_out_t& pixels);
+
+	private:
+		vic2_config_t _config;
+	};
+
+	VicII::VicII(vic2_config_t config)
+		 : _config(config) {
+	}
+
+	void VicII::generate_frame(IHost::FrameT::scan_out_t pixels) {
+		while (!pixels.isEndOfFrame())
+			generate_scanline(pixels);
+	}
+
+	void VicII::generate_scanline(IHost::FrameT::scan_out_t& pixels) {
+		for (uint16_t cycle_x = 0; cycle_x < _config._cycles_per_scanline; ++cycle_x) {
+		}
+	}
+
+	void vic2_656x_t::generateFrame(IHost::FrameT& frame) {
+		const auto& config = getConfig();
 		bool scanline_visible = false;
 		bool raster_visible = false;
 
-		auto output_pixels = frame._pixels.rows().begin();
-		types::colour_t* current_pixel = nullptr;
+		auto output_rows = frame._pixels.rows().begin();
+		types::ColourT* current_pixel = nullptr;
 
 		bool main_border_flip_flop = true;
 		bool vert_border_flip_flop = true;
+		bool bad_line_enable = false;
+		int vc_base = 0; // (video counter base) is a 10 bit data register with reset input that can be loaded with the value from VC.
+		int vc = 0; //  (video counter) is a 10 bit counter that can be loaded with the value from VCBASE.
+		int vmli = 0; // 6 bit counter with reset input that keeps track of the position within the internal 40×12 bit video matrix / color line where read character pointers are stored resp.read again.
+		int rc = 0; // (row counter) is a 3 bit counter with reset input.
+		bool bus_available = true;
+		uint16_t video_matrix[40]{ 0 };
+		bool is_display_state = false;
+
+		(void)bus_available;
+		(void)video_matrix;
 
 		for (uint16_t raster_y = 0; raster_y < config._total_scanlines_per_frame; ++raster_y) {
 			_regs._raster = (raster_y & 0xff);
@@ -131,24 +169,62 @@ namespace mewt::emu::chip::mos_65xx
 
 			for (uint16_t cycle_x = 0; cycle_x < config._cycles_per_scanline; ++cycle_x) {
 
+				if ((raster_y == 0x30) && _regs._control_reg_1._den)
+					bad_line_enable = true;
+				else if (raster_y == 0xf8)
+					bad_line_enable = false;
+				bool is_bad_line = bad_line_enable && ((raster_y & 7) == _regs._control_reg_1._y_scroll);
+				if (is_bad_line)
+					is_display_state = true;
+				
+				if (cycle_x == 58) {
+					if (rc == 7) {
+						is_display_state = false;
+						vc_base = vc;
+					}
+					if (is_display_state)
+						rc = (rc + 1) & 7;
+				}
+
+				if (cycle_x == 14) {
+					vc = vc_base;
+					vmli = 0;
+					if (is_bad_line)
+						rc = 0;
+				}
+
+				if ((cycle_x >= 12) && (cycle_x <= 54)) {
+					if (is_bad_line)
+						bus_available = false;	// mwToDo: CPU needs to stop on first read access after BA goes low.
+					// mwToDo
+					///if (!bus_available && (cycle_x >= 15))
+					///	video_matrix[vmli] = mem_read_c();
+				}
+
+				if (is_display_state) {
+					// mwToDo: Do g-access
+					vc = (vc + 1) & 0x3ff;
+					vmli = (vmli + 1) & 0x3f;
+				}
+
 				_cpu_clock.tick();
 				for (uint16_t cell_x = 0; cell_x < 8; ++cell_x) {
 					auto raster_x = cell_x | (cycle_x << 3);
 
 					if (raster_x == config._xpos_raster_irq) {
 						// mwToDo: Fire raster irq.
-						if (raster_y == border_bottom_compare()) // border #2
+						if (raster_y == borderBottomCompare()) // border #2
 							vert_border_flip_flop = true;
-						if ((raster_y == border_top_compare()) && _regs._control_reg_1._den)	// border #3
+						if ((raster_y == borderTopCompare()) && _regs._control_reg_1._den)	// border #3
 							vert_border_flip_flop = false;
 						if (scanline_visible) {
-							++output_pixels;
+							++output_rows;
 						}
 						if (raster_y == config._raster_display_on)
 							scanline_visible = true;
 						else if (raster_y == config._raster_display_off)
 							scanline_visible = false;
-						current_pixel = (*output_pixels).data();
+						current_pixel = (*output_rows).data();
 					}
 
 					if (raster_x == config._xpos_display_on)
@@ -156,12 +232,12 @@ namespace mewt::emu::chip::mos_65xx
 					else if (raster_x == config._xpos_display_off)
 						raster_visible = false;
 
-					if (raster_x == border_right_compare())	// border #1
+					if (raster_x == borderRightCompare())	// border #1
 						main_border_flip_flop = true;
-					if (raster_x == border_left_compare()) {
-						if (raster_y == border_bottom_compare())	// border #4
+					if (raster_x == borderLeftCompare()) {
+						if (raster_y == borderBottomCompare())	// border #4
 							vert_border_flip_flop = true;
-						if ((raster_y == border_top_compare()) && _regs._control_reg_1._den) // border #5
+						if ((raster_y == borderTopCompare()) && _regs._control_reg_1._den) // border #5
 							vert_border_flip_flop = false;
 						if (!vert_border_flip_flop)
 							main_border_flip_flop = false;
@@ -169,7 +245,11 @@ namespace mewt::emu::chip::mos_65xx
 
 
 					if (raster_visible) {
-						*current_pixel++ = vic2_colours[main_border_flip_flop ? 14 : 6];
+						auto pixel_colour = vic2_colours[main_border_flip_flop ? (uint8_t)_regs._border_color : 0];
+						//pixel_colour.r = vc & 0xff;
+						//pixel_colour.r = rc << 5;
+						//pixel_colour.r = vmli;
+						*current_pixel++ = pixel_colour;
 					}
 
 				}
@@ -186,19 +266,21 @@ namespace mewt::emu::chip::mos_65xx
 		//}
 	}
 
-	async::future<> vic2_656x_t::run_gpu(host_t& host)
+	async::future<> vic2_656x_t::runGpu(IHost& host)
    {
 
 		auto& config = co_await host.events.initialising;
-		auto& vic_config = get_config();
+		const auto& vic_config = getConfig();
 		config.display_size = {
-			._width = gfx::image_t::width_t(vic_config.visible_scanline_width()),
-			._height = gfx::image_t::height_t(vic_config.visible_scanline_count())
+			._width = gfx::Image::Width(vic_config.visibleScanlineWidth()),
+			._height = gfx::Image::Height(vic_config.visibleScanlineCount())
 		};
 
+		//VicII vic2(vic_config);
 		for (;;) {
 			auto& frame = co_await host.events.need_frame;
-			generate_frame(frame);
+			generateFrame(frame);
+			//vic2.generate_frame(frame);
 		}
    }
 

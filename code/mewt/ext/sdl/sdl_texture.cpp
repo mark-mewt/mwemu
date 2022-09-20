@@ -25,11 +25,11 @@ namespace mewt::ext::sdl {
 		int height;
 		check_status(SDL_QueryTexture(get(), &format, &access, &width, &height));
 		return texture_config_t{
-			._format = pixel_format_t::coded_t(static_cast<std::decay_t<decltype(types::dummy_arg<pixel_format_t::coded_t>().get())>>(format)),
+			._format = pixel_format_t::coded_t(static_cast<std::decay_t<decltype(types::dummyArg<pixel_format_t::coded_t>().get())>>(format)),
 			._access = static_cast<texture_config_t::access_t>(access),
 			._size = {
-				 ._width = image_t::width_t(width),
-				 ._height = image_t::height_t(height) }
+				 ._width = image_t::Width(width),
+				 ._height = image_t::Height(height) }
 		};
 	}
 

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <span>
 
 namespace mewt::emu::chip::mos_65xx::cpu_6502
 {
@@ -74,7 +75,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		Inst,
 	};
 
-	struct instruction_t
+	struct Instruction
 	{
 		uint8_t hex;
 		opcode_t opcode = opcode_t::___;
@@ -93,24 +94,49 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 		inline bool is_1_byte() const { return ((hex & 0xd) == 0x8) || (hex == 0) || (hex == 0x40) || (hex == 0x60); }
 		inline bool is_3_byte() const { return ((hex & 0xc) == 0xc) || ((hex & 0x1f) == 0x19) || (hex == 0X20); }
 		inline bool is_2_byte() const { return !is_1_byte() && !is_3_byte(); }
+		struct Call;
+		struct Branch;
+		struct Jump;
 	};
 
-	instruction_t* get_instructions();
+	std::span<const Instruction> getInstructions();
 
-	enum class call_instruction_t
+	struct Instruction::Call
 	{
-		BRK, JSR, RTI, RTS,
+		enum class Op
+		{
+			BRK,
+			JSR,
+			RTI,
+			RTS,
+		};
+		static constexpr auto fromInstruction(uint8_t code) -> Op { return static_cast<Op>(code >> 5); }
 	};
 
-	enum class branch_instruction_t
+	struct Instruction::Branch
 	{
-		BPL, BMI, BVC, BVS, BCC, BCS, BNE, BEQ,
+		enum class Op
+		{
+			BPL,
+			BMI,
+			BVC,
+			BVS,
+			BCC,
+			BCS,
+			BNE,
+			BEQ,
+		};
+		static constexpr auto fromInstruction(uint8_t code) -> Op { return static_cast<Op>(code >> 5); }
 	};
 
-	enum class jump_instruction_t
+	struct Instruction::Jump
 	{
-		JMP_Absolute,
-		JMP_Indirect
+		enum class Op
+		{
+			JMP_Absolute,
+			JMP_Indirect
+		};
+		static constexpr auto fromInstruction(uint8_t code) -> Op { return static_cast<Op>((code >> 5) & 1); }
 	};
 
 }

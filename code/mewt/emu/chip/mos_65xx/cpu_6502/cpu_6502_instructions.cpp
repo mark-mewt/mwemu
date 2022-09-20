@@ -13,7 +13,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 	using do_ = operation_t;
 	using flag = flag_action_t;
 
-	static instruction_t instructions[] = {
+	const Instruction instructions[] = {
 
 		// _____________________________________________________________________________
 		{ 0x00, op::BRK, from::None, to::None, with::None, do_::TODO, flag::TODO, 1, 7 },
@@ -633,7 +633,7 @@ namespace mewt::emu::chip::mos_65xx::cpu_6502
 
 	*/
 
-	instruction_t* get_instructions()
+	std::span<const Instruction> getInstructions()
 	{
 		return instructions;
 	}

@@ -5,14 +5,15 @@
 
 namespace mewt::gfx::video_output {
 
-	enum class standard_t {
-		NTSC_M,
-		PAL_B
+	enum class StandardT
+	{
+		NtscM,
+		PalB
 	};
 
-	struct config_t {
+	struct ConfigT
+	{
 		uint8_t refresh_rate_hz;
-		static config_t get(standard_t standard);
+		static ConfigT get(StandardT standard);
 	};
-
 }

@@ -7,24 +7,24 @@ namespace mewt::emu::mem::ram
 {
 
 	template<int _Size, is_bus_spec _BusSpec>
-	class fixed_size_ram : public memory_interface<_BusSpec>
+	class fixed_size_ram : public IMemoryInterface<_BusSpec>
 	{
 
 	public:
 
-		using data_t = typename memory_interface<_BusSpec>::data_t;
-		using address_t = typename memory_interface<_BusSpec>::address_t;
+		using Data = typename IMemoryInterface<_BusSpec>::Data;
+		using Address = typename IMemoryInterface<_BusSpec>::Address;
 
-		data_t read(address_t address) override
+		Data read(Address address) override
 		{
 			address &= (_Size - 1); // mwToDo: specify number of address line bits and use that instead.
-			return *(data_t*)(_data + address);
+			return *(Data*)(_data + address);
 		}
 
-		void write(address_t address, data_t data) override
+		void write(Address address, Data data) override
 		{
 			address &= (_Size - 1); // mwToDo: specify number of address line bits and use that instead.
-			*(data_t*)(_data + address) = data;
+			*(Data*)(_data + address) = data;
 		}
 
 	private:

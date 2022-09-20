@@ -6,17 +6,16 @@
 namespace mewt::emu::mem
 {
 
-	template<is_bus_spec _BusSpec>
-	struct memory_interface
+	template <is_bus_spec _BusSpec>
+	struct IMemoryInterface
 	{
 
-		using data_t = typename _BusSpec::data_t;
-		using address_t = typename _BusSpec::address_t;
+		using Data = typename _BusSpec::Data;
+		using Address = typename _BusSpec::Address;
 
 		// mwToDo: is there a more efficient way to do this than with v-table indirection?
-		virtual data_t read(address_t address) = 0;
-		virtual void write(address_t address, data_t data) = 0;
-
+		virtual auto read(Address address) -> Data = 0;
+		virtual void write(Address address, Data data) = 0;
 	};
 
 }

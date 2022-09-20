@@ -85,7 +85,7 @@ namespace mewt::gui {
 		}
 			return 0;
 		default:
-			logger().log("unhandled message: %d", message);
+			//logger().log("unhandled message: %d", message);
 			break;
 		}
 		return ::DefWindowProcW(window, message, w_param, l_param);

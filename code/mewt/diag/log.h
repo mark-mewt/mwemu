@@ -1,6 +1,6 @@
 
 #pragma once
-
+#if 0
 #include "mewt/diag/source_location.h"
 
 namespace mewt::diag {
@@ -23,3 +23,4 @@ namespace mewt::diag {
 namespace mewt {
 	using diag::logger;
 }
+#endif

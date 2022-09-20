@@ -10,10 +10,10 @@ namespace mewt::app_type::realtime {
 		enum class tags_t {
 			FrameIndex
 		};
-		constexpr friend auto get_opaque_value_type(tags_t) -> std::uint32_t;
+		constexpr friend auto getOpaqueValueType(tags_t) -> std::uint32_t;
 
 	public:
-		types::opaque<tags_t::FrameIndex> _frameIndex;
+		types::Opaque<tags_t::FrameIndex> _frameIndex;
 	};
 
 

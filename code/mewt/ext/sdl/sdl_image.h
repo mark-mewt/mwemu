@@ -5,6 +5,6 @@
 
 namespace mewt::ext::sdl {
 
-	using image_t = gfx::image_t;
+	using image_t = gfx::Image;
 
 }

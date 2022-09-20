@@ -1,11 +1,25 @@
 
 #include "mewt/os/app_context/win/win_app_context.h"
 
-int APIENTRY WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow) {
+namespace mewt::os::win
+{
 
-	mewt::os::win::app_context_t app_context({ ._instance = hInst,
-															 ._previous_instance = hInstPrev,
-															 ._command_line = cmdline,
-															 ._show_command = cmdshow });
-	return mewt::mewt_main(app_context);
+
+	class AppContextWin : public app_context_t
+	{
+	public:
+		using app_context_t::app_context_t;
+		friend int APIENTRY ::WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nShowCmd); // NOLINT
+	};
+
+}
+
+int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nShowCmd) // NOLINT
+{
+
+	mewt::os::win::AppContextWin app_context({ ._instance = hInstance,
+															 ._previous_instance = hPrevInstance,
+															 ._command_line = lpCmdLine,
+															 ._show_command = nShowCmd });
+	return mewt::mewtMain(app_context);
 }

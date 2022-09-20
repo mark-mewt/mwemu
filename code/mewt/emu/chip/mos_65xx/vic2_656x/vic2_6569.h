@@ -8,7 +8,7 @@ namespace mewt::emu::chip::mos_65xx {
 	class vic2_6569_t : public vic2_656x_t {
 
 	protected:
-		const vic2_config_t& get_config() const override final;
+		const vic2_config_t& getConfig() const override final;
 	};
 
 }

@@ -6,9 +6,8 @@
 
 namespace mewt::emu::chip::mos_65xx {
 
-	using bus_spec_t = mem::bus_spec<16, 8>;
-	using memory_interface_t = mem::memory_interface<bus_spec_t>;
-	using address_t = bus_spec_t::address_t;
-	using data_t = bus_spec_t::data_t;
-
+	using BusSpec = mem::BusSpec<16, 8>;
+	using MemoryInterface = mem::IMemoryInterface<BusSpec>;
+	using Address = BusSpec::Address;
+	using Data = BusSpec::Data;
 }

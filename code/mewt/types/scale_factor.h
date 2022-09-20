@@ -10,14 +10,14 @@ namespace mewt::types {
 			Numerator,
 			Denominator
 		};
-		constexpr friend auto get_opaque_value_type(tags_t) -> int;
+		constexpr friend auto getOpaqueValueType(tags_t) -> int;
 
 	public:
-		using numerator_t = opaque<tags_t::Numerator>;		//, int>;
-		using denominator_t = opaque<tags_t::Denominator>; //, int>;
+		using numerator_t = Opaque<tags_t::Numerator>;		//, int>;
+		using denominator_t = Opaque<tags_t::Denominator>; //, int>;
 		static constexpr scale_factor_t Half() { return { numerator_t(1), denominator_t(2) }; };
 		template <auto _Tag>
-		requires(get_opaque_difference(_Tag) == _Tag) constexpr auto scale(opaque<_Tag> v) const { return opaque<_Tag>((v.get() * _numerator.get()) / _denominator.get()); }
+		requires(getOpaqueDifference(_Tag) == _Tag) constexpr auto scale(Opaque<_Tag> v) const { return Opaque<_Tag>((v.get() * _numerator.get()) / _denominator.get()); }
 
 	private:
 		constexpr scale_factor_t(numerator_t numerator, denominator_t denominator)

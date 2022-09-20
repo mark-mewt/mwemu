@@ -1,15 +1,15 @@
 
 #pragma once
 
-#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.decl.h"
 #include "mewt/async/future_promise.decl.h"
 #include "mewt/emu/chip/clock/clock.decl.h"
-#include "mewt/emu/chip/mos_65xx/mos_65xx.h"
-#include "mewt/types/flags.h"
-#include "mewt/types/bitfield.h"
-#include "mewt/gfx/image.h"
-#include "mewt/emu/host/host.h"
 #include "mewt/emu/chip/clock/clock.h"
+#include "mewt/emu/chip/mos_65xx/mos_65xx.h"
+#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.decl.h"
+#include "mewt/emu/host/host.h"
+#include "mewt/gfx/image.h"
+#include "mewt/types/bitfield.h"
+#include "mewt/types/flags.h"
 
 namespace mewt::emu::chip::mos_65xx
 {
@@ -105,63 +105,65 @@ namespace mewt::emu::chip::mos_65xx
 		//const vic2_config_t& _config;
 
    public:
-
-		struct io_controller_t : public memory_interface_t
+		struct IoControllerT : public MemoryInterface
 		{
 			vic2_656x_t& _chip;
-			io_controller_t(vic2_656x_t& chip) : _chip(chip) {}
-			data_t read(address_t address) override final;
-			void write(address_t address, data_t data) override final;
+			explicit IoControllerT(vic2_656x_t& chip) : _chip(chip) {}
+			Data read(Address address) final;
+			void write(Address address, Data data) final;
 		};
 
-		io_controller_t _io_controller{ *this };
+		IoControllerT _io_controller{ *this };
 
 		//vic2_656x_t(const clock_source_t& clock);//, vic2_model_t model);
-		async::future<> run_gpu(host_t& host);
+		auto runGpu(IHost& host) -> async::future<>;
 
 		//gfx::image_t::size_t display_size() const;
 
-		inline const chip::clock_source_t& cpu_clock() const { return _cpu_clock; }
+		inline auto cpuClock() const -> const chip::clock_source_t& { return _cpu_clock; }
 
 	protected:
-
-		virtual const vic2_config_t& get_config() const = 0;
+		virtual auto getConfig() const -> const vic2_config_t& = 0;
 
 	private:
-
-      async::future<> read_mem();
-		async::future<> run_frame();
-		async::future<> run_scanline(uint16_t raster_y);
-		void generate_frame(host_t::frame_t& frame);
+		auto readMem() -> async::future<>;
+		auto runFrame() -> async::future<>;
+		auto runScanline(uint16_t raster_y) -> async::future<>;
+		void generateFrame(IHost::FrameT& frame);
 
 		chip::clock_source_t _cpu_clock;
 
-		struct sprite_pos_t {
+		struct SpritePosT
+		{
 			uint8_t _x;		// Lower 8-bits of sprite x-coord.
 			uint8_t _y;		// Sprite y-coord.
 		};
 
 		// $d011:
-		struct control_reg_1_t {
+		struct ControlReg1T
+		{
 			int8_t _y_scroll : 3;	// Fine y-scroll of display window.
 			bool _rsel : 1;			// 0: 24 text lines/192 pixels, Raster lines 55-246; 1: 25 text lines/200 pixels, Raster lines 51-250
 			bool _den : 1;				// Display ENable - 1 to enable display, 0 to display only border colour
-			bool _bmm : 1;				// ???
-			bool _ecm : 1;				// ???
+			bool _bmm : 1;				// 0: Load character data; 1: Load bitmap data
+			bool _ecm : 1;				// Extended colour mode
 			bool _rst8 : 1;			// Most significant bit of raster-y position.
 		};
-		struct control_reg_2_t {
+		struct ControlReg2T
+		{
 			int8_t _x_scroll : 3;	// Fine x-scroll of display window.
 			bool _csel : 1;			// 0: 38 characters/304 pixels wide, LPX 31-334; 1: 40 characters/320 pixels wide, LPX 24-343
-			bool _mcm : 1;
+			bool _mcm : 1;				// Multi-colour mode
 			bool _res : 1;
 		};
-		struct memory_pointers_t {
+		struct MemoryPointersT
+		{
 			uint8_t _cb1 : 4;	// it appears the low bit of this cannot be written and is always 1 on reading
 			uint8_t _vm1 : 4;
 		};
 
-		enum interrupt_t : std::uint8_t {
+		enum InterruptT : std::uint8_t
+		{
 			RST,
 			MBC,
 			MMC,
@@ -169,56 +171,57 @@ namespace mewt::emu::chip::mos_65xx
 			IRQ = 7
 		};
 
-		class uint4_t {
+		class Uint4T
+		{
 			uint8_t _value;
 
 		public:
-			inline uint4_t(uint8_t v = 0) : _value(v) {}
-			inline operator uint8_t() const { return _value | 0xf0; }
+			constexpr Uint4T(uint8_t v = 0) : _value(v) {}
+			constexpr explicit operator uint8_t() const { return _value & 0xf; }
 		};
 
-		struct regs_t {
+		struct RegsT
+		{
 			// https://www.c64-wiki.com/wiki/Page_208-211
-			sprite_pos_t _sprite_pos[8];
-			types::bitfield<8> _sprite_x_msbs;	// $d010: Most significant bits of sprite x-coords
-			control_reg_1_t _control_reg_1;		// $d011: 
+			SpritePosT _sprite_pos[8];
+			types::BitField<8> _sprite_x_msbs;	// $d010: Most significant bits of sprite x-coords
+			ControlReg1T _control_reg_1;			// $d011:
 			uint8_t _raster;							// $d012: Low 8-bits of raster y-position.
 			uint8_t _lightpen_x;
 			uint8_t _lightpen_y;
-			types::bitfield<8> _sprite_enabled;
-			control_reg_2_t _control_reg_2;
-			types::bitfield<8> _sprite_y_expand;
-			memory_pointers_t _memory_pointers;
-			types::flags<interrupt_t> _interrupt_register{ 0 };
-			types::flags<interrupt_t> _interrupt_enabled{ 0 };
-			types::bitfield<8> _sprite_data_priority;
-			types::bitfield<8> _sprite_multicolor;
-			types::bitfield<8> _sprite_x_expand;
-			types::bitfield<8> _sprite_sprite_collision;
-			types::bitfield<8> _sprite_data_collision;
-			uint4_t _border_color;
-			uint4_t _background_color_0;
-			uint4_t _background_color_1;
-			uint4_t _background_color_2;
-			uint4_t _background_color_3;
-			uint4_t _sprite_multicolor_0;
-			uint4_t _sprite_multicolor_1;
-			uint4_t _sprite_0_color;
-			uint4_t _sprite_1_color;
-			uint4_t _sprite_2_color;
-			uint4_t _sprite_3_color;
-			uint4_t _sprite_4_color;
-			uint4_t _sprite_5_color;
-			uint4_t _sprite_6_color;
-			uint4_t _sprite_7_color;
+			types::BitField<8> _sprite_enabled;
+			ControlReg2T _control_reg_2;
+			types::BitField<8> _sprite_y_expand;
+			MemoryPointersT _memory_pointers;
+			types::flags<InterruptT> _interrupt_register{ 0 };
+			types::flags<InterruptT> _interrupt_enabled{ 0 };
+			types::BitField<8> _sprite_data_priority;
+			types::BitField<8> _sprite_multicolor;
+			types::BitField<8> _sprite_x_expand;
+			types::BitField<8> _sprite_sprite_collision;
+			types::BitField<8> _sprite_data_collision;
+			Uint4T _border_color;
+			Uint4T _background_color_0;
+			Uint4T _background_color_1;
+			Uint4T _background_color_2;
+			Uint4T _background_color_3;
+			Uint4T _sprite_multicolor_0;
+			Uint4T _sprite_multicolor_1;
+			Uint4T _sprite_0_color;
+			Uint4T _sprite_1_color;
+			Uint4T _sprite_2_color;
+			Uint4T _sprite_3_color;
+			Uint4T _sprite_4_color;
+			Uint4T _sprite_5_color;
+			Uint4T _sprite_6_color;
+			Uint4T _sprite_7_color;
 		};
-		regs_t _regs{ };
+		RegsT _regs{};
 
-		inline uint16_t border_left_compare() const { return _regs._control_reg_2._csel ? 0x18 : 0x1f; }
-		inline uint16_t border_right_compare() const { return _regs._control_reg_2._csel ? 0x158 : 0x14f; }
-		inline uint16_t border_top_compare() const { return _regs._control_reg_1._rsel ? 0x33 : 0x37; }
-		inline uint16_t border_bottom_compare() const { return _regs._control_reg_1._rsel ? 0xfb : 0xf7; }
-
+		inline auto borderLeftCompare() const -> uint16_t { return _regs._control_reg_2._csel ? 0x18 : 0x1f; }
+		inline auto borderRightCompare() const -> uint16_t { return _regs._control_reg_2._csel ? 0x158 : 0x14f; }
+		inline auto borderTopCompare() const -> uint16_t { return _regs._control_reg_1._rsel ? 0x33 : 0x37; }
+		inline auto borderBottomCompare() const -> uint16_t { return _regs._control_reg_1._rsel ? 0xfb : 0xf7; }
 	};
 
 }

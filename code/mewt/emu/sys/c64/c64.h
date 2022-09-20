@@ -28,7 +28,7 @@ namespace mewt::emu::sys::c64
 		c64_t(chip::mos_65xx::vic2_656x_t& vic2);
 
 		//void run_sys();
-		void init_sys(host_t& host);
+		void init_sys(IHost& host);
 
 		//gfx::image_t::size_t display_size() const;
 
@@ -52,9 +52,9 @@ namespace mewt::emu::sys::c64
 			IO
 		};
 
-		memory_interface_t& memory_device(memory_device_t device_type);
+		MemoryInterface& memory_device(memory_device_t device_type);
 
-		struct cpu_memory_controller_t : public memory_interface_t
+		struct cpu_memory_controller_t : public MemoryInterface
 		{
 			c64_t& _sys;
 			enum class memory_region_t
@@ -68,42 +68,42 @@ namespace mewt::emu::sys::c64
 				Kernal,	// 0xE000 - 0xFFFF
 			};
 			cpu_memory_controller_t(c64_t& sys) : _sys(sys) { }
-			static memory_region_t address_region(address_t address);
-			static address_t address_mask(memory_device_t device);
+			static memory_region_t address_region(Address address);
+			static Address address_mask(memory_device_t device);
 			memory_device_t mapped_device(memory_region_t region);
-			data_t read(address_t address) override final;
-			void write(address_t address, data_t data) override final;
+			Data read(Address address) override final;
+			void write(Address address, Data data) override final;
 		};
 
-		struct io_controller_t : public memory_interface_t
+		struct io_controller_t : public MemoryInterface
 		{
 			c64_t& _sys;
 			io_controller_t(c64_t& sys) : _sys(sys) { }
-			memory_interface<bus_spec_t>& device_at(address_t address);
-			data_t read(address_t address) override final;
-			void write(address_t address, data_t data) override final;
+			IMemoryInterface<BusSpec>& device_at(Address address);
+			Data read(Address address) override final;
+			void write(Address address, Data data) override final;
 		};
 
-		struct dummy_controller_t : public memory_interface_t
+		struct dummy_controller_t : public MemoryInterface
 		{
-			data_t read(address_t address) override final;
-			void write(address_t address, data_t data) override final;
+			Data read(Address address) override final;
+			void write(Address address, Data data) override final;
 		};
 
 		//c64_config_t _config;
 		cpu_memory_controller_t _cpu_memory_controller{ *this };
 		chip::mos_65xx::vic2_656x_t& _vic2;
 		//chip::clock_source_t _clock;
-		chip::mos_65xx::cpu_6510_t _cpu{ _vic2.cpu_clock(), _cpu_memory_controller };
+		chip::mos_65xx::cpu_6510_t _cpu{ _vic2.cpuClock(), _cpu_memory_controller };
 		//chip::mos_65xx::vic2_656x_t _vic2{ _clock, _config._vic2_model };
-		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _basic_rom;
-		mem::rom::fixed_size_rom<8 * 1024, bus_spec_t> _kernel_rom;
-		mem::rom::fixed_size_rom<4 * 1024, bus_spec_t> _character_rom;
-		mem::ram::fixed_size_ram<64 * 1024, bus_spec_t> _ram;
-		mem::ram::fixed_size_ram<1 * 1024, bus_spec_t> _color_ram;
+		mem::rom::fixed_size_rom<8 * 1024, BusSpec> _basic_rom;
+		mem::rom::fixed_size_rom<8 * 1024, BusSpec> _kernel_rom;
+		mem::rom::fixed_size_rom<4 * 1024, BusSpec> _character_rom;
+		mem::ram::fixed_size_ram<64 * 1024, BusSpec> _ram;
+		mem::ram::fixed_size_ram<1 * 1024, BusSpec> _color_ram;
 		io_controller_t _io_controller{ *this };
 
-		chip::mos_65xx::sid_6581_t _sid{ _vic2.cpu_clock() };
+		chip::mos_65xx::sid_6581_t _sid{ _vic2.cpuClock() };
 
 		chip::mos_65xx::cia_6526_t _cia1_controller;
 		chip::mos_65xx::cia_6526_t _cia2_controller;

@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "mewt/types/int_types.h"
 #include "mewt/types/concepts.h"
+#include "mewt/types/int_types.h"
 #include "mewt/types/traits.h"
 
 namespace mewt::types
@@ -12,14 +12,17 @@ namespace mewt::types
 	class flags;
 
 	template <IS_Enum _Enum>
-	struct flags_traits : public default_traits<flags<_Enum>> {
+	struct FlagsTraits : public DefaultTraits<flags<_Enum>>
+	{
 		constexpr static int BitCount = sizeof(std::underlying_type_t<_Enum>) * 8;
 	};
 
 	template <IS_Enum _Enum>
-	constexpr auto get_type_traits(types::class_id<flags<_Enum>>) -> types::class_id<flags_traits<_Enum>>;
+	constexpr auto getTypeTraits(types::ClassId<flags<_Enum>>) -> types::ClassId<FlagsTraits<_Enum>>;
 
-	struct no_flags_t {};
+	struct NoFlags
+	{
+	};
 
 	template<typename _Type>
 	struct type_tester;
@@ -32,14 +35,14 @@ namespace mewt::types
 		//type_tester<flags> _tester2;
 		//type_tester<decltype(get_type_traits(types::dummy_arg<flags>()))> _tester3;
 
-		using data_t = uint<traits<flags>::BitCount>;
+		using Data = uint<Traits<flags>::BitCount>;
 
-		struct proxy
+		struct Proxy
 		{
 			flags& _flags;
-			data_t _mask;
+			Data _mask;
 			constexpr operator bool() const { return _flags._bits & _mask; }
-			constexpr proxy& operator = (bool bit)
+			constexpr auto operator=(bool bit) -> Proxy&
 			{
 				if (bit)
 					_flags._bits |= _mask;
@@ -50,34 +53,34 @@ namespace mewt::types
 		};
 
 	public:
-
-		constexpr explicit flags(data_t bits) : _bits(bits) { }
-		constexpr flags(no_flags_t) { }
+		constexpr explicit flags(Data bits) : _bits(bits) {}
+		constexpr flags(NoFlags /*unused*/) {}
 		constexpr flags(_Enum en) { (*this)[en] = true; }
 
-		constexpr explicit operator data_t () const { return _bits; }
+		constexpr explicit operator Data () const { return _bits; }
 
-		constexpr data_t& raw_bits() { return _bits; }
-		constexpr const data_t& raw_bits() const { return _bits; }
+		constexpr auto rawBits() -> Data& { return _bits; }
+		[[nodiscard]] constexpr auto rawBits() const -> const Data& { return _bits; }
 
-		constexpr proxy operator [] (_Enum en) { return proxy{ *this, (data_t)(1 << (data_t)en) }; }
-		constexpr bool operator [] (_Enum en) const { return _bits & (1 << (data_t)en); }
+		constexpr Proxy operator [] (_Enum en) { return Proxy{ *this, (Data)(1 << (Data)en) }; }
+		constexpr auto operator[](_Enum en) const -> bool { return _bits & (1 << (Data)en); }
 
-		constexpr auto& operator|=(_Enum en) {
+		constexpr auto operator|=(_Enum en) -> auto&
+		{
 			(*this)[en] = true;
 			return *this;
 		}
-		constexpr flags operator|(_Enum en) {
+		constexpr auto operator|(_Enum en) -> flags
+		{
 			return flags(*this) |= en;
 		}
 
-		constexpr flags intersect(flags rhs) const { return flags(_bits & rhs._bits); }
+		[[nodiscard]] constexpr auto intersect(flags rhs) const -> flags { return flags(_bits & rhs._bits); }
 
-		constexpr bool is_empty() const { return _bits == 0; }
+		[[nodiscard]] constexpr auto isEmpty() const -> bool { return _bits == 0; }
+
 	private:
-
-		data_t _bits = 0;
-
+		Data _bits = 0;
 	};
 
 	template<IS_Enum _Enum>

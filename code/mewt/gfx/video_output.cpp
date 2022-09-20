@@ -5,29 +5,29 @@
 
 namespace mewt::gfx::video_output {
 
-	template <standard_t _Standard>
+	template <StandardT _Standard>
 	struct standard_info;
 
 	template <>
-	struct standard_info<standard_t::NTSC_M> {
-		static constexpr config_t config = {
+	struct standard_info<StandardT::NtscM> {
+		static constexpr ConfigT config = {
 			.refresh_rate_hz = 60,
 		};
 	};
 
 	template <>
-	struct standard_info<standard_t::PAL_B> {
-		static constexpr config_t config = {
+	struct standard_info<StandardT::PalB> {
+		static constexpr ConfigT config = {
 			.refresh_rate_hz = 50,
 		};
 	};
 
-	config_t config_t::get(standard_t standard) {
+	ConfigT ConfigT::get(StandardT standard) {
 		switch (standard) {
-		case standard_t::NTSC_M:
-			return standard_info<standard_t::NTSC_M>::config;
-		case standard_t::PAL_B:
-			return standard_info<standard_t::PAL_B>::config;
+		case StandardT::NtscM:
+			return standard_info<StandardT::NtscM>::config;
+		case StandardT::PalB:
+			return standard_info<StandardT::PalB>::config;
 		}
 		throw std::exception("Unknown standard.");
 	}
