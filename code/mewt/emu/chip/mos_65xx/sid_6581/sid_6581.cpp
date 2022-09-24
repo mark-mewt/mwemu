@@ -26,7 +26,7 @@ namespace mewt::emu::chip::mos_65xx {
    {
       //logger().log("sid_6581_t::construct");
    }
-   async::future<> sid_6581_t::read_mem()
+   async::Future<> sid_6581_t::read_mem()
    {
       //logger().log("%s: %d", __FUNCTION__, 0);
       co_await _clock.nextTick();
@@ -34,7 +34,7 @@ namespace mewt::emu::chip::mos_65xx {
       co_await _clock.nextTick();
       //logger().log("%s: %d", __FUNCTION__, 2);
    }
-   async::future<> sid_6581_t::run_inst()
+   async::Future<> sid_6581_t::run_inst()
    {
       //logger().log("%s: %d", __FUNCTION__, 0);
       co_await read_mem();
@@ -44,7 +44,7 @@ namespace mewt::emu::chip::mos_65xx {
       co_await _clock.nextTick();
       //logger().log("%s: %d", __FUNCTION__, 3);
    }
-   async::future<> sid_6581_t::run_gpu()
+   async::Future<> sid_6581_t::run_gpu()
    {
       //logger().log("%s: %d", __FUNCTION__, 0);
       co_await run_inst();

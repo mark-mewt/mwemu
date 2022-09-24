@@ -14,26 +14,28 @@ namespace mewt::app_type::realtime {
 
 	class realtime_app_t::phase_manager_t {
 	public:
-		template <PhaseType _Phase>
+		template <PhaseType NPhase>
 		struct event_data_type;
 
 		template <>
-		struct event_data_type<PhaseType::Init> { using type = const init_state_t&; };
+		struct event_data_type<PhaseType::Init> { using Type = const init_state_t&; };
 		template <>
-		struct event_data_type<PhaseType::Update> { using type = const update_state_t&; };
+		struct event_data_type<PhaseType::Update> { using Type = const update_state_t&; };
 		template <>
-		struct event_data_type<PhaseType::Render> { using type = const render_state_t&; };
+		struct event_data_type<PhaseType::Render> { using Type = const render_state_t&; };
 
-		template <PhaseType _Phase>
-		constexpr friend typename event_data_type<_Phase>::type get_event_data_type(const state_t& event_data) {
+		template <PhaseType NPhase>
+		constexpr friend auto getEventDataType(const state_t& event_data)
+			 -> typename event_data_type<NPhase>::Type
+		{
 			return event_data;
 		}
 
-		using event_dispatch_t = async::event_dispatch_t<state_t, PhaseType, event_data_type>;
-		event_dispatch_t _event_dispatch;
+		using EventDispatch = async::EventDispatch<state_t, PhaseType, event_data_type>;
+		EventDispatch _event_dispatch;
 
-		template <PhaseType _Phase>
-		auto phase() { return event_dispatch_t::single_handler_t<_Phase>(_event_dispatch); }
+		template <PhaseType NPhase>
+		auto phase() { return EventDispatch::SingleHandler<NPhase>(_event_dispatch); }
 		// auto render_phase() { return event_dispatch_t::single_handler_t<phase_type_t::Render>(_event_dispatch); }
 	};
 

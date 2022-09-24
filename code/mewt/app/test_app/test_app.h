@@ -15,13 +15,13 @@ namespace mewt::app::test_app
 
 	private:
 		auto runInputLoop()
-			 -> async::future<>;
+			 -> async::Future<>;
 
 		auto runUpdateLoop()
-			 -> async::future<>;
+			 -> async::Future<>;
 
 		auto runRenderer()
-			 -> async::future<>;
+			 -> async::Future<>;
 
 		ext::sdl::image_t::rect_t _rect;
 		ext::sdl::image_t::rect_t _output_bounds;

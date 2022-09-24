@@ -13,7 +13,7 @@ namespace mewt::app_type::realtime {
 	}
 
 	auto realtime_app_t::runCore()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 
 		initApp();
@@ -33,14 +33,14 @@ namespace mewt::app_type::realtime {
 	}
 
 	static auto verticalSync()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		// SDL_Delay(1000 / 60);
 		co_await std::suspend_never();
 	}
 
 	auto realtime_app_t::generateFrames(ext::sdl::renderer_t& sdl_renderer)
-		 -> async::generator<int>
+		 -> async::Generator<int>
 	{
 
 		for (;;) {

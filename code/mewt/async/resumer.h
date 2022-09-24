@@ -5,9 +5,9 @@
 
 namespace mewt::async {
 
-	class resumer_t {
+	class Resumer {
 	public:
-		resumer_t(std::coroutine_handle<> coro) noexcept : _coro(coro) {}
+		Resumer(std::coroutine_handle<> coro) noexcept : _coro(coro) {}
 		inline bool await_ready() noexcept { return _coro == nullptr; }
 		inline auto await_suspend(std::coroutine_handle<> continuation) noexcept { return _coro; }
 		inline void await_resume() noexcept {}

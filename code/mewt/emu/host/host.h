@@ -11,24 +11,24 @@ namespace mewt::emu {
 	class IHost
 	{
 	public:
-		struct ConfigT
+		struct Config
 		{
 			gfx::Image::Size display_size;
 		};
 
-		struct FrameT
+		struct Frame
 		{
-			using PixelStoreT = types::Span2dT<types::ColourT, gfx::Image::Width, gfx::Image::Height>;
-			PixelStoreT _pixels;
+			using PixelStore = types::Span2dT<types::Colour, gfx::Image::Width, gfx::Image::Height>;
+			PixelStore _pixels;
 			struct scan_out_t;
 		};
 
-		struct EventsT
+		struct Events
 		{
-			async::EventT<ConfigT> initialising;
-			async::EventT<FrameT> need_frame;
+			async::Event<Config> initialising;
+			async::Event<Frame> need_frame;
 		};
-		EventsT events;
+		Events events;
 
 		void runEmuHost();
 
@@ -37,15 +37,15 @@ namespace mewt::emu {
 	protected:
 		virtual void initHost() = 0;
 
-		ConfigT _host_config;
+		Config _host_config;
 	};
 
-	struct IHost::FrameT::scan_out_t
+	struct IHost::Frame::scan_out_t
 	{
-		const FrameT& _frame;
+		const Frame& _frame;
 		decltype(_frame._pixels.rows().begin()) _row = _frame._pixels.rows().begin();
-		types::ColourT* _pixel = std::addressof(*(*_row).begin());
-		explicit scan_out_t(const FrameT& frame) : _frame(frame) {}
+		types::Colour* _pixel = std::addressof(*(*_row).begin());
+		explicit scan_out_t(const Frame& frame) : _frame(frame) {}
 		inline auto operator*() const -> auto& { return *_pixel; }
 		inline auto operator++() -> auto&
 		{

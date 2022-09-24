@@ -50,9 +50,9 @@ namespace mewt::emu::chip::mos_65xx
 		io_controller_t _io_controller{ *this };
 
 		sid_6581_t(const clock_source_t& clock);
-      async::future<> read_mem();
-      async::future<> run_inst();
-      async::future<> run_gpu();
+      async::Future<> read_mem();
+      async::Future<> run_inst();
+      async::Future<> run_gpu();
    };
 
 }

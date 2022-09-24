@@ -23,13 +23,13 @@ namespace mewt::app::c64_emu {
 	private:
 
 		auto runInput()
-			-> async::future<>;
+			-> async::Future<>;
 
 		auto runUpdater()
-			-> async::future<>;
+			-> async::Future<>;
 
 		auto runRenderer() 
-			-> async::future<>;
+			-> async::Future<>;
 
 		app_type::realtime::realtime_app_t& _app;
 		std::unique_ptr<emu::sys::c64::c64_t> _c64;

@@ -33,7 +33,7 @@ namespace mewt::app::c64_emu {
 	}
 
 	auto EmulatorHost::runRenderer()
-		-> async::future<>
+		-> async::Future<>
 	{
 
 		const auto& init_state = co_await _app.initPhase();
@@ -56,13 +56,13 @@ namespace mewt::app::c64_emu {
 			void* pixels_void = nullptr;
 			int pitch = 0;
 			SDL_LockTexture(sdl_texture.get(), nullptr, &pixels_void, &pitch);
-			auto* pixels = static_cast<types::ColourT*>(pixels_void);
-			auto span = types::Span2dT(pixels, _host_config.display_size._width, _host_config.display_size._height, gfx::Image::Width(pitch / static_cast<int>(sizeof(types::ColourT))));
+			auto* pixels = static_cast<types::Colour*>(pixels_void);
+			auto span = types::Span2dT(pixels, _host_config.display_size._width, _host_config.display_size._height, gfx::Image::Width(pitch / static_cast<int>(sizeof(types::Colour))));
 			//static int kk = 0;
 			//kk++;
 			//for (int i = 0; i < 32 * 32; ++i)
 			//	pixels[i] = i + kk;
-			FrameT frame{ ._pixels = span };
+			Frame frame{ ._pixels = span };
 			events.need_frame.dispatch(frame);
 			SDL_UnlockTexture(sdl_texture.get());
 			const auto& render_data = co_await _app.renderPhase();
@@ -71,20 +71,20 @@ namespace mewt::app::c64_emu {
 	}
 
 	auto EmulatorHost::runInput()
-		-> async::future<>
+		-> async::Future<>
 	{
 		for (;;) {
 			auto input_event = co_await _app.eventManager().keyboard_event();
 			switch (input_event.event_type()) {
-			case ext::sdl::keyboard_event_t::event_type_t::KeyDown:
-			case ext::sdl::keyboard_event_t::event_type_t::KeyUp:
+			case ext::sdl::KeyboardEvent::EventType::KeyDown:
+			case ext::sdl::KeyboardEvent::EventType::KeyUp:
 				break;
 			}
 		}
 	}
 
 	auto EmulatorHost::runUpdater()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		for (;;) {
 			co_await _app.updatePhase();

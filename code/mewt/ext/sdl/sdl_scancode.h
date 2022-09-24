@@ -3,7 +3,7 @@
 
 namespace mewt::ext::sdl::keyboard {
 
-	enum class scancode_t {
+	enum class Scancode {
 
 		Unknown = 0,
 

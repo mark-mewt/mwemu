@@ -3,7 +3,7 @@
 
 namespace mewt::async {
 
-	template <typename _ReturnType = void>
-	struct future;
+	template <typename TReturnType = void>
+	struct Future;
 
 }

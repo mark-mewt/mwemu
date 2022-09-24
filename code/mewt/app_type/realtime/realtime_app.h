@@ -23,13 +23,13 @@ namespace mewt::app_type::realtime {
 		class state_t;
 
 		auto runCore()
-			 -> async::future<>;
+			 -> async::Future<>;
 
 		template <std::derived_from<realtime_app_t> TApp>
 		inline friend void runApp(const os::app_context_i& app_context, types::ClassId<TApp> /*unused*/);
 
 		inline auto phaseManager() -> phase_manager_t& { return _phase_manager; }
-		inline auto eventManager() -> ext::sdl::event_manager_t& { return _event_manager; }
+		inline auto eventManager() -> ext::sdl::EventManager& { return _event_manager; }
 
 		inline auto initPhase();
 		inline auto updatePhase();
@@ -43,10 +43,10 @@ namespace mewt::app_type::realtime {
 		explicit realtime_app_t(phase_manager_t& phase_manager);
 
 		phase_manager_t& _phase_manager;
-		ext::sdl::event_manager_t _event_manager;
+		ext::sdl::EventManager _event_manager;
 
 		static auto generateFrames(ext::sdl::renderer_t& sdl_renderer)
-			 -> async::generator<int>;
+			 -> async::Generator<int>;
 	};
 
 }

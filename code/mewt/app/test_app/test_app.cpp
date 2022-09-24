@@ -45,7 +45,7 @@ namespace mewt::app::test_app {
 	}
 
 	auto TestApp::runRenderer()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 
 		const auto& init_state = co_await phaseManager().phase<PhaseType::Init>();
@@ -93,32 +93,32 @@ namespace mewt::app::test_app {
 	}
 
 	auto TestApp::runInputLoop()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		for (;;) {
 			auto input_event = co_await eventManager().keyboard_event();
 			bool pressed = false;
 			switch (input_event.event_type()) {
 
-			case ext::sdl::keyboard_event_t::event_type_t::KeyDown:
+			case ext::sdl::KeyboardEvent::EventType::KeyDown:
 				pressed = true;
-			case ext::sdl::keyboard_event_t::event_type_t::KeyUp:
+			case ext::sdl::KeyboardEvent::EventType::KeyUp:
 				// keyboard API for key pressed
 				switch (input_event.scancode()) {
-				case ext::sdl::keyboard::scancode_t::W:
-				case ext::sdl::keyboard::scancode_t::Up:
+				case ext::sdl::keyboard::Scancode::W:
+				case ext::sdl::keyboard::Scancode::Up:
 					_keypresses[Keypress::Up] = pressed;
 					break;
-				case ext::sdl::keyboard::scancode_t::A:
-				case ext::sdl::keyboard::scancode_t::Left:
+				case ext::sdl::keyboard::Scancode::A:
+				case ext::sdl::keyboard::Scancode::Left:
 					_keypresses[Keypress::Left] = pressed;
 					break;
-				case ext::sdl::keyboard::scancode_t::S:
-				case ext::sdl::keyboard::scancode_t::Down:
+				case ext::sdl::keyboard::Scancode::S:
+				case ext::sdl::keyboard::Scancode::Down:
 					_keypresses[Keypress::Down] = pressed;
 					break;
-				case ext::sdl::keyboard::scancode_t::D:
-				case ext::sdl::keyboard::scancode_t::Right:
+				case ext::sdl::keyboard::Scancode::D:
+				case ext::sdl::keyboard::Scancode::Right:
 					_keypresses[Keypress::Right] = pressed;
 					break;
 				default:
@@ -130,7 +130,7 @@ namespace mewt::app::test_app {
 	}
 
 	auto TestApp::runUpdateLoop()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		using ext::sdl::image_t;
 		// speed of box

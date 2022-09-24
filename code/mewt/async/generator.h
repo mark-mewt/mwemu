@@ -9,14 +9,16 @@
 namespace mewt::async {
 
 	template <typename _ReturnType>
-	struct generator {
+	class Generator {
+
+		public:
 
 		struct promise_type;
 		using generator_coro_handle_t = std::coroutine_handle<promise_type>;
 
 		struct promise_type : types::non_movable_t {
 
-			inline generator<_ReturnType> get_return_object() noexcept { return generator_coro_handle_t::from_promise(*this); }
+			inline Generator<_ReturnType> get_return_object() noexcept { return generator_coro_handle_t::from_promise(*this); }
 
 			inline void unhandled_exception() noexcept { _exception = std::current_exception(); }
 
@@ -26,7 +28,7 @@ namespace mewt::async {
 			{
 				if (_generator)
 					_generator->_is_finished = true;
-				return resumer_t(_continuation);
+				return Resumer(_continuation);
 			}
 
 			inline ~promise_type() { }
@@ -38,11 +40,11 @@ namespace mewt::async {
 			template<typename _From>
 			auto yield_value(_From&& from) {
 				_value = std::forward<_From>(from);
-				return resumer_t(_continuation);
+				return Resumer(_continuation);
 			}
 	 
 			// Pointer to the future. The future itself will update this on construction, destruction, and whenever it moves.
-			generator* _generator = nullptr;
+			Generator* _generator = nullptr;
 
 			// The continuation to allow us to resume the caller when we are done.
 			std::coroutine_handle<> _continuation;
@@ -52,17 +54,17 @@ namespace mewt::async {
 
 		};
 
-		inline generator(generator_coro_handle_t generator_coro) noexcept : _generator_coro(generator_coro) { promise()._generator = this; }
+		inline Generator(generator_coro_handle_t generator_coro) noexcept : _generator_coro(generator_coro) { promise()._generator = this; }
 
 		// If the generator moves, we must inform the promise of our new location.
-		inline generator(generator&& rhs) noexcept : _generator_coro(rhs._generator_coro) {
+		inline Generator(Generator&& rhs) noexcept : _generator_coro(rhs._generator_coro) {
 			rhs._generator_coro = {};
 			if (!is_finished())
 				promise()._generator = this;
 		}
 
 		// If the generator is destroyed before the promise, we must tell it.
-		inline ~generator() noexcept {
+		inline ~Generator() noexcept {
 			if (!is_finished())
 				promise()._generator = nullptr;
 			_generator_coro.destroy();
@@ -88,9 +90,9 @@ namespace mewt::async {
 		}
 
 		// We don't allow copying or assignment of the generator.
-		generator(const generator&) = delete;
-		generator& operator=(const generator&) = delete;
-		generator& operator=(generator&&) = delete;
+		Generator(const Generator&) = delete;
+		Generator& operator=(const Generator&) = delete;
+		Generator& operator=(Generator&&) = delete;
 
 	private:
 		// The promise we are linked to.

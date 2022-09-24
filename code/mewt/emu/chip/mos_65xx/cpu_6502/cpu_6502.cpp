@@ -35,7 +35,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::read_data(Address address)
-		 -> async::future<Data>
+		 -> async::Future<Data>
 	{
 		co_await _clock.nextTick();
 		auto data = _memory_interface.read(address);
@@ -44,7 +44,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::read_address(Address address)
-		 -> async::future<Address>
+		 -> async::Future<Address>
 	{
 		// logger().log("%s: %d", __FUNCTION__, 0);
 		Address low = co_await read_data(address);
@@ -53,7 +53,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::read_address_zp(Data offset)
-		 -> async::future<Address>
+		 -> async::Future<Address>
 	{
 		// logger().log("%s: %d", __FUNCTION__, 0);
 		Address low = co_await read_data(offset);
@@ -62,7 +62,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::write_data(Address address, Data data)
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		// logger().log("[0x%04X] <- 0x%02X", address, data);
 		co_await _clock.nextTick();
@@ -73,13 +73,13 @@ namespace mewt::emu::chip::mos_65xx
 	{
 	public:
 		explicit InstructionUnit(cpu_6502_t& cpu) : _cpu(cpu) {}
-		auto fetch() -> async::future<>;
-		auto handleBranch() -> async::future<bool>;
-		auto loadSource() -> async::future<Data>;
+		auto fetch() -> async::Future<>;
+		auto handleBranch() -> async::Future<bool>;
+		auto loadSource() -> async::Future<Data>;
 		auto loadReference() -> Data;
 		void execute(Data& val, Data ref);
 		void processFlags(bool carry_flag, bool overflow_flag, Data val);
-		auto storeResult(Data val) -> async::future<>;
+		auto storeResult(Data val) -> async::Future<>;
 
 	private:
 		cpu_6502_t& _cpu;
@@ -92,7 +92,7 @@ namespace mewt::emu::chip::mos_65xx
 	};
 
 	auto cpu_6502_t::InstructionUnit::fetch()
-		-> async::future<>
+		-> async::Future<>
 	{
 		_inst_code = co_await _cpu.read_data(_cpu._pc);
 		_inst = std::addressof(cpu_6502::getInstructions()[_inst_code]);
@@ -117,7 +117,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::InstructionUnit::handleBranch()
-		-> async::future<bool>
+		-> async::Future<bool>
 	{
 		co_await std::suspend_never(); // mwToDo: Get rid, fix clang static analysis errors
 		if (_inst->is_branch())
@@ -139,7 +139,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::InstructionUnit::loadSource()
-		-> async::future<Data>
+		-> async::Future<Data>
 	{
 		co_await std::suspend_never();	// mwToDo: Get rid, fix clang static analysis errors
 		using cpu_6502::data_loc_t;
@@ -321,7 +321,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 	
 	auto cpu_6502_t::InstructionUnit::storeResult(Data val) 
-		-> async::future<>
+		-> async::Future<>
 	{
 		using cpu_6502::data_loc_t;
 		switch (_inst->dest)
@@ -373,7 +373,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::run_inst()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 #if 1
 		InstructionUnit unit(*this);
@@ -665,7 +665,7 @@ namespace mewt::emu::chip::mos_65xx
 	constexpr Address kInitialJumpLocation = 0xfffc;
 
 	auto cpu_6502_t::run_cpu()
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		_pc = co_await read_address(kInitialJumpLocation);
 		//logger().log("%s: %d", __FUNCTION__, 0);
@@ -676,7 +676,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::handle_branch(cpu_6502::Instruction::Branch::Op inst, Data imm_low)
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		bool take_branch = false;
 		using Op = cpu_6502::Instruction::Branch::Op;
@@ -716,7 +716,7 @@ namespace mewt::emu::chip::mos_65xx
 
 
 	auto cpu_6502_t::handle_call(cpu_6502::Instruction::Call::Op inst, Data imm_low, Data imm_high)
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		using Op = cpu_6502::Instruction::Call::Op;
 		switch (inst)
@@ -741,7 +741,7 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::handle_jump(cpu_6502::Instruction::Jump::Op inst, Address imm_addr)
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		using Op = cpu_6502::Instruction::Jump::Op;
 		switch (inst)
@@ -760,14 +760,14 @@ namespace mewt::emu::chip::mos_65xx
 	constexpr Address kStackStart = 0x100;
 
 	auto cpu_6502_t::push(Data data)
-		 -> async::future<>
+		 -> async::Future<>
 	{
 		auto stack = _reg_s--;
 		co_await write_data(kStackStart + stack, data);
 	}
 
 	auto cpu_6502_t::pop()
-		 -> async::future<Data>
+		 -> async::Future<Data>
 	{
 		auto stack = ++_reg_s;
 		co_return co_await read_data(kStackStart + stack);

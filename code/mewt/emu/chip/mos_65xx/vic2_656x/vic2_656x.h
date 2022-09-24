@@ -116,7 +116,7 @@ namespace mewt::emu::chip::mos_65xx
 		IoControllerT _io_controller{ *this };
 
 		//vic2_656x_t(const clock_source_t& clock);//, vic2_model_t model);
-		auto runGpu(IHost& host) -> async::future<>;
+		auto runGpu(IHost& host) -> async::Future<>;
 
 		//gfx::image_t::size_t display_size() const;
 
@@ -126,10 +126,10 @@ namespace mewt::emu::chip::mos_65xx
 		virtual auto getConfig() const -> const vic2_config_t& = 0;
 
 	private:
-		auto readMem() -> async::future<>;
-		auto runFrame() -> async::future<>;
-		auto runScanline(uint16_t raster_y) -> async::future<>;
-		void generateFrame(IHost::FrameT& frame);
+		auto readMem() -> async::Future<>;
+		auto runFrame() -> async::Future<>;
+		auto runScanline(uint16_t raster_y) -> async::Future<>;
+		void generateFrame(IHost::Frame& frame);
 
 		chip::clock_source_t _cpu_clock;
 

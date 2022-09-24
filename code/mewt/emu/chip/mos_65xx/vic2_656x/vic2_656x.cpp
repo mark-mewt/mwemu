@@ -95,7 +95,7 @@ namespace mewt::emu::chip::mos_65xx
 
 	*/
 
-	static const types::ColourT vic2_colours[] = {
+	static const types::Colour vic2_colours[] = {
 		{ 0x00, 0x00, 0x00 },
 		{ 0xff, 0xff, 0xff },
 		{ 0x9f, 0x4e, 0x44 },
@@ -118,10 +118,10 @@ namespace mewt::emu::chip::mos_65xx
 	{
 	public:
 		VicII(vic2_config_t config);
-		void generate_frame(IHost::FrameT::scan_out_t pixels);
+		void generate_frame(IHost::Frame::scan_out_t pixels);
 
 	protected:
-		void generate_scanline(IHost::FrameT::scan_out_t& pixels);
+		void generate_scanline(IHost::Frame::scan_out_t& pixels);
 
 	private:
 		vic2_config_t _config;
@@ -131,23 +131,23 @@ namespace mewt::emu::chip::mos_65xx
 		 : _config(config) {
 	}
 
-	void VicII::generate_frame(IHost::FrameT::scan_out_t pixels) {
+	void VicII::generate_frame(IHost::Frame::scan_out_t pixels) {
 		while (!pixels.isEndOfFrame())
 			generate_scanline(pixels);
 	}
 
-	void VicII::generate_scanline(IHost::FrameT::scan_out_t& pixels) {
+	void VicII::generate_scanline(IHost::Frame::scan_out_t& pixels) {
 		for (uint16_t cycle_x = 0; cycle_x < _config._cycles_per_scanline; ++cycle_x) {
 		}
 	}
 
-	void vic2_656x_t::generateFrame(IHost::FrameT& frame) {
+	void vic2_656x_t::generateFrame(IHost::Frame& frame) {
 		const auto& config = getConfig();
 		bool scanline_visible = false;
 		bool raster_visible = false;
 
 		auto output_rows = frame._pixels.rows().begin();
-		types::ColourT* current_pixel = nullptr;
+		types::Colour* current_pixel = nullptr;
 
 		bool main_border_flip_flop = true;
 		bool vert_border_flip_flop = true;
@@ -266,7 +266,7 @@ namespace mewt::emu::chip::mos_65xx
 		//}
 	}
 
-	async::future<> vic2_656x_t::runGpu(IHost& host)
+	async::Future<> vic2_656x_t::runGpu(IHost& host)
    {
 
 		auto& config = co_await host.events.initialising;

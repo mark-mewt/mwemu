@@ -10,11 +10,11 @@
 
 namespace mewt::async {
 
-	template <typename _EventData>
-	class EventT
+	template <typename TEventData>
+	class Event
 	{
 	public:
-		void dispatch(_EventData& event_data) {
+		void dispatch(TEventData& event_data) {
 			_event_data = &event_data;
 			auto dispatch_stack = std::move(_handlers);
 			while (!dispatch_stack.isEmpty()) {
@@ -24,31 +24,41 @@ namespace mewt::async {
 			_event_data = nullptr;
 		}
 
-	protected:
-		struct handler_t;
-		_EventData* _event_data = nullptr;
-		IntrusiveStack<handler_t> _handlers;
+	private:
+		class Handler;
+		TEventData* _event_data = nullptr;
+		IntrusiveStack<Handler> _handlers;
 
-		struct handler_t : public IntrusiveStack<handler_t>::Node {
-			explicit handler_t(EventT& event) : _event(event) {}
-			inline auto await_ready() -> bool { return false; }
-			inline auto await_suspend(std::coroutine_handle<> continuation) -> bool
+		class Handler : public IntrusiveStack<Handler>::Node {
+		public:
+			explicit Handler(Event& event) : _event(event) {}
+			inline auto await_ready() // NOLINT(readability-identifier-naming)
+				-> bool
+			{
+				return false;
+			}
+			inline auto await_suspend(std::coroutine_handle<> continuation) // NOLINT(readability-identifier-naming)
+				-> bool
 			{
 				_continuation = continuation;
 				_event._handlers.push(*this);
 				return true;
 			}
-			inline auto await_resume() -> decltype(auto)
+			inline auto await_resume() // NOLINT(readability-identifier-naming)
+				-> decltype(auto)
 			{
 				if (!this->_event._event_data)
 					throw std::exception();
 				return *this->_event._event_data;
 			}
-			EventT& _event;
+
+		private:
+			Event& _event;
 			std::coroutine_handle<> _continuation;
+			friend Event;
 		};
 
 	public:
-		inline auto operator co_await() { return handler_t(*this); }
+		inline auto operator co_await() { return Handler(*this); }
 	};
 }

@@ -43,19 +43,19 @@ namespace mewt::emu::chip::mos_65xx
 
    public:
       cpu_6502_t(const clock_source_t& clock, MemoryInterface& memory_interface);
-      async::future<Data> read_data(Address address);
-      async::future<Address> read_address(Address address);
-      async::future<Address> read_address_zp(Data offset);
-      async::future<> write_data(Address address, Data data);
-      async::future<> run_inst();
-      async::future<> run_cpu();
+      async::Future<Data> read_data(Address address);
+      async::Future<Address> read_address(Address address);
+      async::Future<Address> read_address_zp(Data offset);
+      async::Future<> write_data(Address address, Data data);
+      async::Future<> run_inst();
+      async::Future<> run_cpu();
 
-      async::future<> handle_branch(cpu_6502::Instruction::Branch::Op inst, Data imm_low);
-		async::future<> handle_call(cpu_6502::Instruction::Call::Op inst, Data imm_low, Data imm_high);
-		async::future<> handle_jump(cpu_6502::Instruction::Jump::Op inst, Address imm_addr);
+      async::Future<> handle_branch(cpu_6502::Instruction::Branch::Op inst, Data imm_low);
+		async::Future<> handle_call(cpu_6502::Instruction::Call::Op inst, Data imm_low, Data imm_high);
+		async::Future<> handle_jump(cpu_6502::Instruction::Jump::Op inst, Address imm_addr);
 
-      async::future<> push(Data data);
-      async::future<Data> pop();
+      async::Future<> push(Data data);
+      async::Future<Data> pop();
 
    };
 

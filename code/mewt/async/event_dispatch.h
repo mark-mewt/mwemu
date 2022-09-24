@@ -1,20 +1,21 @@
 
 #pragma once
 
-#include "mewt/types/enum_traits.h"
 #include "mewt/types/coroutine.h"
-#include "mewt/types/intrusive_stack.h"
+#include "mewt/types/enum_traits.h"
 #include "mewt/types/flags.h"
+#include "mewt/types/intrusive_stack.h"
 
 #include <exception>
 
 namespace mewt::async {
 
-	template <typename _EventData, typename _EventTypes, template <_EventTypes> class _DataType>
-	class event_dispatch_t {
+	template <typename TEventData, typename TEventTypes, template <TEventTypes> class TDataType>
+	class EventDispatch {
 	public:
-		using event_types_t = types::flags<_EventTypes>;
-		void dispatch(event_types_t event_types, const _EventData& event_data) {
+		using EventTypes = types::flags<TEventTypes>;
+		void dispatch(EventTypes event_types, const TEventData& event_data)
+		{
 			_event_data = &event_data;
 			auto dispatch_stack = std::move(_handlers);
 			while (!dispatch_stack.isEmpty()) {
@@ -27,31 +28,44 @@ namespace mewt::async {
 			_event_data = nullptr;
 		}
 
-	protected:
-		const _EventData* _event_data = nullptr;
-		struct Handler;
+	private:
+		const TEventData* _event_data = nullptr;
+		class Handler;
 		IntrusiveStack<Handler> _handlers;
-		struct Handler : public IntrusiveStack<Handler>::Node {
-			Handler(event_dispatch_t& event_dispatch, event_types_t event_types) : _event_dispatch(event_dispatch), _event_types(event_types) {}
-			inline bool await_ready() { return false; }
-			inline bool await_suspend(std::coroutine_handle<> continuation) {
+		class Handler : public IntrusiveStack<Handler>::Node
+		{
+		public:
+			Handler(EventDispatch& event_dispatch, EventTypes event_types) : _event_dispatch(event_dispatch), _event_types(event_types) {}
+			inline auto await_ready() // NOLINT(readability-identifier-naming)
+				-> bool
+			{
+				return false;
+			}
+			inline auto await_suspend(std::coroutine_handle<> continuation) // NOLINT(readability-identifier-naming)
+				 -> bool
+			{
 				_continuation = continuation;
 				_event_dispatch._handlers.push(*this);
 				return true;
 			}
-			event_dispatch_t& _event_dispatch;
-			event_types_t _event_types;
+
+		private:
+			friend EventDispatch;
+			EventDispatch& _event_dispatch;
+			EventTypes _event_types;
 			std::coroutine_handle<> _continuation;
 		};
 
 	public:
-		template <_EventTypes _Event>
-		struct single_handler_t : public Handler {
-			inline single_handler_t(event_dispatch_t& event_dispatch) : Handler(event_dispatch, event_types_t(_Event)) {}
-			inline decltype(auto) await_resume() {
+		template <TEventTypes NEvent>
+		struct SingleHandler : public Handler {
+			inline explicit SingleHandler(EventDispatch& event_dispatch) : Handler(event_dispatch, EventTypes(NEvent)) {}
+			inline auto await_resume() // NOLINT(readability-identifier-naming)
+				 -> decltype(auto)
+			{
 				if (!this->_event_dispatch._event_data)
 					throw std::exception();
-				return static_cast<typename _DataType<_Event>::type>(*this->_event_dispatch._event_data);
+				return static_cast<typename TDataType<NEvent>::Type>(*this->_event_dispatch._event_data);
 			}
 		};
 	};
