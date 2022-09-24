@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "mewt/types/flags.decl.h"
 #include "mewt/types/concepts.h"
 #include "mewt/types/int_types.h"
 #include "mewt/types/traits.h"
@@ -8,16 +9,13 @@
 namespace mewt::types
 {
 
-	template <IS_Enum _Enum>
-	class flags;
-
-	template <IS_Enum _Enum>
+	template <typename _Enum>
 	struct FlagsTraits : public DefaultTraits<flags<_Enum>>
 	{
 		constexpr static int BitCount = sizeof(std::underlying_type_t<_Enum>) * 8;
 	};
 
-	template <IS_Enum _Enum>
+	template <typename _Enum>
 	constexpr auto getTypeTraits(types::ClassId<flags<_Enum>>) -> types::ClassId<FlagsTraits<_Enum>>;
 
 	struct NoFlags
@@ -27,9 +25,11 @@ namespace mewt::types
 	template<typename _Type>
 	struct type_tester;
 
-	template <IS_Enum _Enum>
+	template <typename _Enum>
 	class flags
 	{
+
+		static_assert(isEnum<_Enum>, "Only enum types allowed in flags.");
 
 		//type_tester<decltype(types::dummy_arg<flags>())> _tester1;
 		//type_tester<flags> _tester2;
@@ -83,7 +83,7 @@ namespace mewt::types
 		Data _bits = 0;
 	};
 
-	template<IS_Enum _Enum>
+	template <typename _Enum>
 	constexpr auto operator|(_Enum lhs, _Enum rhs) { return flags(lhs) | rhs; }
 
 }

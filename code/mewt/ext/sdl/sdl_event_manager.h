@@ -57,7 +57,7 @@ namespace mewt::ext::sdl {
 		using EventDispatch = async::EventDispatch<SDL_Event, EventType, EventDataType>;
 		EventDispatch _event_dispatch;
 		async::Future<> pump();
-		auto keyboard_event() { return EventDispatch::SingleHandler<EventType::Keyboard>(_event_dispatch); }
+		inline auto keyboard_event();
 	};
 
 }

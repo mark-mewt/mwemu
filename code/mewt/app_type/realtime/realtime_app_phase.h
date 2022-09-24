@@ -35,10 +35,8 @@ namespace mewt::app_type::realtime {
 		EventDispatch _event_dispatch;
 
 		template <PhaseType NPhase>
-		auto phase() { return EventDispatch::SingleHandler<NPhase>(_event_dispatch); }
-		// auto render_phase() { return event_dispatch_t::single_handler_t<phase_type_t::Render>(_event_dispatch); }
+		inline auto phase();
+
 	};
-
-
 
 }

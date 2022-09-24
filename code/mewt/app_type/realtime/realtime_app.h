@@ -24,6 +24,7 @@ namespace mewt::app_type::realtime {
 
 		auto runCore()
 			 -> async::Future<>;
+		void runCoreUntilSuspend();
 
 		template <std::derived_from<realtime_app_t> TApp>
 		inline friend void runApp(const os::app_context_i& app_context, types::ClassId<TApp> /*unused*/);

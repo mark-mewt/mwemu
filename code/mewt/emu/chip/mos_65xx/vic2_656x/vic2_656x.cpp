@@ -4,6 +4,8 @@
 #include "mewt/emu/chip/clock/clock.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x_config.h"
+#include "mewt/emu/host/host.impl.h"
+#include "mewt/async/event.impl.h"
 
 namespace mewt::emu::chip::mos_65xx
 {

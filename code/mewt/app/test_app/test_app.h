@@ -2,7 +2,6 @@
 #pragma once
 
 #include "mewt/app_type/realtime/realtime_app.h"
-#include "mewt/ext/sdl/sdl_image.h"
 
 namespace mewt::app::test_app
 {
@@ -23,17 +22,8 @@ namespace mewt::app::test_app
 		auto runRenderer()
 			 -> async::Future<>;
 
-		ext::sdl::image_t::rect_t _rect;
-		ext::sdl::image_t::rect_t _output_bounds;
-		enum class Keypress
-		{
-			Up,
-			Down,
-			Left,
-			Right
-		};
-		using Keypresses = types::flags<Keypress>;
-		Keypresses _keypresses{ 0 };
+		struct SharedState;
+		SharedState* _shared_state = nullptr;
 	};
 
 }

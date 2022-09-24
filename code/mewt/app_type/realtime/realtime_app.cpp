@@ -4,6 +4,7 @@
 #include "mewt/app_type/realtime/realtime_app_state.h"
 #include "mewt/async/future_promise.h"
 #include "mewt/async/generator.h"
+#include "mewt/async/event_dispatch.impl.h"
 
 namespace mewt::app_type::realtime {
 
@@ -30,6 +31,16 @@ namespace mewt::app_type::realtime {
 			_phase_manager._event_dispatch.dispatch(PhaseType::Render, app_state);
 			co_await frame_generator;
 		}
+	}
+
+	void realtime_app_t::runCoreUntilSuspend()
+	{
+		auto app_coro = runCore();
+		// mwToDo: The coro will only run until the first suspend point, and then it will bail.
+		// This means if it co_awaits any event that is external to this thread, this will exit.
+		// Ultimately, we want a scheduler here that will allow continuations to be scheduled
+		// back on this thread after such an external event occurs, while we meanwhile wait for
+		// an exit signal to do the real exit.
 	}
 
 	static auto verticalSync()

@@ -3,7 +3,8 @@
 
 #include "mewt/app_type/realtime/realtime_app.decl.h"
 #include "mewt/emu/host/host.h"
-#include "mewt/emu/sys/c64/c64.h"
+#include "mewt/emu/sys/c64/c64.decl.h"
+#include "mewt/async/future_promise.decl.h"
 
 #include <memory>
 
@@ -15,6 +16,8 @@ namespace mewt::app::c64_emu {
 	public:
 
 		explicit EmulatorHost(app_type::realtime::realtime_app_t& app);
+
+		~EmulatorHost();
 
 	protected:
 

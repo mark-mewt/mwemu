@@ -3,7 +3,7 @@
 
 #include "mewt/emu/chip/clock/clock.decl.h"
 #include "mewt/types/coroutine.h"
-#include "mewt/types/intrusive_stack.h"
+#include "mewt/types/intrusive_stack.impl.h" // mwToDo: Fix!
 
 namespace mewt::emu::chip
 {

@@ -1,6 +1,7 @@
 
 #include "mewt/ext/sdl/sdl_event_manager.h"
 #include "mewt/async/future_promise.h"
+#include "mewt/async/event_dispatch.impl.h"
 
 #include "SDL/SDL_events.h"
 

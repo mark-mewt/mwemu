@@ -1,5 +1,6 @@
 
 #include "mewt/emu/host/host.h"
+#include "mewt/async/event.impl.h"
 
 namespace mewt::emu {
 

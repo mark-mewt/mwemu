@@ -1,7 +1,7 @@
 
 #include "mewt/app/c64_emu/c64_emu_host.h"
 #include "mewt/app_type/realtime/realtime_app.impl.h"
-#include "mewt/app_type/realtime/realtime_app_phase.h"
+#include "mewt/app_type/realtime/realtime_app_phase.impl.h"
 #include "mewt/app_type/realtime/realtime_app_state.h"
 #include "mewt/async/future_promise.h"
 #include "mewt/emu/sys/c64/c64_ntsc.h"
@@ -9,6 +9,9 @@
 #include "mewt/ext/sdl/sdl_scancode.h"
 #include "mewt/ext/sdl/sdl_texture.h"
 #include "mewt/types/scale_factor.h"
+#include "mewt/emu/host/host.impl.h"
+#include "mewt/ext/sdl/sdl_event_manager.impl.h"
+#include "mewt/async/event.impl.h"
 
 // mwToDo: Abstract these away
 #include "SDL/SDL_render.h"
@@ -18,6 +21,8 @@ namespace mewt::app::c64_emu {
 	EmulatorHost::EmulatorHost(app_type::realtime::realtime_app_t& app)
 		 : _app(app) {
 	}
+
+	EmulatorHost::~EmulatorHost() = default;
 
 	void EmulatorHost::initHost()
 	{

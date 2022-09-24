@@ -1,12 +1,14 @@
 
 #include "mewt/app/test_app/test_app.h"
-#include "mewt/app_type/realtime/realtime_app_phase.h"
+#include "mewt/app_type/realtime/realtime_app_phase.impl.h"
 #include "mewt/app_type/realtime/realtime_app_state.h"
 #include "mewt/async/future_promise.h"
 #include "mewt/ext/sdl/sdl_scancode.h"
 #include "mewt/ext/sdl/sdl_texture.h"
 #include "mewt/types/scale_factor.h"
+#include "mewt/ext/sdl/sdl_event_manager.impl.h"
 
+#include "mewt/gfx/image.h"
 // mwToDo: Abstract these away
 #include "SDL/SDL_render.h"
 
@@ -36,6 +38,21 @@ namespace mewt::app::test_app {
 		return ext::sdl::image_t::Position{ ._x = ext::sdl::image_t::XPosition(size._width.get()), ._y = ext::sdl::image_t::YPosition(size._height.get()) };
 	}
 
+	enum class Keypress
+	{
+		Up,
+		Down,
+		Left,
+		Right
+	};
+
+	struct TestApp::SharedState
+	{
+		gfx::Image::rect_t _rect;
+		gfx::Image::rect_t _output_bounds;
+		using Keypresses = types::flags<Keypress>;
+		Keypresses _keypresses{ 0 };
+	};
 
 	void TestApp::initApp()
 	{
@@ -66,12 +83,15 @@ namespace mewt::app::test_app {
 
 		texture_t sdl_texture(init_state.renderer(), texture_config);
 
+		SharedState sharedState;
+		_shared_state = std::addressof(sharedState);
+
 		// let us control our image position
 		// so that we can move it with our keyboard.
 		auto texture_size = sdl_texture.get_config()._size;
-		_output_bounds = init_state.renderer().get_output_bounds();
-		_rect = {
-			._position = sizeToPosition(componentwiseScale(componentwiseSubtract(_output_bounds._size, texture_size), types::scale_factor_t::Half())),
+		_shared_state->_output_bounds = init_state.renderer().get_output_bounds();
+		_shared_state->_rect = {
+			._position = sizeToPosition(componentwiseScale(componentwiseSubtract(_shared_state->_output_bounds._size, texture_size), types::scale_factor_t::Half())),
 			._size = texture_size
 		};
 
@@ -88,7 +108,7 @@ namespace mewt::app::test_app {
 				pixels[i] = i + rolling_offset;
 			SDL_UnlockTexture(sdl_texture.get());
 			const auto& render_data = co_await phaseManager().phase<PhaseType::Render>();
-			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = _rect });
+			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = _shared_state->_rect });
 		}
 	}
 
@@ -107,19 +127,19 @@ namespace mewt::app::test_app {
 				switch (input_event.scancode()) {
 				case ext::sdl::keyboard::Scancode::W:
 				case ext::sdl::keyboard::Scancode::Up:
-					_keypresses[Keypress::Up] = pressed;
+					_shared_state->_keypresses[Keypress::Up] = pressed;
 					break;
 				case ext::sdl::keyboard::Scancode::A:
 				case ext::sdl::keyboard::Scancode::Left:
-					_keypresses[Keypress::Left] = pressed;
+					_shared_state->_keypresses[Keypress::Left] = pressed;
 					break;
 				case ext::sdl::keyboard::Scancode::S:
 				case ext::sdl::keyboard::Scancode::Down:
-					_keypresses[Keypress::Down] = pressed;
+					_shared_state->_keypresses[Keypress::Down] = pressed;
 					break;
 				case ext::sdl::keyboard::Scancode::D:
 				case ext::sdl::keyboard::Scancode::Right:
-					_keypresses[Keypress::Right] = pressed;
+					_shared_state->_keypresses[Keypress::Right] = pressed;
 					break;
 				default:
 					break;
@@ -141,28 +161,28 @@ namespace mewt::app::test_app {
 		};
 		for (;;) {
 			co_await phaseManager().phase<PhaseType::Update>();
-			if (_keypresses[Keypress::Up])
-				_rect._position._y -= frame_delta._height;
-			if (_keypresses[Keypress::Left])
-				_rect._position._x -= frame_delta._width;
-			if (_keypresses[Keypress::Down])
-				_rect._position._y += frame_delta._height;
-			if (_keypresses[Keypress::Right])
-				_rect._position._x += frame_delta._width;
-			if (_rect.right() > _output_bounds.right())
-				_rect._position._x = _output_bounds.right() - _rect._size._width; // mwToDo: dest.right() = output_bounds.right() - dest.width()
+			if (_shared_state->_keypresses[Keypress::Up])
+				_shared_state->_rect._position._y -= frame_delta._height;
+			if (_shared_state->_keypresses[Keypress::Left])
+				_shared_state->_rect._position._x -= frame_delta._width;
+			if (_shared_state->_keypresses[Keypress::Down])
+				_shared_state->_rect._position._y += frame_delta._height;
+			if (_shared_state->_keypresses[Keypress::Right])
+				_shared_state->_rect._position._x += frame_delta._width;
+			if (_shared_state->_rect.right() > _shared_state->_output_bounds.right())
+				_shared_state->_rect._position._x = _shared_state->_output_bounds.right() - _shared_state->_rect._size._width; // mwToDo: dest.right() = output_bounds.right() - dest.width()
 
 			// left boundary
-			if (_rect.left() < _output_bounds.left())
-				_rect._position._x = _output_bounds.left();
+			if (_shared_state->_rect.left() < _shared_state->_output_bounds.left())
+				_shared_state->_rect._position._x = _shared_state->_output_bounds.left();
 
 			// bottom boundary
-			if (_rect.bottom() > _output_bounds.bottom())
-				_rect._position._y = _output_bounds.bottom() - _rect._size._height;
+			if (_shared_state->_rect.bottom() > _shared_state->_output_bounds.bottom())
+				_shared_state->_rect._position._y = _shared_state->_output_bounds.bottom() - _shared_state->_rect._size._height;
 
 			// upper boundary
-			if (_rect.top() < _output_bounds.top())
-				_rect._position._y = _output_bounds.top();
+			if (_shared_state->_rect.top() < _shared_state->_output_bounds.top())
+				_shared_state->_rect._position._y = _shared_state->_output_bounds.top();
 		}
 	}
 

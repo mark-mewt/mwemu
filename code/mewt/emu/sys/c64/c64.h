@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "mewt/emu/sys/c64/c64.decl.h"
 #include "mewt/emu/mem/rom/fixed_size_rom.h"
 #include "mewt/emu/mem/ram/fixed_size_ram.h"
 #include "mewt/emu/chip/mos_65xx/cpu_6510/cpu_6510.h"
