@@ -16,13 +16,13 @@
 // mwToDo: Abstract these away
 #include "SDL/SDL_render.h"
 
-namespace mewt::app::c64_emu {
+namespace mewt::app::c64_emu
+{
 
 	EmulatorHost::EmulatorHost(app_type::realtime::realtime_app_t& app)
-		 : _app(app) {
+		 : _app(app)
+	{
 	}
-
-	EmulatorHost::~EmulatorHost() = default;
 
 	void EmulatorHost::initHost()
 	{
@@ -34,11 +34,11 @@ namespace mewt::app::c64_emu {
 			_c64 = std::make_unique<emu::sys::c64::c64_pal_t>();
 		else
 			_c64 = std::make_unique<emu::sys::c64::c64_ntsc_t>();
-		_c64->init_sys(*this);
+		_c64->initSys(*this);
 	}
 
 	auto EmulatorHost::runRenderer()
-		-> async::Future<>
+		 -> async::Future<>
 	{
 
 		const auto& init_state = co_await _app.initPhase();
@@ -49,26 +49,27 @@ namespace mewt::app::c64_emu {
 		texture_config_t texture_config{
 			._format = pixel_format_t::coded<pixel_format_t::preset_t::ARGB8888>(),
 			._access = texture_config_t::access_t::Streaming,
-			._size = _host_config.display_size
+			._size = hostConfig().display_size
 		};
 
 		texture_t sdl_texture(init_state.renderer(), texture_config);
 
 		auto output_bounds = init_state.renderer().get_output_bounds();
 
-		for (;;) {
+		for (;;)
+		{
 			co_await _app.updatePhase();
 			void* pixels_void = nullptr;
 			int pitch = 0;
 			SDL_LockTexture(sdl_texture.get(), nullptr, &pixels_void, &pitch);
 			auto* pixels = static_cast<types::Colour*>(pixels_void);
-			auto span = types::Span2dT(pixels, _host_config.display_size._width, _host_config.display_size._height, gfx::Image::Width(pitch / static_cast<int>(sizeof(types::Colour))));
-			//static int kk = 0;
-			//kk++;
-			//for (int i = 0; i < 32 * 32; ++i)
+			auto span = types::Span2dT(pixels, hostConfig().display_size._width, hostConfig().display_size._height, gfx::Image::Width(pitch / static_cast<int>(sizeof(types::Colour))));
+			// static int kk = 0;
+			// kk++;
+			// for (int i = 0; i < 32 * 32; ++i)
 			//	pixels[i] = i + kk;
 			Frame frame{ ._pixels = span };
-			events.need_frame.dispatch(frame);
+			events().need_frame.dispatch(frame);
 			SDL_UnlockTexture(sdl_texture.get());
 			const auto& render_data = co_await _app.renderPhase();
 			render_data.renderer().copy(sdl_texture, { ._src = std::nullopt, ._dest = output_bounds });
@@ -76,11 +77,13 @@ namespace mewt::app::c64_emu {
 	}
 
 	auto EmulatorHost::runInput()
-		-> async::Future<>
+		 -> async::Future<>
 	{
-		for (;;) {
-			auto input_event = co_await _app.eventManager().keyboard_event();
-			switch (input_event.event_type()) {
+		for (;;)
+		{
+			auto input_event = co_await _app.eventManager().keyboardEvent();
+			switch (input_event.eventType())
+			{
 			case ext::sdl::KeyboardEvent::EventType::KeyDown:
 			case ext::sdl::KeyboardEvent::EventType::KeyUp:
 				break;
@@ -91,7 +94,8 @@ namespace mewt::app::c64_emu {
 	auto EmulatorHost::runUpdater()
 		 -> async::Future<>
 	{
-		for (;;) {
+		for (;;)
+		{
 			co_await _app.updatePhase();
 		}
 	}

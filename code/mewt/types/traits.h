@@ -3,42 +3,44 @@
 
 #include <utility>
 
-namespace mewt::types {
+namespace mewt::types
+{
 
-	template <typename _Type>
-		requires(std::is_same_v<_Type, std::decay_t<_Type>>)
+	template <typename TType>
+		requires(std::is_same_v<TType, std::decay_t<TType>>)
 	struct DefaultTraits
 	{
 	};
 
-	template <typename _Type>
-		requires(std::is_same_v<_Type, std::decay_t<_Type>>)
+	template <typename TType>
+		requires(std::is_same_v<TType, std::decay_t<TType>>)
 	struct ClassId
 	{
-		using Type = _Type;
+		using Type = TType;
 	};
-	template <typename _Type>
-	using ClassIdOf = ClassId<std::decay_t<_Type>>;
+	template <typename TType>
+	using ClassIdOf = ClassId<std::decay_t<TType>>;
 
-	template <typename _Type>
-	constexpr auto getTypeTraits(ClassId<_Type>) -> ClassId<DefaultTraits<_Type>>;
+	template <typename TType>
+	constexpr auto getTypeTraits(ClassId<TType>) -> ClassId<DefaultTraits<TType>>;
 
-	template <typename _Type>
-	constexpr auto dummyArg() -> _Type;
+	template <typename TType>
+	constexpr auto dummyArg() -> TType;
 
-	namespace adl {
-		template <typename _Type>
+	namespace adl
+	{
+		template <typename TType>
 		struct TraitDetector
 		{
-			using Traits = typename decltype(getTypeTraits(ClassIdOf<_Type>()))::Type;
+			using Traits = typename decltype(getTypeTraits(ClassIdOf<TType>()))::Type;
 		};
 	}
 
-	template <typename _Type>
-	using Traits = typename adl::TraitDetector<_Type>::Traits;
-	//struct traits : public default_traits<_Type> {
-	//};
+	template <typename TType>
+	using Traits = typename adl::TraitDetector<TType>::Traits;
+	// struct traits : public default_traits<_Type> {
+	// };
 
-	template <typename _Type>
-	constexpr _Type copyOf(const _Type& object) { return object; }
+	template <typename TType>
+	constexpr auto copyOf(const TType& object) -> TType { return object; }
 }

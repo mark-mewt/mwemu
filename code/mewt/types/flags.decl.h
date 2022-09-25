@@ -4,7 +4,7 @@
 namespace mewt::types
 {
 
-	template <typename _Enum>
+	template <typename TEnum>
 	class flags;
 
 }

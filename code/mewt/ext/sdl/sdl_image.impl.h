@@ -7,19 +7,23 @@
 
 #include <optional>
 
-namespace mewt::ext::sdl {
+namespace mewt::ext::sdl
+{
 
-	static auto proxy_sdl_rect(const std::optional<image_t::rect_t>& rect) {
-		struct proxy_t {
-			const std::optional<image_t::rect_t>& _rect;
+	static auto proxy_sdl_rect(const std::optional<image_t::Rect>& rect)
+	{
+		struct proxy_t
+		{
+			const std::optional<image_t::Rect>& _rect;
 			SDL_Rect _sdl_rect;
-			inline operator SDL_Rect*() && {
+			inline operator SDL_Rect*() &&
+			{
 				if (!_rect.has_value())
 					return nullptr;
-				_sdl_rect.x = _rect->left().get();
-				_sdl_rect.y = _rect->top().get();
-				_sdl_rect.w = _rect->_size._width.get();
-				_sdl_rect.h = _rect->_size._height.get();
+				_sdl_rect.x = left(*_rect).get();
+				_sdl_rect.y = top(*_rect).get();
+				_sdl_rect.w = _rect->size._width.get();
+				_sdl_rect.h = _rect->size._height.get();
 				return &_sdl_rect;
 			}
 		};

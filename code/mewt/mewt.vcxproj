@@ -186,7 +186,6 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AdditionalIncludeDirectories>$(ProjectDir)..;$(SDL_SDK)\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -358,6 +357,7 @@
     <ClInclude Include="emu\sys\c64\c64.h" />
     <ClInclude Include="emu\sys\c64\c64_ntsc.h" />
     <ClInclude Include="emu\sys\c64\c64_pal.h" />
+    <ClInclude Include="emu\sys\system.h" />
     <ClInclude Include="ext\sdl\sdl_engine.h" />
     <ClInclude Include="ext\sdl\sdl_error.h" />
     <ClInclude Include="ext\sdl\sdl_error.impl.h" />

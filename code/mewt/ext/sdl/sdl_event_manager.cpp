@@ -5,23 +5,28 @@
 
 #include "SDL/SDL_events.h"
 
-namespace mewt::ext::sdl {
+namespace mewt::ext::sdl
+{
 
-	async::Future<> EventManager::pump() {
+	async::Future<> EventManager::pump()
+	{
 		SDL_Event current_event;
-		while (SDL_PollEvent(&current_event)) {
+		while (SDL_PollEvent(&current_event))
+		{
 			if (current_event.type == SDL_QUIT)
 				co_await std::suspend_always();
 			_event_dispatch.dispatch(EventType::Keyboard, current_event);
 		}
 	}
 
-	int Event::sdl_event_type() const {
+	int Event::sdlEventType() const
+	{
 		return _sdl_event.type;
 	}
 
-	keyboard::Scancode KeyboardEvent::scancode() const {
-		return static_cast<keyboard::Scancode>(_sdl_event.key.keysym.scancode);
+	keyboard::Scancode KeyboardEvent::scancode() const
+	{
+		return static_cast<keyboard::Scancode>(sdlEvent().key.keysym.scancode);
 	}
 
 }

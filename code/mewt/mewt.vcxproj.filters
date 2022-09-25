@@ -398,6 +398,9 @@
     <ClInclude Include="types\intrusive_stack.impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="emu\sys\system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="mewt.natvis" />

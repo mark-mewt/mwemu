@@ -60,22 +60,22 @@ namespace mewt::gfx {
 		{
 			Width _width;
 			Height _height;
-			constexpr static void withComponents(auto fn)
+			constexpr static void withComponents(auto func)
 			{
-				fn(&Size::_width);
-				fn(&Size::_height);
+				func(&Size::_width);
+				func(&Size::_height);
 			}
 		};
-		struct rect_t;
+		struct Rect;
 	};
-	struct Image::rect_t
+	struct Image::Rect
 	{
 		Position _position;
-		Size _size;
-		[[nodiscard]] constexpr auto left() const -> auto& { return _position._x; }
-		[[nodiscard]] constexpr auto right() const { return _position._x + _size._width; } // mwToDo: add proxy to non-const version so we can assign to it
-		[[nodiscard]] constexpr auto top() const -> auto& { return _position._y; }
-		[[nodiscard]] constexpr auto bottom() const { return _position._y + _size._height; }
+		Size size;
+		[[nodiscard]] constexpr auto friend left(const Rect& rect) -> auto& { return rect._position._x; }
+		[[nodiscard]] constexpr auto friend right(const Rect& rect) { return rect._position._x + rect.size._width; } // mwToDo: add proxy to non-const version so we can assign to it
+		[[nodiscard]] constexpr auto friend top(const Rect& rect) -> auto& { return rect._position._y; }
+		[[nodiscard]] constexpr auto friend bottom(const Rect& rect) { return rect._position._y + rect.size._height; }
 	};
 	/* constexpr auto operator-(image_t::size_t lhs, image_t::size_t rhs) {
 		auto x = lhs._width - rhs._width;

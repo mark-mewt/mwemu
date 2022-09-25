@@ -15,11 +15,14 @@
 
 struct SDL_Renderer;
 
-namespace mewt::ext::sdl {
+namespace mewt::ext::sdl
+{
 
-	class renderer_t : public sdl_pointer<SDL_Renderer> {
+	class renderer_t : public sdl_pointer<SDL_Renderer>
+	{
 		using super_t = sdl_pointer<SDL_Renderer>;
-		enum tags_t {
+		enum tags_t
+		{
 			DriverIndex
 		};
 		constexpr friend auto getOpaqueValueType(tags_t) -> int;
@@ -27,7 +30,8 @@ namespace mewt::ext::sdl {
 	public:
 		using driver_index_t = types::Opaque<tags_t::DriverIndex>;
 		static constexpr driver_index_t FirstDriver{ -1 };
-		enum class flag_t {
+		enum class flag_t
+		{
 			Software = 0,
 			Accelerated = 1,
 			PresentVSync = 2,
@@ -35,12 +39,13 @@ namespace mewt::ext::sdl {
 		};
 		using flags_t = types::flags<flag_t>;
 		renderer_t(const window_t& window, driver_index_t driver_index, flags_t flags);
-		struct copy_args_t {
-			std::optional<image_t::rect_t> _src;
-			std::optional<image_t::rect_t> _dest;
+		struct copy_args_t
+		{
+			std::optional<image_t::Rect> _src;
+			std::optional<image_t::Rect> _dest;
 		};
 		void copy(const texture_t& texture, copy_args_t copy_args) const;
-		image_t::rect_t get_output_bounds() const;
+		image_t::Rect get_output_bounds() const;
 		void clear_screen() const;
 		void present_screen() const;
 	};

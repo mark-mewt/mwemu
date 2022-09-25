@@ -7,6 +7,6 @@
 namespace mewt::ext::sdl
 {
 
-	auto EventManager::keyboard_event() { return EventDispatch::SingleHandler<EventType::Keyboard>(_event_dispatch); }
+	auto EventManager::keyboardEvent() { return EventDispatch::SingleHandler<EventType::Keyboard>(_event_dispatch); }
 
 }

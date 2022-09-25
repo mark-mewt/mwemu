@@ -14,19 +14,22 @@
 
 #include <span>
 
-namespace mewt::app::test_app {
+namespace mewt::app::test_app
+{
 
-		// mwToDo: Remove these...
+	// mwToDo: Remove these...
 
 	template <typename TType>
-	auto componentwiseSubtract(TType lhs, TType rhs) {
+	auto componentwiseSubtract(TType lhs, TType rhs)
+	{
 		TType ret;
 		TType::withComponents([&](auto cmp) { ret.*cmp = lhs.*cmp - rhs.*cmp; });
 		return ret;
 	}
 
 	template <typename TType>
-	auto componentwiseScale(TType lhs, types::scale_factor_t scale) {
+	auto componentwiseScale(TType lhs, types::scale_factor_t scale)
+	{
 		TType ret;
 		TType::withComponents([&](auto cmp) { ret.*cmp = scale.scale(lhs.*cmp); });
 		return ret;
@@ -48,8 +51,8 @@ namespace mewt::app::test_app {
 
 	struct TestApp::SharedState
 	{
-		gfx::Image::rect_t _rect;
-		gfx::Image::rect_t _output_bounds;
+		gfx::Image::Rect _rect;
+		gfx::Image::Rect _output_bounds;
 		using Keypresses = types::flags<Keypress>;
 		Keypresses _keypresses{ 0 };
 	};
@@ -91,11 +94,12 @@ namespace mewt::app::test_app {
 		auto texture_size = sdl_texture.get_config()._size;
 		_shared_state->_output_bounds = init_state.renderer().get_output_bounds();
 		_shared_state->_rect = {
-			._position = sizeToPosition(componentwiseScale(componentwiseSubtract(_shared_state->_output_bounds._size, texture_size), types::scale_factor_t::Half())),
-			._size = texture_size
+			._position = sizeToPosition(componentwiseScale(componentwiseSubtract(_shared_state->_output_bounds.size, texture_size), types::scale_factor_t::Half())),
+			.size = texture_size
 		};
 
-		for (;;) {
+		for (;;)
+		{
 			co_await phaseManager().phase<PhaseType::Update>();
 			// mwToDo: This needs to move out of here. Ultimately, it will be the emulated GPU that does this.
 			void* pixel_data = nullptr;
@@ -115,16 +119,19 @@ namespace mewt::app::test_app {
 	auto TestApp::runInputLoop()
 		 -> async::Future<>
 	{
-		for (;;) {
-			auto input_event = co_await eventManager().keyboard_event();
+		for (;;)
+		{
+			auto input_event = co_await eventManager().keyboardEvent();
 			bool pressed = false;
-			switch (input_event.event_type()) {
+			switch (input_event.eventType())
+			{
 
 			case ext::sdl::KeyboardEvent::EventType::KeyDown:
 				pressed = true;
 			case ext::sdl::KeyboardEvent::EventType::KeyUp:
 				// keyboard API for key pressed
-				switch (input_event.scancode()) {
+				switch (input_event.scancode())
+				{
 				case ext::sdl::keyboard::Scancode::W:
 				case ext::sdl::keyboard::Scancode::Up:
 					_shared_state->_keypresses[Keypress::Up] = pressed;
@@ -159,7 +166,8 @@ namespace mewt::app::test_app {
 												._width = image_t::Width(box_speed),
 												._height = image_t::Height(box_speed)
 		};
-		for (;;) {
+		for (;;)
+		{
 			co_await phaseManager().phase<PhaseType::Update>();
 			if (_shared_state->_keypresses[Keypress::Up])
 				_shared_state->_rect._position._y -= frame_delta._height;
@@ -169,20 +177,20 @@ namespace mewt::app::test_app {
 				_shared_state->_rect._position._y += frame_delta._height;
 			if (_shared_state->_keypresses[Keypress::Right])
 				_shared_state->_rect._position._x += frame_delta._width;
-			if (_shared_state->_rect.right() > _shared_state->_output_bounds.right())
-				_shared_state->_rect._position._x = _shared_state->_output_bounds.right() - _shared_state->_rect._size._width; // mwToDo: dest.right() = output_bounds.right() - dest.width()
+			if (right(_shared_state->_rect) > right(_shared_state->_output_bounds))
+				_shared_state->_rect._position._x = right(_shared_state->_output_bounds) - _shared_state->_rect.size._width; // mwToDo: dest.right() = output_bounds.right() - dest.width()
 
 			// left boundary
-			if (_shared_state->_rect.left() < _shared_state->_output_bounds.left())
-				_shared_state->_rect._position._x = _shared_state->_output_bounds.left();
+			if (left(_shared_state->_rect) < left(_shared_state->_output_bounds))
+				_shared_state->_rect._position._x = left(_shared_state->_output_bounds);
 
 			// bottom boundary
-			if (_shared_state->_rect.bottom() > _shared_state->_output_bounds.bottom())
-				_shared_state->_rect._position._y = _shared_state->_output_bounds.bottom() - _shared_state->_rect._size._height;
+			if (bottom(_shared_state->_rect) > bottom(_shared_state->_output_bounds))
+				_shared_state->_rect._position._y = bottom(_shared_state->_output_bounds) - _shared_state->_rect.size._height;
 
 			// upper boundary
-			if (_shared_state->_rect.top() < _shared_state->_output_bounds.top())
-				_shared_state->_rect._position._y = _shared_state->_output_bounds.top();
+			if (top(_shared_state->_rect) < top(_shared_state->_output_bounds))
+				_shared_state->_rect._position._y = top(_shared_state->_output_bounds);
 		}
 	}
 

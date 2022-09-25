@@ -4,7 +4,7 @@
 namespace mewt::types
 {
 
-	template <auto VValue, typename TEnum = decltype(VValue)>
+	template <auto NValue, typename TEnum = decltype(NValue)>
 	struct EnumValue
 	{
 	};
