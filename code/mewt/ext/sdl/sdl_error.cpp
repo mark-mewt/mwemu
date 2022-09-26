@@ -11,11 +11,13 @@
 
 #include "SDL/SDL_error.h"
 
-namespace mewt::ext::sdl {
+namespace mewt::ext::sdl
+{
 
-	void throw_error(std::source_location loc) {
+	void throwError(std::source_location loc)
+	{
 		auto* err = SDL_GetError();
-		//logger(loc).log("SDL Error: %s", err);
+		// logger(loc).log("SDL Error: %s", err);
 		throw exception_t{ err };
 	}
 

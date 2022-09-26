@@ -6,34 +6,37 @@
 namespace mewt::types
 {
 
-	template<int _BitWidth>
+	template <int NBitWidth>
 	struct integer_info;
 
-	template <int _BitWidth>
-	using uint = typename integer_info<_BitWidth>::uint;
+	template <int NBitWidth>
+	using UInt = typename integer_info<NBitWidth>::UInt;
 
-	template<>
-	struct integer_info<8>
+	template <typename TType>
+	constexpr int kSizeInBits = sizeof(TType) << 3;
+
+	template <>
+	struct integer_info<kSizeInBits<std::uint8_t>>
 	{
-		using uint = std::uint8_t;
+		using UInt = std::uint8_t;
 	};
 
-	template<>
-	struct integer_info<16>
+	template <>
+	struct integer_info<kSizeInBits<std::uint16_t>>
 	{
-		using uint = std::uint16_t;
+		using UInt = std::uint16_t;
 	};
 
-	template<>
-	struct integer_info<32>
+	template <>
+	struct integer_info<kSizeInBits<std::uint32_t>>
 	{
-		using uint = std::uint32_t;
+		using UInt = std::uint32_t;
 	};
 
-	template<>
-	struct integer_info<64>
+	template <>
+	struct integer_info<kSizeInBits<std::uint64_t>>
 	{
-		using uint = std::uint64_t;
+		using UInt = std::uint64_t;
 	};
 
 }

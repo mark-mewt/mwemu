@@ -6,17 +6,19 @@
 #include "mewt/types/coroutine.h"
 #include "mewt/async/resumer.h"
 
-namespace mewt::async {
+namespace mewt::async
+{
 
 	template <typename _ReturnType>
-	class Generator {
+	class Generator
+	{
 
-		public:
-
+	public:
 		struct promise_type;
 		using generator_coro_handle_t = std::coroutine_handle<promise_type>;
 
-		struct promise_type : types::non_movable_t {
+		struct promise_type : types::NonMovable
+		{
 
 			inline Generator<_ReturnType> get_return_object() noexcept { return generator_coro_handle_t::from_promise(*this); }
 
@@ -31,18 +33,20 @@ namespace mewt::async {
 				return Resumer(_continuation);
 			}
 
-			inline ~promise_type() { }
+			inline ~promise_type() {}
 
 			// When the co-routine returns, store its return value in the future.
-			inline void return_void() {
+			inline void return_void()
+			{
 			}
 
-			template<typename _From>
-			auto yield_value(_From&& from) {
+			template <typename _From>
+			auto yield_value(_From&& from)
+			{
 				_value = std::forward<_From>(from);
 				return Resumer(_continuation);
 			}
-	 
+
 			// Pointer to the future. The future itself will update this on construction, destruction, and whenever it moves.
 			Generator* _generator = nullptr;
 
@@ -51,20 +55,21 @@ namespace mewt::async {
 
 			_ReturnType _value;
 			std::exception_ptr _exception;
-
 		};
 
 		inline Generator(generator_coro_handle_t generator_coro) noexcept : _generator_coro(generator_coro) { promise()._generator = this; }
 
 		// If the generator moves, we must inform the promise of our new location.
-		inline Generator(Generator&& rhs) noexcept : _generator_coro(rhs._generator_coro) {
+		inline Generator(Generator&& rhs) noexcept : _generator_coro(rhs._generator_coro)
+		{
 			rhs._generator_coro = {};
 			if (!is_finished())
 				promise()._generator = this;
 		}
 
 		// If the generator is destroyed before the promise, we must tell it.
-		inline ~Generator() noexcept {
+		inline ~Generator() noexcept
+		{
 			if (!is_finished())
 				promise()._generator = nullptr;
 			_generator_coro.destroy();
@@ -75,7 +80,8 @@ namespace mewt::async {
 		inline bool is_finished() const noexcept { return _is_finished; }
 
 		// When we do suspend, we store the continuation in the promise so it can resume once the generator next yields.
-		inline auto await_suspend(std::coroutine_handle<> continuation) noexcept {
+		inline auto await_suspend(std::coroutine_handle<> continuation) noexcept
+		{
 			promise()._continuation = continuation;
 			return _generator_coro;
 		}
@@ -97,7 +103,7 @@ namespace mewt::async {
 	private:
 		// The promise we are linked to.
 		generator_coro_handle_t _generator_coro;
-		//promise_type* _promise = nullptr;
+		// promise_type* _promise = nullptr;
 		inline auto& promise() { return _generator_coro.promise(); }
 		bool _is_finished = false;
 	};

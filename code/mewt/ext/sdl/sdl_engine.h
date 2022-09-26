@@ -2,11 +2,12 @@
 #pragma once
 
 #include "mewt/types/flags.h"
-#include "mewt/types/non_movable.h"
 
-namespace mewt::ext::sdl {
+namespace mewt::ext::sdl
+{
 
-	enum class subsystem_t {
+	enum class Subsystem
+	{
 		Timer = 0,
 		Audio = 4,
 		Video = 5,
@@ -17,20 +18,27 @@ namespace mewt::ext::sdl {
 		Sensor = 15,
 	};
 
-	using subsystems_t = types::flags<subsystem_t>;
+	using Subsystems = types::flags<Subsystem>;
 	using types::operator|;
 
-	class engine_t : types::non_movable_t {
+	class Engine
+	{
 
 	public:
-		explicit engine_t(subsystems_t subsystems);
+		explicit Engine(Subsystems subsystems);
 
-		void start_subsystems(subsystems_t subsystems);
-		void stop_subsystems(subsystems_t subsystems);
+		Engine(const Engine&) = delete;
+		Engine(Engine&&) = delete;
+		auto operator=(const Engine&) = delete;
+		auto operator=(Engine&&) = delete;
 
-		subsystems_t query_started_subsystems(subsystems_t query_mask = types::NoFlags{});
+		static void startSubsystems(Subsystems subsystems);
+		static void stopSubsystems(Subsystems subsystems);
 
-		~engine_t();
+		[[nodiscard]] static auto queryStartedSubsystems(Subsystems query_mask = types::NoFlags())
+			 -> Subsystems;
+
+		~Engine();
 	};
 
 }

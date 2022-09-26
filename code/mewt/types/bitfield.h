@@ -10,7 +10,7 @@ namespace mewt::types
 	class BitField
 	{
 
-		using Data = uint<NBits>;
+		using Data = UInt<NBits>;
 
 		class Proxy
 		{
@@ -43,5 +43,5 @@ namespace mewt::types
 	private:
 		Data _bits;
 	};
-	
+
 }

@@ -3,7 +3,8 @@
 
 #include "mewt/types/opaque.h"
 
-namespace mewt::gfx {
+namespace mewt::gfx
+{
 
 	class Image
 	{
@@ -23,7 +24,8 @@ namespace mewt::gfx {
 		using Height = types::Opaque<Tags::Height>;
 		constexpr friend auto getOpaqueDifference(Tags tag)
 		{
-			switch (tag) {
+			switch (tag)
+			{
 			case Tags::X:
 				return Tags::Width;
 			case Tags::Y:
@@ -36,7 +38,8 @@ namespace mewt::gfx {
 		}
 		constexpr friend auto getOpaqueIndex(Tags tag)
 		{
-			switch (tag) {
+			switch (tag)
+			{
 			case Tags::X:
 				return Tags::X;
 			case Tags::Y:

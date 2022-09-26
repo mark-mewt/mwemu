@@ -4,14 +4,14 @@
 namespace mewt::types
 {
 
-   struct non_movable_t
-   {
-      constexpr non_movable_t() = default;
-      constexpr non_movable_t(const non_movable_t&) = delete;
-      constexpr non_movable_t(non_movable_t&&) = delete;
-      constexpr non_movable_t& operator = (const non_movable_t&) = delete;
-      constexpr non_movable_t& operator = (non_movable_t&&) = delete;
-      inline ~non_movable_t() = default;
-   };
+	struct NonMovable
+	{
+		constexpr NonMovable() = default;
+		constexpr NonMovable(const NonMovable&) = delete;
+		constexpr NonMovable(NonMovable&&) = delete;
+		constexpr auto operator=(const NonMovable&) = delete;
+		constexpr auto operator=(NonMovable&&) = delete;
+		inline ~NonMovable() = default;
+	};
 
 }

@@ -12,14 +12,13 @@ namespace mewt::emu::mem
 	{
 		const int kAddressBits = NAddressBits;
 		const int kDataBits = NDataBits;
-		using Address = types::uint<NAddressBits>;
-		using Data = types::uint<NDataBits>;
+		using Address = types::UInt<NAddressBits>;
+		using Data = types::UInt<NDataBits>;
 	};
 
 	template <typename TType>
-	concept is_bus_spec = requires(TType x)
-	{
-		requires std::is_same_v<decltype(BusSpec(x)), TType>;
-	};
+	concept is_bus_spec = requires(TType x) {
+									 requires std::is_same_v<decltype(BusSpec(x)), TType>;
+								 };
 
 }

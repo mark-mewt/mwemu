@@ -8,14 +8,18 @@
 
 #include <variant>
 
-namespace mewt::async {
+namespace mewt::async
+{
 
-	struct VoidType {};
+	struct VoidType
+	{
+	};
 
 	// future_base determines the functionality of a future, regardless of the return type.
 	// We'll specialize this later to handle the void return type.
 	template <typename TReturnType>
-	struct FutureBase {
+	struct FutureBase
+	{
 
 		// Our promise promises to:
 		// (a) Not change address - we do this by making it a non_movable_t.
@@ -23,7 +27,7 @@ namespace mewt::async {
 		// (c) Pass the return value of the co-routine back to the future.
 		// (d) Capture any exception that is thrown and re-throw it in the frame of the caller.
 		// (e) Resume the caller once this co-routine completes.
-		class PromiseBase : types::non_movable_t
+		class PromiseBase : types::NonMovable
 		{
 
 		public:
@@ -77,9 +81,9 @@ namespace mewt::async {
 					_future->_value.template emplace<ResultType>(std::forward<TValue>(value));
 			}
 
-		//protected:
+			// protected:
 			[[nodiscard]] inline auto future() const { return _future; }
-		//	inline void setFuture(FutureBase* future) { _future = future; }
+			//	inline void setFuture(FutureBase* future) { _future = future; }
 
 		private:
 			friend FutureBase;
@@ -95,14 +99,16 @@ namespace mewt::async {
 		inline explicit FutureBase(PromiseBase& promise) noexcept : _promise(std::addressof(promise)) { _promise->_future = this; }
 
 		// If the future moves, we must inform the promise of our new location.
-		inline FutureBase(FutureBase&& rhs) noexcept : _value(std::move(rhs._value)), _promise(rhs._promise) {
+		inline FutureBase(FutureBase&& rhs) noexcept : _value(std::move(rhs._value)), _promise(rhs._promise)
+		{
 			rhs._promise = nullptr;
 			if (_promise)
 				_promise->_future = this;
 		}
 
 		// If the future is destroyed before the promise, we must tell it.
-		inline ~FutureBase() noexcept {
+		inline ~FutureBase() noexcept
+		{
 			if (_promise)
 				_promise->_future = nullptr;
 		}
@@ -131,8 +137,9 @@ namespace mewt::async {
 		// We can't store void in a variant so we'll replace that with void_type_t.
 		using ResultType = std::conditional_t<std::is_void_v<TReturnType>, VoidType, TReturnType>;
 
-		[[nodiscard]] inline auto promise() const { return _promise; }	// mwToDo: Should be able to get rid of this.
+		[[nodiscard]] inline auto promise() const { return _promise; } // mwToDo: Should be able to get rid of this.
 		[[nodiscard]] inline auto value() const -> auto& { return _value; }
+
 	private:
 		// The value of the future is one of std::monostate (not yet completed), the result of the co-routine, or the exception it threw.
 		std::variant<std::monostate, ResultType, std::exception_ptr> _value;
@@ -143,7 +150,8 @@ namespace mewt::async {
 
 	// Here we provide the future/promise functionality for a return type other than void.
 	template <typename TReturnType>
-	struct Future : public FutureBase<TReturnType> {
+	struct Future : public FutureBase<TReturnType>
+	{
 
 		// Defer construction to future_base.
 		using FutureBase<TReturnType>::FutureBase;
@@ -160,10 +168,11 @@ namespace mewt::async {
 		}
 
 		// The promise for a non-void return type.
-		struct PromiseType : public FutureBase<TReturnType>::PromiseBase {
+		struct PromiseType : public FutureBase<TReturnType>::PromiseBase
+		{
 
 			// When the co-routine returns, store its return value in the future.
-			template<typename TValue>
+			template <typename TValue>
 			inline void return_value(TValue&& value) // NOLINT(readability-identifier-naming)
 			{
 				this->setFutureValue(std::forward<TValue>(value));
@@ -171,12 +180,12 @@ namespace mewt::async {
 		};
 
 		using promise_type = PromiseType;
-
 	};
 
 	// And this is the functionality specifically for a void return type.
 	template <>
-	struct Future<void> : public FutureBase<void> {
+	struct Future<void> : public FutureBase<void>
+	{
 
 		// Defer construction to future_base.
 		using FutureBase<void>::FutureBase;
@@ -191,13 +200,14 @@ namespace mewt::async {
 		}
 
 		// The promise for a void return type.
-		struct PromiseType : PromiseBase {
+		struct PromiseType : PromiseBase
+		{
 
 			// When the co-routine completes, switch the return value stored in the future to the void type.
 			inline void return_void() noexcept // NOLINT(readability-identifier-naming)
 			{
-				if(this->future() != nullptr)
-					this->setFutureValue(VoidType()); 
+				if (this->future() != nullptr)
+					this->setFutureValue(VoidType());
 			}
 		};
 		using promise_type = PromiseType;
