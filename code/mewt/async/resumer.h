@@ -3,14 +3,23 @@
 
 #include "mewt/types/coroutine.h"
 
-namespace mewt::async {
+namespace mewt::async
+{
 
-	class Resumer {
+	class Resumer
+	{
 	public:
-		Resumer(std::coroutine_handle<> coro) noexcept : _coro(coro) {}
-		inline bool await_ready() noexcept { return _coro == nullptr; }
-		inline auto await_suspend(std::coroutine_handle<> continuation) noexcept { return _coro; }
-		inline void await_resume() noexcept {}
+		explicit Resumer(std::coroutine_handle<> coro) noexcept : _coro(coro) {}
+		inline auto await_ready() noexcept // NOLINT(readability-identifier-naming)
+			 -> bool
+		{
+			return _coro == nullptr;
+		}
+		inline auto await_suspend(std::coroutine_handle<> /*continuation*/) noexcept // NOLINT(readability-identifier-naming)
+		{
+			return _coro;
+		}
+		inline void await_resume() noexcept {} // NOLINT(readability-identifier-naming)
 
 	private:
 		std::coroutine_handle<> _coro;

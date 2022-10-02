@@ -389,6 +389,7 @@
     <ClInclude Include="os\base\win_base.h" />
     <ClInclude Include="types\arithmetic.h" />
     <ClInclude Include="types\bitfield.h" />
+    <ClInclude Include="types\byte.h" />
     <ClInclude Include="types\colour.h" />
     <ClInclude Include="types\concepts.h" />
     <ClInclude Include="types\coroutine.h" />

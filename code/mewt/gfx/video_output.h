@@ -3,17 +3,18 @@
 
 #include <stdint.h>
 
-namespace mewt::gfx::video_output {
+namespace mewt::gfx::video_output
+{
 
-	enum class StandardT
+	enum class Standard
 	{
 		NtscM,
 		PalB
 	};
 
-	struct ConfigT
+	struct Config
 	{
 		uint8_t refresh_rate_hz;
-		static ConfigT get(StandardT standard);
+		static auto get(Standard standard) -> Config;
 	};
 }

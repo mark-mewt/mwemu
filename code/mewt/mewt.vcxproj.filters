@@ -401,6 +401,9 @@
     <ClInclude Include="emu\sys\system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="types\byte.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="mewt.natvis" />

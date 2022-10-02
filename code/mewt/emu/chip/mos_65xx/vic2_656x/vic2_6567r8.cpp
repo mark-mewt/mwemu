@@ -3,11 +3,13 @@
 
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x_config.h"
 
-namespace mewt::emu::chip::mos_65xx {
+namespace mewt::emu::chip::mos_65xx
+{
 
-	const vic2_config_t& vic2_6567r8_t::getConfig() const {
+	const vic2_config_t& vic2_6567r8_t::getConfig() const
+	{
 		static constexpr vic2_config_t config = {
-			._video_standard = gfx::video_output::StandardT::NtscM,
+			._video_standard = gfx::video_output::Standard::NtscM,
 			._cycles_per_scanline = 65,
 			._total_scanlines_per_frame = 263,
 			._raster_display_on = 41,

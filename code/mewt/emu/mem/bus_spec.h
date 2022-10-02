@@ -16,9 +16,10 @@ namespace mewt::emu::mem
 		using Data = types::UInt<NDataBits>;
 	};
 
+	template <int NAddressBits, int NDataBits>
+	constexpr auto isBusSpec(const BusSpec<NAddressBits, NDataBits>& /*unused*/) { return true; }
+
 	template <typename TType>
-	concept is_bus_spec = requires(TType x) {
-									 requires std::is_same_v<decltype(BusSpec(x)), TType>;
-								 };
+	concept is_BusSpec = requires(TType bus_spec) { isBusSpec(bus_spec); };
 
 }

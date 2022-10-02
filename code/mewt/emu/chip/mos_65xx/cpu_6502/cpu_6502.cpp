@@ -5,6 +5,7 @@
 #include "mewt/emu/chip/mos_65xx/cpu_6502/cpu_6502.h"
 #include "mewt/emu/chip/mos_65xx/cpu_6502/cpu_6502_instructions.h"
 #include "mewt/types/intrusive_stack.h"
+#include "mewt/types/byte.h"
 
 /*
  *
@@ -20,13 +21,7 @@
 namespace mewt::emu::chip::mos_65xx
 {
 
-	// mwToDo: move these elsewhere
-	constexpr int kBitsPerByte = 8;
-	constexpr int kOneByteBitMask = 0xff;
 	constexpr Data kDecimalMax = 99;
-	constexpr auto highbyte(uint16_t word) -> std::uint8_t { return word >> kBitsPerByte; }
-	constexpr auto lowbyte(uint16_t word) -> std::uint8_t { return word & kOneByteBitMask; }
-	constexpr auto makeword(uint8_t low, uint8_t high) -> std::uint16_t { return (static_cast<uint16_t>(high) << kBitsPerByte) | low; }
 
 	cpu_6502_t::cpu_6502_t(const clock_source_t& clock, MemoryInterface& memory_interface)
 		 : _clock(clock), _memory_interface(memory_interface)
@@ -49,7 +44,7 @@ namespace mewt::emu::chip::mos_65xx
 		// logger().log("%s: %d", __FUNCTION__, 0);
 		Address low = co_await read_data(address);
 		Address high = co_await read_data(address + 1);
-		co_return low | (high << kBitsPerByte);
+		co_return types::makeWord(low, high);
 	}
 
 	auto cpu_6502_t::read_address_zp(Data offset)
@@ -57,8 +52,8 @@ namespace mewt::emu::chip::mos_65xx
 	{
 		// logger().log("%s: %d", __FUNCTION__, 0);
 		Address low = co_await read_data(offset);
-		Address high = co_await read_data((offset + 1) & kOneByteBitMask);
-		co_return low | (high << kBitsPerByte);
+		Address high = co_await read_data(types::lowByte(offset + 1));
+		co_return types::makeWord(low, high);
 	}
 
 	auto cpu_6502_t::write_data(Address address, Data data)
@@ -88,11 +83,10 @@ namespace mewt::emu::chip::mos_65xx
 		Data _imm_high = 0;
 		Data _imm_low = 0;
 		Address _imm_addr = 0;
-
 	};
 
 	auto cpu_6502_t::InstructionUnit::fetch()
-		-> async::Future<>
+		 -> async::Future<>
 	{
 		_inst_code = co_await _cpu.read_data(_cpu._pc);
 		_inst = std::addressof(cpu_6502::getInstructions()[_inst_code]);
@@ -100,7 +94,7 @@ namespace mewt::emu::chip::mos_65xx
 		if (_inst->is_3_byte())
 		{
 			_imm_high = co_await _cpu.read_data(_cpu._pc + 2);
-			_imm_addr = makeword(_imm_low, _imm_high);
+			_imm_addr = types::makeWord(_imm_low, _imm_high);
 			// logger().log("0x%04X: %02X %s(%04X)", _pc, instCode, to_string(inst.opcode), immAddr);
 		}
 		else
@@ -117,12 +111,12 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::InstructionUnit::handleBranch()
-		-> async::Future<bool>
+		 -> async::Future<bool>
 	{
 		co_await std::suspend_never(); // mwToDo: Get rid, fix clang static analysis errors
 		if (_inst->is_branch())
 		{
-			co_await _cpu.handle_branch(cpu_6502::Instruction::Branch::fromInstruction(_inst_code),_imm_low);
+			co_await _cpu.handle_branch(cpu_6502::Instruction::Branch::fromInstruction(_inst_code), _imm_low);
 			co_return true;
 		}
 		if (_inst->is_call())
@@ -139,9 +133,9 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	auto cpu_6502_t::InstructionUnit::loadSource()
-		-> async::Future<Data>
+		 -> async::Future<Data>
 	{
-		co_await std::suspend_never();	// mwToDo: Get rid, fix clang static analysis errors
+		co_await std::suspend_never(); // mwToDo: Get rid, fix clang static analysis errors
 		using cpu_6502::data_loc_t;
 		switch (_inst->src)
 		{
@@ -166,9 +160,9 @@ namespace mewt::emu::chip::mos_65xx
 		case data_loc_t::Zpge:
 			co_return co_await _cpu.read_data(_imm_low);
 		case data_loc_t::ZppX:
-			co_return co_await _cpu.read_data(lowbyte(_imm_low + _cpu._reg_x));
+			co_return co_await _cpu.read_data(types::lowByte(_imm_low + _cpu._reg_x));
 		case data_loc_t::ZppY:
-			co_return co_await _cpu.read_data(lowbyte(_imm_low + _cpu._reg_y));
+			co_return co_await _cpu.read_data(types::lowByte(_imm_low + _cpu._reg_y));
 		case data_loc_t::IndY:
 			co_return co_await _cpu.read_data(co_await _cpu.read_address_zp(_imm_low) + _cpu._reg_y);
 		case data_loc_t::Stck:
@@ -182,8 +176,8 @@ namespace mewt::emu::chip::mos_65xx
 	const Data kBit1 = (1 << 1);
 	const Data kBit2 = (1 << 2);
 	const Data kBit3 = (1 << 3);
-	//const Data kBit4 = (1 << 4);
-	//const Data kBit5 = (1 << 5);
+	// const Data kBit4 = (1 << 4);
+	// const Data kBit5 = (1 << 5);
 	const Data kBit6 = (1 << 6);
 	const Data kBit7 = (1 << 7);
 
@@ -260,7 +254,7 @@ namespace mewt::emu::chip::mos_65xx
 			if (_cpu._reg_flags[flag_t::Decimal])
 				carry_flag = (val16 > kDecimalMax);
 			else
-				carry_flag = highbyte(val16) != 0;
+				carry_flag = types::highByte(val16) != 0;
 		}
 		break;
 		case operation_t::Dec_:
@@ -319,9 +313,9 @@ namespace mewt::emu::chip::mos_65xx
 			throw std::exception("implement");
 		}
 	}
-	
-	auto cpu_6502_t::InstructionUnit::storeResult(Data val) 
-		-> async::Future<>
+
+	auto cpu_6502_t::InstructionUnit::storeResult(Data val)
+		 -> async::Future<>
 	{
 		using cpu_6502::data_loc_t;
 		switch (_inst->dest)
@@ -356,10 +350,10 @@ namespace mewt::emu::chip::mos_65xx
 			co_await _cpu.write_data(_imm_low, val);
 			break;
 		case data_loc_t::ZppX:
-			co_await _cpu.write_data(lowbyte(_imm_low + _cpu._reg_x), val);
+			co_await _cpu.write_data(types::lowByte(_imm_low + _cpu._reg_x), val);
 			break;
 		case data_loc_t::ZppY:
-			co_await _cpu.write_data(lowbyte(_imm_low + _cpu._reg_y), val);
+			co_await _cpu.write_data(types::lowByte(_imm_low + _cpu._reg_y), val);
 			break;
 		case data_loc_t::IndY:
 			co_await _cpu.write_data(co_await _cpu.read_address_zp(_imm_low) + _cpu._reg_y, val);
@@ -668,7 +662,7 @@ namespace mewt::emu::chip::mos_65xx
 		 -> async::Future<>
 	{
 		_pc = co_await read_address(kInitialJumpLocation);
-		//logger().log("%s: %d", __FUNCTION__, 0);
+		// logger().log("%s: %d", __FUNCTION__, 0);
 		for (;;)
 		{
 			co_await run_inst();
@@ -706,9 +700,9 @@ namespace mewt::emu::chip::mos_65xx
 		if (take_branch)
 		{
 			co_await _clock.nextTick();
-			auto page = highbyte(_pc);
+			auto page = types::highByte(_pc);
 			_pc += static_cast<int8_t>(imm_low);
-			auto new_page = highbyte(_pc);
+			auto new_page = types::highByte(_pc);
 			if (new_page != page)
 				co_await _clock.nextTick();
 		}
@@ -723,15 +717,15 @@ namespace mewt::emu::chip::mos_65xx
 		{
 		case Op::JSR: {
 			--_pc;
-			co_await push(highbyte(_pc));
-			co_await push(lowbyte(_pc));
-			_pc = makeword(imm_low, imm_high);
+			co_await push(types::highByte(_pc));
+			co_await push(types::lowByte(_pc));
+			_pc = types::makeWord(imm_low, imm_high);
 		}
 		break;
 		case Op::RTS: {
 			auto low = co_await pop();
 			auto high = co_await pop();
-			_pc = makeword(low, high) + 1;
+			_pc = types::makeWord(low, high) + 1;
 		}
 		break;
 		default:

@@ -9,7 +9,10 @@
 #include "mewt/emu/host/host.h"
 #include "mewt/gfx/image.h"
 #include "mewt/types/bitfield.h"
+#include "mewt/types/byte.h"
 #include "mewt/types/flags.h"
+
+#include <array>
 
 namespace mewt::emu::chip::mos_65xx
 {
@@ -98,29 +101,40 @@ namespace mewt::emu::chip::mos_65xx
 	*/
 
 	class vic2_656x_t
-   {
-   private:
-      //const clock_source_t& _clock;
-		//vic2_model_t _model;
-		//const vic2_config_t& _config;
+	{
+	private:
+		// const clock_source_t& _clock;
+		// vic2_model_t _model;
+		// const vic2_config_t& _config;
 
-   public:
-		struct IoControllerT : public MemoryInterface
+	public:
+		vic2_656x_t() = default;
+		vic2_656x_t(const vic2_656x_t&) = delete;
+		vic2_656x_t(vic2_656x_t&&) = delete;
+		auto operator=(const vic2_656x_t&) = delete;
+		auto operator=(vic2_656x_t&&) = delete;
+
+		class IOController : public MemoryInterface
 		{
-			vic2_656x_t& _chip;
-			explicit IoControllerT(vic2_656x_t& chip) : _chip(chip) {}
-			Data read(Address address) final;
+		public:
+			explicit IOController(vic2_656x_t& chip) : _chip(chip) {}
+			auto read(Address address) -> Data final;
 			void write(Address address, Data data) final;
+
+		private:
+			vic2_656x_t& _chip;
 		};
 
-		IoControllerT _io_controller{ *this };
-
-		//vic2_656x_t(const clock_source_t& clock);//, vic2_model_t model);
+		// vic2_656x_t(const clock_source_t& clock);//, vic2_model_t model);
 		auto runGpu(IHost& host) -> async::Future<>;
 
-		//gfx::image_t::size_t display_size() const;
+		// gfx::image_t::size_t display_size() const;
 
 		inline auto cpuClock() const -> const chip::clock_source_t& { return _cpu_clock; }
+
+		inline auto ioController() -> auto& { return _io_controller; }
+
+		virtual ~vic2_656x_t() = default;
 
 	protected:
 		virtual auto getConfig() const -> const vic2_config_t& = 0;
@@ -131,38 +145,39 @@ namespace mewt::emu::chip::mos_65xx
 		auto runScanline(uint16_t raster_y) -> async::Future<>;
 		void generateFrame(IHost::Frame& frame);
 
+		IOController _io_controller{ *this };
 		chip::clock_source_t _cpu_clock;
 
-		struct SpritePosT
+		struct SpritePos
 		{
-			uint8_t _x;		// Lower 8-bits of sprite x-coord.
-			uint8_t _y;		// Sprite y-coord.
+			uint8_t _x; // Lower 8-bits of sprite x-coord.
+			uint8_t _y; // Sprite y-coord.
 		};
 
 		// $d011:
-		struct ControlReg1T
+		struct ControlReg1
 		{
-			int8_t _y_scroll : 3;	// Fine y-scroll of display window.
-			bool _rsel : 1;			// 0: 24 text lines/192 pixels, Raster lines 55-246; 1: 25 text lines/200 pixels, Raster lines 51-250
-			bool _den : 1;				// Display ENable - 1 to enable display, 0 to display only border colour
-			bool _bmm : 1;				// 0: Load character data; 1: Load bitmap data
-			bool _ecm : 1;				// Extended colour mode
-			bool _rst8 : 1;			// Most significant bit of raster-y position.
+			int8_t _y_scroll : 3; // Fine y-scroll of display window.
+			bool _rsel : 1;		 // 0: 24 text lines/192 pixels, Raster lines 55-246; 1: 25 text lines/200 pixels, Raster lines 51-250
+			bool _den : 1;			 // Display ENable - 1 to enable display, 0 to display only border colour
+			bool _bmm : 1;			 // 0: Load character data; 1: Load bitmap data
+			bool _ecm : 1;			 // Extended colour mode
+			bool _rst8 : 1;		 // Most significant bit of raster-y position.
 		};
-		struct ControlReg2T
+		struct ControlReg2
 		{
-			int8_t _x_scroll : 3;	// Fine x-scroll of display window.
-			bool _csel : 1;			// 0: 38 characters/304 pixels wide, LPX 31-334; 1: 40 characters/320 pixels wide, LPX 24-343
-			bool _mcm : 1;				// Multi-colour mode
+			int8_t _x_scroll : 3; // Fine x-scroll of display window.
+			bool _csel : 1;		 // 0: 38 characters/304 pixels wide, LPX 31-334; 1: 40 characters/320 pixels wide, LPX 24-343
+			bool _mcm : 1;			 // Multi-colour mode
 			bool _res : 1;
 		};
-		struct MemoryPointersT
+		struct MemoryPointers
 		{
-			uint8_t _cb1 : 4;	// it appears the low bit of this cannot be written and is always 1 on reading
+			uint8_t _cb1 : 4; // it appears the low bit of this cannot be written and is always 1 on reading
 			uint8_t _vm1 : 4;
 		};
 
-		enum InterruptT : std::uint8_t
+		enum Interrupt : std::uint8_t
 		{
 			RST,
 			MBC,
@@ -171,57 +186,79 @@ namespace mewt::emu::chip::mos_65xx
 			IRQ = 7
 		};
 
-		class Uint4T
+		class UInt4
 		{
 			uint8_t _value;
 
 		public:
-			constexpr Uint4T(uint8_t v = 0) : _value(v) {}
-			constexpr explicit operator uint8_t() const { return _value & 0xf; }
+			constexpr UInt4() : _value(0) {}
+			constexpr explicit UInt4(uint8_t value) : _value(value) {}
+			constexpr explicit operator uint8_t() const { return types::lowNibble(_value); }
 		};
 
-		struct RegsT
+		static constexpr int kSpriteCount = 8;
+
+		struct Regs
 		{
 			// https://www.c64-wiki.com/wiki/Page_208-211
-			SpritePosT _sprite_pos[8];
-			types::BitField<8> _sprite_x_msbs;	// $d010: Most significant bits of sprite x-coords
-			ControlReg1T _control_reg_1;			// $d011:
-			uint8_t _raster;							// $d012: Low 8-bits of raster y-position.
+			std::array<SpritePos, kSpriteCount> _sprite_pos;
+			types::BitField<kSpriteCount> _sprite_x_msbs; // $d010: Most significant bits of sprite x-coords
+			ControlReg1 _control_reg_1;						 // $d011:
+			uint8_t _raster;										 // $d012: Low 8-bits of raster y-position.
 			uint8_t _lightpen_x;
 			uint8_t _lightpen_y;
-			types::BitField<8> _sprite_enabled;
-			ControlReg2T _control_reg_2;
-			types::BitField<8> _sprite_y_expand;
-			MemoryPointersT _memory_pointers;
-			types::flags<InterruptT> _interrupt_register{ 0 };
-			types::flags<InterruptT> _interrupt_enabled{ 0 };
-			types::BitField<8> _sprite_data_priority;
-			types::BitField<8> _sprite_multicolor;
-			types::BitField<8> _sprite_x_expand;
-			types::BitField<8> _sprite_sprite_collision;
-			types::BitField<8> _sprite_data_collision;
-			Uint4T _border_color;
-			Uint4T _background_color_0;
-			Uint4T _background_color_1;
-			Uint4T _background_color_2;
-			Uint4T _background_color_3;
-			Uint4T _sprite_multicolor_0;
-			Uint4T _sprite_multicolor_1;
-			Uint4T _sprite_0_color;
-			Uint4T _sprite_1_color;
-			Uint4T _sprite_2_color;
-			Uint4T _sprite_3_color;
-			Uint4T _sprite_4_color;
-			Uint4T _sprite_5_color;
-			Uint4T _sprite_6_color;
-			Uint4T _sprite_7_color;
+			types::BitField<kSpriteCount> _sprite_enabled;
+			ControlReg2 _control_reg_2;
+			types::BitField<kSpriteCount> _sprite_y_expand;
+			MemoryPointers _memory_pointers;
+			types::flags<Interrupt> _interrupt_register{ 0 };
+			types::flags<Interrupt> _interrupt_enabled{ 0 };
+			types::BitField<kSpriteCount> _sprite_data_priority;
+			types::BitField<kSpriteCount> _sprite_multicolor;
+			types::BitField<kSpriteCount> _sprite_x_expand;
+			types::BitField<kSpriteCount> _sprite_sprite_collision;
+			types::BitField<kSpriteCount> _sprite_data_collision;
+			UInt4 _border_color;
+			UInt4 _background_color_0;
+			UInt4 _background_color_1;
+			UInt4 _background_color_2;
+			UInt4 _background_color_3;
+			UInt4 _sprite_multicolor_0;
+			UInt4 _sprite_multicolor_1;
+			UInt4 _sprite_0_color;
+			UInt4 _sprite_1_color;
+			UInt4 _sprite_2_color;
+			UInt4 _sprite_3_color;
+			UInt4 _sprite_4_color;
+			UInt4 _sprite_5_color;
+			UInt4 _sprite_6_color;
+			UInt4 _sprite_7_color;
 		};
-		RegsT _regs{};
+		Regs _regs;
 
-		inline auto borderLeftCompare() const -> uint16_t { return _regs._control_reg_2._csel ? 0x18 : 0x1f; }
-		inline auto borderRightCompare() const -> uint16_t { return _regs._control_reg_2._csel ? 0x158 : 0x14f; }
-		inline auto borderTopCompare() const -> uint16_t { return _regs._control_reg_1._rsel ? 0x33 : 0x37; }
-		inline auto borderBottomCompare() const -> uint16_t { return _regs._control_reg_1._rsel ? 0xfb : 0xf7; }
+		struct WindowWidth
+		{
+			uint16_t firstX;
+			uint16_t lastX;
+		};
+		static constexpr WindowWidth kWidth38Col = { 0x1f, 0x14e };
+		static constexpr WindowWidth kWidth40Col = { 0x18, 0x157 };
+
+		struct WindowHeight
+		{
+			uint16_t firstLine;
+			uint16_t lastLine;
+		};
+		static constexpr WindowHeight kHeight24Line = { 0x37, 0xf6 };
+		static constexpr WindowHeight kHeight25Line = { 0x33, 0xfa };
+
+		inline auto windowWidth() const -> WindowWidth { return _regs._control_reg_2._csel ? kWidth40Col : kWidth38Col; }
+		inline auto windowHeight() const -> WindowHeight { return _regs._control_reg_1._rsel ? kHeight25Line : kHeight24Line; }
+
+		inline auto borderLeftCompare() const -> uint16_t { return windowWidth().firstX; }
+		inline auto borderRightCompare() const -> uint16_t { return windowWidth().lastX - 1; }
+		inline auto borderTopCompare() const -> uint16_t { return windowHeight().firstLine; }
+		inline auto borderBottomCompare() const -> uint16_t { return windowHeight().lastLine + 1; }
 	};
 
 }

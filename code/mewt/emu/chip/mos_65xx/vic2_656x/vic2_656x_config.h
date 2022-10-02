@@ -4,7 +4,8 @@
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.decl.h"
 #include "mewt/gfx/video_output.h"
 
-namespace mewt::emu::chip::mos_65xx {
+namespace mewt::emu::chip::mos_65xx
+{
 
 	// mwToDo: Get rid of this and replace with virtual implementation overrides instead.
 
@@ -14,7 +15,7 @@ namespace mewt::emu::chip::mos_65xx {
 		// Video signal standard (PAL/NTSC) supported by this model of the Vic-II.
 		// 6567: NTSC-M
 		// 6569: PAL-B
-		gfx::video_output::StandardT _video_standard;
+		gfx::video_output::Standard _video_standard;
 
 		// Number of CPU cycles on each scanline. The Vic-II will generate 8 pixels per CPU cycle.
 		// 6567R56A: 64 (0x40)
@@ -56,17 +57,16 @@ namespace mewt::emu::chip::mos_65xx {
 		uint16_t _xpos_display_off;
 
 		// Total number of pixels across an entire scanline.
-		[[nodiscard]] constexpr auto totalPixelsPerScanline() const -> uint16_t { return _cycles_per_scanline << 3; }
+		[[nodiscard]] constexpr friend auto totalPixelsPerScanline(const vic2_config_t& config) -> uint16_t { return config._cycles_per_scanline << 3; }
 
 		// Number of scanlines in the visible portion of the display.
-		[[nodiscard]] constexpr auto visibleScanlineCount() const -> uint16_t { return (_raster_display_off + _total_scanlines_per_frame - _raster_display_on) % _total_scanlines_per_frame; }
+		[[nodiscard]] constexpr friend auto visibleScanlineCount(const vic2_config_t& config) -> uint16_t { return (config._raster_display_off + config._total_scanlines_per_frame - config._raster_display_on) % config._total_scanlines_per_frame; }
 
 		// Number of pixels across a scanline in the visible portion of the display.
-		[[nodiscard]] constexpr auto visibleScanlineWidth() const -> uint16_t { return (_xpos_display_off + totalPixelsPerScanline() - _xpos_display_on) % totalPixelsPerScanline(); }
+		[[nodiscard]] constexpr friend auto visibleScanlineWidth(const vic2_config_t& config) -> uint16_t { return (config._xpos_display_off + totalPixelsPerScanline(config) - config._xpos_display_on) % totalPixelsPerScanline(config); }
 
 		// Get the config for a particular Vic-II model.
-		//static const vic2_config_t& get(vic2_model_t model);
-
+		// static const vic2_config_t& get(vic2_model_t model);
 	};
 
 }

@@ -31,6 +31,13 @@ namespace mewt::async
 		{
 
 		public:
+			PromiseBase() = default;
+
+			PromiseBase(const PromiseBase&) = delete;
+			PromiseBase(PromiseBase&&) = delete;
+			auto operator=(const PromiseBase&) = delete;
+			auto operator=(PromiseBase&&) = delete;
+
 			// The return type of the co-routine is the future. We initialize it with a reference to
 			// this promise. The future will then tell us what it's address is, and will update this
 			// whenever it moves. The future we return here won't actually be returned to the calling
@@ -179,7 +186,7 @@ namespace mewt::async
 			}
 		};
 
-		using promise_type = PromiseType;
+		using promise_type = PromiseType; // NOLINT(readability-identifier-naming)
 	};
 
 	// And this is the functionality specifically for a void return type.
@@ -210,7 +217,7 @@ namespace mewt::async
 					this->setFutureValue(VoidType());
 			}
 		};
-		using promise_type = PromiseType;
+		using promise_type = PromiseType; // NOLINT(readability-identifier-naming)
 	};
 
 }

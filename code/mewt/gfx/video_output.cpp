@@ -3,31 +3,36 @@
 
 #include <exception>
 
-namespace mewt::gfx::video_output {
+namespace mewt::gfx::video_output
+{
 
-	template <StandardT _Standard>
+	template <Standard _Standard>
 	struct standard_info;
 
 	template <>
-	struct standard_info<StandardT::NtscM> {
-		static constexpr ConfigT config = {
+	struct standard_info<Standard::NtscM>
+	{
+		static constexpr Config config = {
 			.refresh_rate_hz = 60,
 		};
 	};
 
 	template <>
-	struct standard_info<StandardT::PalB> {
-		static constexpr ConfigT config = {
+	struct standard_info<Standard::PalB>
+	{
+		static constexpr Config config = {
 			.refresh_rate_hz = 50,
 		};
 	};
 
-	ConfigT ConfigT::get(StandardT standard) {
-		switch (standard) {
-		case StandardT::NtscM:
-			return standard_info<StandardT::NtscM>::config;
-		case StandardT::PalB:
-			return standard_info<StandardT::PalB>::config;
+	Config Config::get(Standard standard)
+	{
+		switch (standard)
+		{
+		case Standard::NtscM:
+			return standard_info<Standard::NtscM>::config;
+		case Standard::PalB:
+			return standard_info<Standard::PalB>::config;
 		}
 		throw std::exception("Unknown standard.");
 	}

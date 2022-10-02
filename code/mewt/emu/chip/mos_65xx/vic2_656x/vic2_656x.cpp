@@ -1,14 +1,31 @@
 
+#include "mewt/async/event.impl.h"
 #include "mewt/async/future_promise.h"
 #include "mewt/diag/log.h"
 #include "mewt/emu/chip/clock/clock.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x_config.h"
 #include "mewt/emu/host/host.impl.h"
-#include "mewt/async/event.impl.h"
 
 namespace mewt::emu::chip::mos_65xx
 {
+
+
+	enum class Byte : std::uint8_t
+	{
+	};
+
+	enum class Word : std::uint16_t
+	{
+	};
+	constexpr Word makeWord(std::uint16_t value) { return static_cast<Word>(value); }
+	void foo(Word w)
+	{
+		constexpr static Word kWT = makeWord(0x1f);
+		if (w == kWT)
+		{
+		}
+	}
 
 	// http://www.zimmers.net/cbmpics/cbm/c64/vic-ii.txt
 
@@ -27,21 +44,30 @@ namespace mewt::emu::chip::mos_65xx
 	//	};
 	// }
 
-	auto vic2_656x_t::IoControllerT::read(Address address) -> Data
+	constexpr int kVicIIRegisterAddressBits = 6;
+	constexpr int kVicIIRegisterAddressMask = (1 << kVicIIRegisterAddressBits) - 1;
+	constexpr Data kVicIIRegisterOutOfBoundsValue = 0xff;
+
+	auto vic2_656x_t::IOController::read(Address address) -> Data
 	{
 		// https://www.c64-wiki.com/wiki/Page_208-211
-		address &= 0x3f;
-		if (address >= 0x30)
-			return 0xff;
-		return *((Data*)&_chip._regs + address);
+		address &= kVicIIRegisterAddressMask;
+		if (address >= sizeof(Regs))
+			return kVicIIRegisterOutOfBoundsValue;
+		auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1); // #mwToDo: Store reg_data as a member of IOController
+		return static_cast<Data>(std::as_bytes(reg_data)[address]);
+		//  #mwToDo: Should we use std::byte instead of std::uint8_t for memory contents?
+		//  return *((Data*)&_chip._regs + address);
 	}
 
-	void vic2_656x_t::IoControllerT::write(Address address, Data data)
+	void vic2_656x_t::IOController::write(Address address, Data data)
 	{
-		address &= 0x3f;
-		if (address >= 0x30)
+		address &= kVicIIRegisterAddressMask;
+		if (address >= sizeof(Regs))
 			return;
-		*((Data*)&_chip._regs + address) = data;
+		auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1);
+		std::as_writable_bytes(reg_data)[address] = static_cast<std::byte>(data);
+		//*((Data*)&_chip._regs + address) = data;
 	}
 
 	/* vic2_656x_t::vic2_656x_t(const clock_source_t& clock) //, vic2_model_t model)
@@ -97,33 +123,38 @@ namespace mewt::emu::chip::mos_65xx
 
 	*/
 
-	static const types::Colour vic2_colours[] = {
-		{ 0x00, 0x00, 0x00 },
-		{ 0xff, 0xff, 0xff },
-		{ 0x9f, 0x4e, 0x44 },
-		{ 0x6a, 0xbf, 0xc6 },
-		{ 0xa0, 0x57, 0xa3 },
-		{ 0x5c, 0xab, 0x5e },
-		{ 0x50, 0x45, 0x9b },
-		{ 0xc9, 0xd4, 0x87 },
-		{ 0xa1, 0x68, 0x3c },
-		{ 0x6d, 0x54, 0x12 },
-		{ 0xcb, 0x7e, 0x75 },
-		{ 0x62, 0x62, 0x62 },
-		{ 0x89, 0x89, 0x89 },
-		{ 0x9a, 0xe2, 0x9b },
-		{ 0x88, 0x7e, 0xcb },
-		{ 0xad, 0xad, 0xad },
-	};
+	constexpr auto operator"" _rgb(std::uint64_t value)
+	{
+		return types::colourFromRGB(static_cast<std::uint32_t>(value));
+	}
+
+	static constexpr auto kVicIIColours = std::to_array<types::Colour>({
+		 0x000000_rgb, // { 0x00, 0x00, 0x00 },
+		 0xffffff_rgb, // { 0xff, 0xff, 0xff },
+		 0x9f4e44_rgb, //{ 0x9f, 0x4e, 0x44 },
+		 0x6abfc6_rgb,
+		 0xa057a3_rgb,
+		 0x5cab5e_rgb,
+		 0x50459b_rgb,
+		 0xc9d487_rgb,
+		 0xa1683c_rgb,
+		 0x6d5412_rgb,
+		 0xcb7e75_rgb,
+		 0x626262_rgb,
+		 0x898989_rgb,
+		 0x9ae29b_rgb,
+		 0x887ecb_rgb,
+		 0xadadad_rgb,
+	});
 
 	class VicII
 	{
 	public:
-		VicII(vic2_config_t config);
-		void generate_frame(IHost::Frame::scan_out_t pixels);
+		explicit VicII(vic2_config_t config);
+		void generateFrame(IHost::Frame::scan_out_t pixels);
 
 	protected:
-		void generate_scanline(IHost::Frame::scan_out_t& pixels);
+		void generateScanline(IHost::Frame::scan_out_t& pixels) const;
 
 	private:
 		vic2_config_t _config;
@@ -134,37 +165,38 @@ namespace mewt::emu::chip::mos_65xx
 	{
 	}
 
-	void VicII::generate_frame(IHost::Frame::scan_out_t pixels)
+	void VicII::generateFrame(IHost::Frame::scan_out_t pixels)
 	{
 		while (!pixels.isEndOfFrame())
-			generate_scanline(pixels);
+			generateScanline(pixels);
 	}
 
-	void VicII::generate_scanline(IHost::Frame::scan_out_t& pixels)
+	void VicII::generateScanline(IHost::Frame::scan_out_t& /*pixels*/) const
 	{
 		for (uint16_t cycle_x = 0; cycle_x < _config._cycles_per_scanline; ++cycle_x)
 		{
 		}
 	}
 
-	void vic2_656x_t::generateFrame(IHost::Frame& frame)
+	// #mwToDo: Remove the nolint on the following line
+	void vic2_656x_t::generateFrame(IHost::Frame& frame) // NOLINT(readability-function-cognitive-complexity)
 	{
 		const auto& config = getConfig();
 		bool scanline_visible = false;
 		bool raster_visible = false;
 
-		auto output_rows = frame._pixels.rows().begin();
+		auto output_rows = begin(frame._pixels.rows());
 		types::Colour* current_pixel = nullptr;
 
 		bool main_border_flip_flop = true;
 		bool vert_border_flip_flop = true;
 		bool bad_line_enable = false;
-		int vc_base = 0; // (video counter base) is a 10 bit data register with reset input that can be loaded with the value from VC.
-		int vc = 0;		  //  (video counter) is a 10 bit counter that can be loaded with the value from VCBASE.
-		int vmli = 0;	  // 6 bit counter with reset input that keeps track of the position within the internal 40×12 bit video matrix / color line where read character pointers are stored resp.read again.
-		int rc = 0;		  // (row counter) is a 3 bit counter with reset input.
+		int reg_vc_base = 0; // (video counter base) is a 10 bit data register with reset input that can be loaded with the value from VC.
+		int reg_vc = 0;		//  (video counter) is a 10 bit counter that can be loaded with the value from VCBASE.
+		int reg_vmli = 0;		// 6 bit counter with reset input that keeps track of the position within the internal 40×12 bit video matrix / color line where read character pointers are stored resp.read again.
+		int reg_rc = 0;		// (row counter) is a 3 bit counter with reset input.
 		bool bus_available = true;
-		uint16_t video_matrix[40]{ 0 };
+		const std::array<uint16_t, 40> video_matrix{ 0 };
 		bool is_display_state = false;
 
 		(void)bus_available;
@@ -172,8 +204,8 @@ namespace mewt::emu::chip::mos_65xx
 
 		for (uint16_t raster_y = 0; raster_y < config._total_scanlines_per_frame; ++raster_y)
 		{
-			_regs._raster = (raster_y & 0xff);
-			_regs._control_reg_1._rst8 = (raster_y & 0x100) ? 1 : 0;
+			_regs._raster = types::lowByte(raster_y);
+			_regs._control_reg_1._rst8 = types::highByte(raster_y) == 1;
 
 			for (uint16_t cycle_x = 0; cycle_x < config._cycles_per_scanline; ++cycle_x)
 			{
@@ -188,21 +220,21 @@ namespace mewt::emu::chip::mos_65xx
 
 				if (cycle_x == 58)
 				{
-					if (rc == 7)
+					if (reg_rc == 7)
 					{
 						is_display_state = false;
-						vc_base = vc;
+						reg_vc_base = reg_vc;
 					}
 					if (is_display_state)
-						rc = (rc + 1) & 7;
+						reg_rc = (reg_rc + 1) & 7;
 				}
 
 				if (cycle_x == 14)
 				{
-					vc = vc_base;
-					vmli = 0;
+					reg_vc = reg_vc_base;
+					reg_vmli = 0;
 					if (is_bad_line)
-						rc = 0;
+						reg_rc = 0;
 				}
 
 				if ((cycle_x >= 12) && (cycle_x <= 54))
@@ -217,8 +249,8 @@ namespace mewt::emu::chip::mos_65xx
 				if (is_display_state)
 				{
 					// mwToDo: Do g-access
-					vc = (vc + 1) & 0x3ff;
-					vmli = (vmli + 1) & 0x3f;
+					reg_vc = (reg_vc + 1) & 0x3ff;
+					reg_vmli = (reg_vmli + 1) & 0x3f;
 				}
 
 				_cpu_clock.tick();
@@ -241,7 +273,7 @@ namespace mewt::emu::chip::mos_65xx
 							scanline_visible = true;
 						else if (raster_y == config._raster_display_off)
 							scanline_visible = false;
-						current_pixel = (*output_rows).data();
+						current_pixel = scanline_visible ? (*output_rows).data() : nullptr;
 					}
 
 					if (raster_x == config._xpos_display_on)
@@ -264,7 +296,7 @@ namespace mewt::emu::chip::mos_65xx
 
 					if (raster_visible)
 					{
-						auto pixel_colour = vic2_colours[main_border_flip_flop ? (uint8_t)_regs._border_color : 0];
+						auto pixel_colour = kVicIIColours[main_border_flip_flop ? (uint8_t)_regs._border_color : 0];
 						// pixel_colour.r = vc & 0xff;
 						// pixel_colour.r = rc << 5;
 						// pixel_colour.r = vmli;
@@ -288,8 +320,8 @@ namespace mewt::emu::chip::mos_65xx
 		auto& config = co_await host.events().initialising;
 		const auto& vic_config = getConfig();
 		config.display_size = {
-			._width = gfx::Image::Width(vic_config.visibleScanlineWidth()),
-			._height = gfx::Image::Height(vic_config.visibleScanlineCount())
+			._width = gfx::Image::Width(visibleScanlineWidth(vic_config)),
+			._height = gfx::Image::Height(visibleScanlineCount(vic_config))
 		};
 
 		// VicII vic2(vic_config);

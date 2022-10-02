@@ -63,7 +63,8 @@ namespace mewt::app::c64_emu
 			int pitch = 0;
 			SDL_LockTexture(sdl_texture.get(), nullptr, &pixels_void, &pitch);
 			auto* pixels = static_cast<types::Colour*>(pixels_void);
-			auto span = types::Span2dT(pixels, hostConfig().display_size._width, hostConfig().display_size._height, gfx::Image::Width(pitch / static_cast<int>(sizeof(types::Colour))));
+			auto pitchInPixels = gfx::Image::Width(pitch / static_cast<int>(sizeof(types::Colour)));
+			auto span = types::Span2D(std::span(pixels, pitchInPixels.get() * hostConfig().display_size._height.get()), hostConfig().display_size._width, hostConfig().display_size._height, pitchInPixels);
 			// static int kk = 0;
 			// kk++;
 			// for (int i = 0; i < 32 * 32; ++i)

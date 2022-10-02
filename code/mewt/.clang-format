@@ -25,6 +25,7 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
 BreakBeforeBraces: Custom
+BreakBeforeConceptDeclarations: Always
 ColumnLimit: 0
 Cpp11BracedListStyle: false
 FixNamespaceComments: false

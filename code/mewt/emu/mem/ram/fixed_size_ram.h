@@ -6,12 +6,11 @@
 namespace mewt::emu::mem::ram
 {
 
-	template<int _Size, is_bus_spec _BusSpec>
+	template <int _Size, is_BusSpec _BusSpec>
 	class fixed_size_ram : public IMemoryInterface<_BusSpec>
 	{
 
 	public:
-
 		using Data = typename IMemoryInterface<_BusSpec>::Data;
 		using Address = typename IMemoryInterface<_BusSpec>::Address;
 
@@ -28,9 +27,7 @@ namespace mewt::emu::mem::ram
 		}
 
 	private:
-
 		char _data[_Size]{ 0 };
-
 	};
 
 }

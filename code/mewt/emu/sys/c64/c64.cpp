@@ -221,7 +221,7 @@ namespace mewt::emu::sys::c64
 	{
 		auto page = (address >> 8) & 0xf;
 		if (page < 4)
-			return _sys._vic2._io_controller;
+			return _sys._vic2.ioController();
 		else if (page < 8)
 			return _sys._sid._io_controller;
 		else if (page < 12)

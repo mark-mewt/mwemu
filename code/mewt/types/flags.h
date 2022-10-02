@@ -40,7 +40,8 @@ namespace mewt::types
 		class Proxy
 		{
 		public:
-			constexpr operator bool() const { return _flags._bits & _mask; }
+			constexpr operator int() const = delete;
+			constexpr operator bool() const { return _flags._bits & _mask; } // NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 			constexpr auto operator=(bool bit) -> Proxy&
 			{
 				if (bit)
