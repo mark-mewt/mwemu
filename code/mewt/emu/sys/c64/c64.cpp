@@ -66,19 +66,17 @@ namespace mewt::emu::sys::c64
 	c64_t::cpu_memory_controller_t::memory_region_t c64_t::cpu_memory_controller_t::address_region(Address address)
 	{
 		using mr = memory_region_t;
-		static mr regions[] = {
-			mr::LoRam, mr::MidRam, mr::MidRam, mr::MidRam,
-			mr::MidRam, mr::MidRam, mr::MidRam, mr::MidRam,
-			mr::LoCart, mr::LoCart, mr::Basic, mr::Basic,
-			mr::HiRam, mr::IO, mr::Kernal, mr::Kernal
-		};
-		return regions[address >> 12];
+		constexpr auto regions = std::to_array<mr>({ mr::LoRam, mr::MidRam, mr::MidRam, mr::MidRam,
+																	mr::MidRam, mr::MidRam, mr::MidRam, mr::MidRam,
+																	mr::LoCart, mr::LoCart, mr::Basic, mr::Basic,
+																	mr::HiRam, mr::IO, mr::Kernal, mr::Kernal });
+		return regions[asUnderlyingType(highBits<4>(address))];
 	}
 
 	Address c64_t::cpu_memory_controller_t::address_mask(memory_device_t device)
 	{
-		static Data blocks[] = { 0, 16, 13, 13, 13, 12, 13, 12 };
-		return (Address)((1 << blocks[(Data)device]) - 1);
+		constexpr auto blocks = std::to_array<std::uint32_t>({ 0, 16, 13, 13, 13, 12, 13, 12 });
+		return (Address)((1 << blocks[(std::uint32_t)device]) - 1);
 	}
 
 	c64_t::memory_device_t c64_t::cpu_memory_controller_t::mapped_device(memory_region_t region)
@@ -147,10 +145,10 @@ namespace mewt::emu::sys::c64
 
 	Data c64_t::cpu_memory_controller_t::read(Address address)
 	{
-		if (address == 0)
-			return _sys._port_write_enable.rawBits();
-		if (address == 1)
-			return _sys._port_bits.rawBits();
+		if (address == types::zero)
+			return Data(_sys._port_write_enable.rawBits());
+		if (address == Address(1))
+			return Data(_sys._port_bits.rawBits());
 		auto region = address_region(address);
 		auto device = mapped_device(region);
 		address &= address_mask(device);
@@ -191,10 +189,10 @@ namespace mewt::emu::sys::c64
 
 	void c64_t::cpu_memory_controller_t::write(Address address, Data data)
 	{
-		if (address == 0)
-			_sys._port_write_enable.rawBits() = data;
-		else if (address == 1)
-			_sys._port_bits.rawBits() = data;
+		if (address == types::zero)
+			_sys._port_write_enable.rawBits() = asUnderlyingType(data);
+		else if (address == Address(1))
+			_sys._port_bits.rawBits() = asUnderlyingType(data);
 		auto region = address_region(address);
 		auto device = mapped_device(region);
 		address &= address_mask(device);
@@ -219,18 +217,18 @@ namespace mewt::emu::sys::c64
 
 	MemoryInterface& c64_t::io_controller_t::device_at(Address address)
 	{
-		auto page = (address >> 8) & 0xf;
-		if (page < 4)
+		auto page = lowNibble(highByte(address));
+		if (page < types::HalfByte(4))
 			return _sys._vic2.ioController();
-		else if (page < 8)
+		else if (page < types::HalfByte(8))
 			return _sys._sid._io_controller;
-		else if (page < 12)
+		else if (page < types::HalfByte(12))
 			return _sys._color_ram;
-		else if (page == 12)
+		else if (page == types::HalfByte(12))
 			return _sys._cia1_controller;
-		else if (page == 13)
+		else if (page == types::HalfByte(13))
 			return _sys._cia2_controller;
-		else if (page == 14)
+		else if (page == types::HalfByte(14))
 			return _sys._io1_controller;
 		else
 			return _sys._io2_controller;

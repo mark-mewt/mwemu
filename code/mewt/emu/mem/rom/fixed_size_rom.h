@@ -5,6 +5,7 @@
 #include "mewt/emu/mem/memory_interface.h"
 
 #include <string>
+#include <array>
 
 namespace mewt::emu::mem::rom
 {
@@ -20,12 +21,12 @@ namespace mewt::emu::mem::rom
 		inline void load_rom(const std::string_view& name, size_t offset = 0)
 		{
 			io::reader_t reader;
-			reader.read_data(name, _data, _Size, offset);
+			reader.read_data(name, _data, offset);
 		}
 
 		Data read(Address address) override
 		{
-			return *(Data*)(_data + address);
+			return _data[asUnderlyingType(address)];
 		}
 
 		void write(Address address, Data data) override
@@ -33,7 +34,7 @@ namespace mewt::emu::mem::rom
 		}
 
 	private:
-		char _data[_Size]{ 0 };
+		std::array<Data, _Size> _data;
 	};
 
 }

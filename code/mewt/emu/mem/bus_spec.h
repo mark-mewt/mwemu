@@ -12,8 +12,8 @@ namespace mewt::emu::mem
 	{
 		const int kAddressBits = NAddressBits;
 		const int kDataBits = NDataBits;
-		using Address = types::UInt<NAddressBits>;
-		using Data = types::UInt<NDataBits>;
+		using Address = types::OpaqueInt<NAddressBits>;
+		using Data = types::OpaqueInt<NDataBits>;
 	};
 
 	template <int NAddressBits, int NDataBits>

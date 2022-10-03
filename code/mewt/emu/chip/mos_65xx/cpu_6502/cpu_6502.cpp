@@ -21,7 +21,7 @@
 namespace mewt::emu::chip::mos_65xx
 {
 
-	constexpr Data kDecimalMax = 99;
+	constexpr Data kDecimalMax = types::fromUnderlyingType<Data>(99);
 
 	cpu_6502_t::cpu_6502_t(const clock_source_t& clock, MemoryInterface& memory_interface)
 		 : _clock(clock), _memory_interface(memory_interface)
@@ -42,18 +42,15 @@ namespace mewt::emu::chip::mos_65xx
 		 -> async::Future<Address>
 	{
 		// logger().log("%s: %d", __FUNCTION__, 0);
-		Address low = co_await read_data(address);
-		Address high = co_await read_data(address + 1);
+		types::Byte low = co_await read_data(address);
+		types::Byte high = co_await read_data(++address);
 		co_return types::makeWord(low, high);
 	}
 
 	auto cpu_6502_t::read_address_zp(Data offset)
 		 -> async::Future<Address>
 	{
-		// logger().log("%s: %d", __FUNCTION__, 0);
-		Address low = co_await read_data(offset);
-		Address high = co_await read_data(types::lowByte(offset + 1));
-		co_return types::makeWord(low, high);
+		return read_address(types::makeWord(offset, types::zero));
 	}
 
 	auto cpu_6502_t::write_data(Address address, Data data)
@@ -79,21 +76,23 @@ namespace mewt::emu::chip::mos_65xx
 	private:
 		cpu_6502_t& _cpu;
 		const cpu_6502::Instruction* _inst = nullptr;
-		Data _inst_code = 0;
-		Data _imm_high = 0;
-		Data _imm_low = 0;
-		Address _imm_addr = 0;
+		Data _inst_code = types::zero;
+		Data _imm_high = types::zero;
+		Data _imm_low = types::zero;
+		Address _imm_addr = types::zero;
 	};
 
 	auto cpu_6502_t::InstructionUnit::fetch()
 		 -> async::Future<>
 	{
 		_inst_code = co_await _cpu.read_data(_cpu._pc);
-		_inst = std::addressof(cpu_6502::getInstructions()[_inst_code]);
-		_imm_low = co_await _cpu.read_data(_cpu._pc + 1);
+		_inst = std::addressof(cpu_6502::getInstructions()[asUnderlyingType(_inst_code)]);
+		++_cpu._pc;
+		_imm_low = co_await _cpu.read_data(_cpu._pc);
 		if (_inst->is_3_byte())
 		{
-			_imm_high = co_await _cpu.read_data(_cpu._pc + 2);
+			++_cpu._pc;
+			_imm_high = co_await _cpu.read_data(_cpu._pc);
 			_imm_addr = types::makeWord(_imm_low, _imm_high);
 			// logger().log("0x%04X: %02X %s(%04X)", _pc, instCode, to_string(inst.opcode), immAddr);
 		}
@@ -101,13 +100,8 @@ namespace mewt::emu::chip::mos_65xx
 		{
 			// logger().log("0x%04X: %02X %s(%02X)", _pc, instCode, to_string(inst.opcode), immLow);
 		}
-		++_cpu._pc;
 		if (!_inst->is_1_byte())
-		{
 			++_cpu._pc;
-			if (_inst->is_3_byte())
-				++_cpu._pc;
-		}
 	}
 
 	auto cpu_6502_t::InstructionUnit::handleBranch()
@@ -116,17 +110,17 @@ namespace mewt::emu::chip::mos_65xx
 		co_await std::suspend_never(); // mwToDo: Get rid, fix clang static analysis errors
 		if (_inst->is_branch())
 		{
-			co_await _cpu.handle_branch(cpu_6502::Instruction::Branch::fromInstruction(_inst_code), _imm_low);
+			co_await _cpu.handle_branch(cpu_6502::Instruction::Branch::fromInstruction(asUnderlyingType(_inst_code)), _imm_low);
 			co_return true;
 		}
 		if (_inst->is_call())
 		{
-			co_await _cpu.handle_call(cpu_6502::Instruction::Call::fromInstruction(_inst_code), _imm_low, _imm_high);
+			co_await _cpu.handle_call(cpu_6502::Instruction::Call::fromInstruction(asUnderlyingType(_inst_code)), _imm_low, _imm_high);
 			co_return true;
 		}
 		if (_inst->is_jump())
 		{
-			co_await _cpu.handle_jump(cpu_6502::Instruction::Jump::fromInstruction(_inst_code), _imm_addr);
+			co_await _cpu.handle_jump(cpu_6502::Instruction::Jump::fromInstruction(asUnderlyingType(_inst_code)), _imm_addr);
 			co_return true;
 		}
 		co_return false;
@@ -142,7 +136,7 @@ namespace mewt::emu::chip::mos_65xx
 		case data_loc_t::Imm8:
 			co_return _imm_low;
 		case data_loc_t::Flag:
-			co_return _cpu._reg_flags.rawBits();
+			co_return types::fromUnderlyingType<Data>(_cpu._reg_flags.rawBits());
 		case data_loc_t::RegX:
 			co_return _cpu._reg_x;
 		case data_loc_t::RegY:
@@ -158,11 +152,11 @@ namespace mewt::emu::chip::mos_65xx
 		case data_loc_t::Ptr_:
 			co_return co_await _cpu.read_data(_imm_addr);
 		case data_loc_t::Zpge:
-			co_return co_await _cpu.read_data(_imm_low);
+			co_return co_await _cpu.read_data(types::makeWord(_imm_low, types::zero));
 		case data_loc_t::ZppX:
-			co_return co_await _cpu.read_data(types::lowByte(_imm_low + _cpu._reg_x));
+			co_return co_await _cpu.read_data(types::makeWord(_imm_low + _cpu._reg_x, types::zero));
 		case data_loc_t::ZppY:
-			co_return co_await _cpu.read_data(types::lowByte(_imm_low + _cpu._reg_y));
+			co_return co_await _cpu.read_data(types::makeWord(_imm_low + _cpu._reg_y, types::zero));
 		case data_loc_t::IndY:
 			co_return co_await _cpu.read_data(co_await _cpu.read_address_zp(_imm_low) + _cpu._reg_y);
 		case data_loc_t::Stck:
@@ -172,14 +166,14 @@ namespace mewt::emu::chip::mos_65xx
 		}
 	}
 
-	const Data kBit0 = (1 << 0);
-	const Data kBit1 = (1 << 1);
-	const Data kBit2 = (1 << 2);
-	const Data kBit3 = (1 << 3);
+	const Data kBit0 = types::fromUnderlyingType<Data>(1 << 0);
+	const Data kBit1 = types::fromUnderlyingType<Data>(1 << 1);
+	const Data kBit2 = types::fromUnderlyingType<Data>(1 << 2);
+	const Data kBit3 = types::fromUnderlyingType<Data>(1 << 3);
 	// const Data kBit4 = (1 << 4);
 	// const Data kBit5 = (1 << 5);
-	const Data kBit6 = (1 << 6);
-	const Data kBit7 = (1 << 7);
+	const Data kBit6 = types::fromUnderlyingType<Data>(1 << 6);
+	const Data kBit7 = types::fromUnderlyingType<Data>(1 << 7);
 
 	auto cpu_6502_t::InstructionUnit::loadReference()
 		 -> Data
@@ -188,9 +182,9 @@ namespace mewt::emu::chip::mos_65xx
 		switch (_inst->ref)
 		{
 		case data_loc_t::None:
-			return 0;
+			return types::zero;
 		case data_loc_t::Flag:
-			return _cpu._reg_flags.rawBits();
+			return types::fromUnderlyingType<Data>(_cpu._reg_flags.rawBits());
 		case data_loc_t::RegA:
 			return _cpu._reg_a;
 		case data_loc_t::RegX:
@@ -234,11 +228,11 @@ namespace mewt::emu::chip::mos_65xx
 			val = ref - val;
 			if (_inst->dest != data_loc_t::None)
 			{
-				val -= (carry_flag ? 0 : 1);
+				val -= types::fromUnderlyingType<Data>(carry_flag ? 0 : 1);
 				const bool signs_changed = (val & kBit7) == (ref & kBit7);
 				overflow_flag = signs_equal && signs_changed;
 			}
-			carry_flag = (val & kBit7) == 0;
+			carry_flag = (val & kBit7) == types::zero;
 		}
 		break;
 		case operation_t::Add_: {
@@ -247,12 +241,12 @@ namespace mewt::emu::chip::mos_65xx
 			val = static_cast<Data>(val16);
 			if (_inst->dest != data_loc_t::None)
 			{
-				val += (carry_flag ? 1 : 0);
+				val += types::fromUnderlyingType<Data>(carry_flag ? 1 : 0);
 				const bool signs_changed = (val & kBit7) == (ref & kBit7);
 				overflow_flag = signs_equal && signs_changed;
 			}
 			if (_cpu._reg_flags[flag_t::Decimal])
-				carry_flag = (val16 > kDecimalMax);
+				carry_flag = (val16 > asUnderlyingType(kDecimalMax));
 			else
 				carry_flag = types::highByte(val16) != 0;
 		}
@@ -265,17 +259,17 @@ namespace mewt::emu::chip::mos_65xx
 			break;
 		case operation_t::Rol_: {
 			auto old_carry = carry_flag;
-			carry_flag = (val & kBit7) != 0;
-			val = (val << 1) | (old_carry ? 1 : 0);
+			carry_flag = (val & kBit7) != types::zero;
+			val = (val << 1) | types::fromUnderlyingType<Data>(old_carry ? 1 : 0);
 		}
 		break;
 		case operation_t::Asl_: {
-			carry_flag = (val & kBit7) != 0;
+			carry_flag = (val & kBit7) != types::zero;
 			val = (val << 1);
 		}
 		break;
 		case operation_t::Lsr_: {
-			carry_flag = (val & kBit0) != 0;
+			carry_flag = (val & kBit0) != types::zero;
 			val = (val >> 1);
 		}
 		break;
@@ -283,10 +277,10 @@ namespace mewt::emu::chip::mos_65xx
 			val ^= ref;
 			break;
 		case operation_t::BTst: {
-			_cpu._reg_flags[flag_t::Negative] = (val & kBit7) != 0; // set negative flag if value is negative
-			_cpu._reg_flags[flag_t::Overflow] = (val & kBit6) != 0;
+			_cpu._reg_flags[flag_t::Negative] = (val & kBit7) != types::zero; // set negative flag if value is negative
+			_cpu._reg_flags[flag_t::Overflow] = (val & kBit6) != types::zero;
 			val &= ref;
-			_cpu._reg_flags[flag_t::Zero] = (val == 0); // set zero flag if value is zero
+			_cpu._reg_flags[flag_t::Zero] = (val == types::zero); // set zero flag if value is zero
 		}
 		break;
 		default:
@@ -304,8 +298,8 @@ namespace mewt::emu::chip::mos_65xx
 		case flag_action_t::Inst:
 			break;
 		case flag_action_t::Nrml:
-			_cpu._reg_flags[flag_t::Zero] = (val == 0);				  // set zero flag if value is zero
-			_cpu._reg_flags[flag_t::Negative] = (val & kBit7) != 0; // set negative flag if value is negative
+			_cpu._reg_flags[flag_t::Zero] = (val == types::zero);					// set zero flag if value is zero
+			_cpu._reg_flags[flag_t::Negative] = (val & kBit7) != types::zero; // set negative flag if value is negative
 			_cpu._reg_flags[flag_t::Carry] = carry_flag;
 			_cpu._reg_flags[flag_t::Overflow] = overflow_flag;
 			break;
@@ -323,7 +317,7 @@ namespace mewt::emu::chip::mos_65xx
 		case data_loc_t::None:
 			break;
 		case data_loc_t::Flag:
-			_cpu._reg_flags.rawBits() = val;
+			_cpu._reg_flags.rawBits() = types::asUnderlyingType(val);
 			break;
 		case data_loc_t::RegA:
 			_cpu._reg_a = val;
@@ -347,13 +341,13 @@ namespace mewt::emu::chip::mos_65xx
 			co_await _cpu.write_data(_imm_addr + _cpu._reg_y, val);
 			break;
 		case data_loc_t::Zpge:
-			co_await _cpu.write_data(_imm_low, val);
+			co_await _cpu.write_data(makeWord(_imm_low, types::zero), val);
 			break;
 		case data_loc_t::ZppX:
-			co_await _cpu.write_data(types::lowByte(_imm_low + _cpu._reg_x), val);
+			co_await _cpu.write_data(types::makeWord(_imm_low + _cpu._reg_x, types::zero), val);
 			break;
 		case data_loc_t::ZppY:
-			co_await _cpu.write_data(types::lowByte(_imm_low + _cpu._reg_y), val);
+			co_await _cpu.write_data(types::makeWord(_imm_low + _cpu._reg_y, types::zero), val);
 			break;
 		case data_loc_t::IndY:
 			co_await _cpu.write_data(co_await _cpu.read_address_zp(_imm_low) + _cpu._reg_y, val);
@@ -656,7 +650,7 @@ namespace mewt::emu::chip::mos_65xx
 #endif
 	}
 
-	constexpr Address kInitialJumpLocation = 0xfffc;
+	constexpr Address kInitialJumpLocation = types::fromUnderlyingType<Address>(0xfffc);
 
 	auto cpu_6502_t::run_cpu()
 		 -> async::Future<>
@@ -701,7 +695,7 @@ namespace mewt::emu::chip::mos_65xx
 		{
 			co_await _clock.nextTick();
 			auto page = types::highByte(_pc);
-			_pc += static_cast<int8_t>(imm_low);
+			_pc = types::fromUnderlyingType<Address>(asUnderlyingType(_pc) + static_cast<int8_t>(imm_low));
 			auto new_page = types::highByte(_pc);
 			if (new_page != page)
 				co_await _clock.nextTick();
@@ -725,7 +719,8 @@ namespace mewt::emu::chip::mos_65xx
 		case Op::RTS: {
 			auto low = co_await pop();
 			auto high = co_await pop();
-			_pc = types::makeWord(low, high) + 1;
+			_pc = types::makeWord(low, high);
+			++_pc;
 		}
 		break;
 		default:
@@ -751,12 +746,13 @@ namespace mewt::emu::chip::mos_65xx
 		}
 	}
 
-	constexpr Address kStackStart = 0x100;
+	constexpr Address kStackStart = types::fromUnderlyingType<Address>(0x100);
 
 	auto cpu_6502_t::push(Data data)
 		 -> async::Future<>
 	{
-		auto stack = _reg_s--;
+		auto stack = _reg_s;
+		--_reg_s;
 		co_await write_data(kStackStart + stack, data);
 	}
 

@@ -21,6 +21,9 @@ namespace mewt::async
 	struct FutureBase
 	{
 
+		// We can't store void in a variant so we'll replace that with void_type_t.
+		using ResultType = std::conditional_t<std::is_void_v<TReturnType>, VoidType, TReturnType>;
+
 		// Our promise promises to:
 		// (a) Not change address - we do this by making it a non_movable_t.
 		// (b) Notify the future on destruction (this combined with (a) prevents a dangling reference).
@@ -82,6 +85,7 @@ namespace mewt::async
 
 			// Reference the return value stored in the future.
 			template <typename TValue>
+				requires(std::is_constructible_v<ResultType, TValue>)
 			inline void setFutureValue(TValue&& value)
 			{
 				if (_future)
@@ -141,9 +145,6 @@ namespace mewt::async
 		auto operator=(FutureBase&&) = delete;
 
 	protected:
-		// We can't store void in a variant so we'll replace that with void_type_t.
-		using ResultType = std::conditional_t<std::is_void_v<TReturnType>, VoidType, TReturnType>;
-
 		[[nodiscard]] inline auto promise() const { return _promise; } // mwToDo: Should be able to get rid of this.
 		[[nodiscard]] inline auto value() const -> auto& { return _value; }
 
@@ -180,6 +181,7 @@ namespace mewt::async
 
 			// When the co-routine returns, store its return value in the future.
 			template <typename TValue>
+				requires(std::is_constructible_v<TReturnType, TValue>)
 			inline void return_value(TValue&& value) // NOLINT(readability-identifier-naming)
 			{
 				this->setFutureValue(std::forward<TValue>(value));

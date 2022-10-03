@@ -10,23 +10,6 @@
 namespace mewt::emu::chip::mos_65xx
 {
 
-
-	enum class Byte : std::uint8_t
-	{
-	};
-
-	enum class Word : std::uint16_t
-	{
-	};
-	constexpr Word makeWord(std::uint16_t value) { return static_cast<Word>(value); }
-	void foo(Word w)
-	{
-		constexpr static Word kWT = makeWord(0x1f);
-		if (w == kWT)
-		{
-		}
-	}
-
 	// http://www.zimmers.net/cbmpics/cbm/c64/vic-ii.txt
 
 	/*
@@ -45,17 +28,18 @@ namespace mewt::emu::chip::mos_65xx
 	// }
 
 	constexpr int kVicIIRegisterAddressBits = 6;
-	constexpr int kVicIIRegisterAddressMask = (1 << kVicIIRegisterAddressBits) - 1;
-	constexpr Data kVicIIRegisterOutOfBoundsValue = 0xff;
+	constexpr Address kVicIIRegisterAddressMask = Address((1 << kVicIIRegisterAddressBits) - 1);
+	constexpr Data kVicIIRegisterOutOfBoundsValue = Data(0xff);
 
 	auto vic2_656x_t::IOController::read(Address address) -> Data
 	{
 		// https://www.c64-wiki.com/wiki/Page_208-211
 		address &= kVicIIRegisterAddressMask;
-		if (address >= sizeof(Regs))
+		if (address >= Address(sizeof(Regs)))
 			return kVicIIRegisterOutOfBoundsValue;
-		auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1); // #mwToDo: Store reg_data as a member of IOController
-		return static_cast<Data>(std::as_bytes(reg_data)[address]);
+		auto reg_data = types::ByteSpan(_chip._regs);
+		// auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1); // #mwToDo: Store reg_data as a member of IOController
+		return reg_data[lowBits<6>(address)];
 		//  #mwToDo: Should we use std::byte instead of std::uint8_t for memory contents?
 		//  return *((Data*)&_chip._regs + address);
 	}
@@ -63,10 +47,12 @@ namespace mewt::emu::chip::mos_65xx
 	void vic2_656x_t::IOController::write(Address address, Data data)
 	{
 		address &= kVicIIRegisterAddressMask;
-		if (address >= sizeof(Regs))
+		if (address >= Address(sizeof(Regs)))
 			return;
-		auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1);
-		std::as_writable_bytes(reg_data)[address] = static_cast<std::byte>(data);
+		auto reg_data = types::ByteSpan(_chip._regs);
+		reg_data[lowBits<6>(address)] = data;
+		// auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1);
+		// std::as_writable_bytes(reg_data)[address] = static_cast<std::byte>(data);
 		//*((Data*)&_chip._regs + address) = data;
 	}
 
