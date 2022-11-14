@@ -23,7 +23,6 @@ namespace mewt::ext::sdl
 
 	class Engine
 	{
-
 	public:
 		explicit Engine(Subsystems subsystems);
 
@@ -35,8 +34,7 @@ namespace mewt::ext::sdl
 		static void startSubsystems(Subsystems subsystems);
 		static void stopSubsystems(Subsystems subsystems);
 
-		[[nodiscard]] static auto queryStartedSubsystems(Subsystems query_mask = types::NoFlags())
-			 -> Subsystems;
+		[[nodiscard]] static auto queryStartedSubsystems(Subsystems query_mask = {}) -> Subsystems;
 
 		~Engine();
 	};

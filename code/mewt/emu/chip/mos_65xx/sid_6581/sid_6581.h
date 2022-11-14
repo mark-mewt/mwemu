@@ -4,55 +4,96 @@
 #include "mewt/async/future_promise.decl.h"
 #include "mewt/emu/chip/clock/clock.decl.h"
 #include "mewt/emu/chip/mos_65xx/mos_65xx.h"
+#include "mewt/types/address_space.h"
+#include "mewt/emu/mem/interface/interface.RegisterStruct.h"
+
+#include <array>
 
 namespace mewt::emu::chip::mos_65xx
 {
 
-   class sid_6581_t
-   {
-   private:
-      const clock_source_t& _clock;
-   public:
+	class SID
+	{
+	private:
+		const clock_source_t& _clock;
 
-		struct io_controller_t : public MemoryInterface
+		static constexpr mem::BusSpec<SID> kSIDBusSpec { .address_bits = { 5 } };
+
+		friend constexpr auto getBusSpecForDevice(types::traits::TypeId<SID> /*unused*/)
 		{
-			sid_6581_t& _sys;
-			struct regs_t
+			return kSIDBusSpec;
+		}
+
+			struct Registers
+		{
+			// https://www.c64-wiki.com/wiki/SID
+			struct Voice
 			{
-				// https://www.c64-wiki.com/wiki/SID
-				struct voice_t
-				{
-					Data _frequency_low;
-					Data _frequency_high;
-					Data _pulse_wave_duty_cycle_low;
-					Data _pulse_wave_duty_cycle_high;
-					Data _control_register;
-					Data _attack_decay;
-					Data _sustain_release;
-				};
-				voice_t _voice[3];
-				Data _filter_cutoff_freq_low;
-				Data _filter_cutoff_freq_high;
-				Data _filter_resonance_routing;
-				Data _filter_mode_volume;
-				Data _paddle_x;
-				Data _paddle_y;
-				Data _oscillator_voice_3;
-				Data _envelope_voice_3;
+				Byte _frequency_low;
+				Byte _frequency_high;
+				Byte _pulse_wave_duty_cycle_low;
+				Byte _pulse_wave_duty_cycle_high;
+				Byte _control_register;
+				Byte _attack_decay;
+				Byte _sustain_release;
 			};
-			static_assert(sizeof(regs_t) == 0x1d);
-			regs_t _regs{ };
-			io_controller_t(sid_6581_t& sys) : _sys(sys) { }
-			Data read(Address address) override final;
-			void write(Address address, Data data) override final;
+
+			std::array<Voice, 3> _voice;
+			Byte _filter_cutoff_freq_low;
+			Byte _filter_cutoff_freq_high;
+			Byte _filter_resonance_routing;
+			Byte _filter_mode_volume;
+			Byte _paddle_x;
+			Byte _paddle_y;
+			Byte _oscillator_voice_3;
+			Byte _envelope_voice_3;
 		};
 
-		io_controller_t _io_controller{ *this };
+			#if 0
+		class IOController // : public mem::IMemoryInterface<SID>
+		{
+		private:
+			// SID& _sys;
 
-		sid_6581_t(const clock_source_t& clock);
-      async::Future<> read_mem();
-      async::Future<> run_inst();
-      async::Future<> run_gpu();
-   };
+
+			#if 0
+			friend constexpr auto
+			declareEquivalentSpaces(types::traits::TypeId<mem::AddressSpace<kSIDBusSpec>> /*unused*/,
+											types::traits::TypeId<types::traits::Layout<Regs>> /*unused*/)
+			{
+				return true;
+			}
+			#endif
+
+			static constexpr size_t kExpectedRegsSize = 0x1d;
+			static_assert(sizeof(Regs) == kExpectedRegsSize);
+			Regs _regs {};
+
+		public:
+			// IOController(SID& sys)
+			//: _sys(sys)
+			//{
+			//}
+
+			auto read(Address address) -> Data final;
+			void write(Address address, Data data) final;
+		};
+		#endif
+
+		using MemoryController = mem::interface::RegisterStruct<Registers>;
+		MemoryController _memoryController;
+		//IOController _io_controller;
+		//{ *this };
+
+	public:
+		using Address = typename MemoryController::Address;
+		explicit SID(const clock_source_t& clock);
+		auto readMem() -> async::Future<>;
+		auto runInst() -> async::Future<>;
+		auto runGPU() -> async::Future<>;
+
+		auto memoryController() -> MemoryController& { return _memoryController; }
+
+	};
 
 }

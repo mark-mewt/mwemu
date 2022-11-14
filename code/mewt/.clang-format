@@ -1,17 +1,18 @@
-# Visual Studio generated .clang-format file
 
-# The style options in this file are a best effort attempt to replicate the
-# current IDE formatting configuration from Tools > Options. The following
-# style options, however, should be verified:
-# AfterClass, AfterControlStatement, AfterEnum, AfterFunction, AfterNamespace, 
-# AfterStruct, AfterUnion
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 
 AccessModifierOffset: -3
 AlignAfterOpenBracket: Align
-AllowShortBlocksOnASingleLine: true
+AlignArrayOfStructures: Left
+AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakAfterReturnType: None
 BasedOnStyle: LLVM
 BraceWrapping:
+  AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: true
   AfterEnum: true
@@ -23,29 +24,36 @@ BraceWrapping:
   BeforeElse: true
   IndentBraces: false
   SplitEmptyFunction: true
-  SplitEmptyRecord: true
+  SplitEmptyRecord: false
 BreakBeforeBraces: Custom
 BreakBeforeConceptDeclarations: Always
-ColumnLimit: 0
+BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeColon
+ColumnLimit: 100
 Cpp11BracedListStyle: false
 FixNamespaceComments: false
+IncludeBlocks: Regroup
 IndentCaseLabels: false
 IndentPPDirectives: None
 IndentRequiresClause: true
 IndentWidth: 3
+KeepEmptyLinesAtTheStartOfBlocks: false
 Standard: c++20
-MaxEmptyLinesToKeep: 10
+MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
+PackConstructorInitializers: Never
 PointerAlignment: Left
 RequiresClausePosition: OwnLine
-SortIncludes: false
+SeparateDefinitionBlocks: Always
+SortIncludes: true
 SortUsingDeclarations: false
 SpaceAfterCStyleCast: false
 SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 TabWidth: 3
-UseTab: true
+UseTab: Always

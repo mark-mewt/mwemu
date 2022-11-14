@@ -1,7 +1,8 @@
 
 #include "mewt/emu/sys/c64/c64.h"
-#include "mewt/diag/log.h"
+
 #include "mewt/async/future_promise.h"
+#include "mewt/diag/log.h"
 
 namespace mewt::emu::sys::c64
 {
@@ -63,14 +64,36 @@ namespace mewt::emu::sys::c64
 		}
 	}
 
+	template <typename TType, std::size_t NCount>
+	class Array : public std::array<TType, NCount>
+	{
+		using Super = std::array<TType, NCount>;
+
+	public:
+		using Super::Super;
+		constexpr Array(Super&& rhs) : Super(std::move(rhs)) {}
+		using Address = types::OpaqueInt<std::bit_width(NCount - 1)>;
+		inline auto operator[](Address address) const
+		{
+			return Super::operator[](asUnderlyingType(address));
+		}
+		inline auto operator[](Address address)
+			 -> auto&
+		{
+			return Super::operator[](asUnderlyingType(address));
+		}
+	};
+	template <typename TType, std::size_t NCount>
+	Array(std::array<TType, NCount>) -> Array<TType, NCount>;
+
 	c64_t::cpu_memory_controller_t::memory_region_t c64_t::cpu_memory_controller_t::address_region(Address address)
 	{
 		using mr = memory_region_t;
-		constexpr auto regions = std::to_array<mr>({ mr::LoRam, mr::MidRam, mr::MidRam, mr::MidRam,
-																	mr::MidRam, mr::MidRam, mr::MidRam, mr::MidRam,
-																	mr::LoCart, mr::LoCart, mr::Basic, mr::Basic,
-																	mr::HiRam, mr::IO, mr::Kernal, mr::Kernal });
-		return regions[asUnderlyingType(highBits<4>(address))];
+		constexpr Array regions = std::to_array<mr>({ mr::LoRam, mr::MidRam, mr::MidRam, mr::MidRam,
+																	 mr::MidRam, mr::MidRam, mr::MidRam, mr::MidRam,
+																	 mr::LoCart, mr::LoCart, mr::Basic, mr::Basic,
+																	 mr::HiRam, mr::IO, mr::Kernal, mr::Kernal });
+		return regions[highBits<4>(address)];
 	}
 
 	Address c64_t::cpu_memory_controller_t::address_mask(memory_device_t device)
@@ -145,7 +168,7 @@ namespace mewt::emu::sys::c64
 
 	Data c64_t::cpu_memory_controller_t::read(Address address)
 	{
-		if (address == types::zero)
+		if (address == Address::Zero)
 			return Data(_sys._port_write_enable.rawBits());
 		if (address == Address(1))
 			return Data(_sys._port_bits.rawBits());
@@ -189,7 +212,7 @@ namespace mewt::emu::sys::c64
 
 	void c64_t::cpu_memory_controller_t::write(Address address, Data data)
 	{
-		if (address == types::zero)
+		if (address == Address::Zero)
 			_sys._port_write_enable.rawBits() = asUnderlyingType(data);
 		else if (address == Address(1))
 			_sys._port_bits.rawBits() = asUnderlyingType(data);

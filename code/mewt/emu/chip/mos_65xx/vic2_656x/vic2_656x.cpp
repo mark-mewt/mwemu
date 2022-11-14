@@ -1,9 +1,10 @@
 
+#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
+
 #include "mewt/async/event.impl.h"
 #include "mewt/async/future_promise.h"
 #include "mewt/diag/log.h"
 #include "mewt/emu/chip/clock/clock.h"
-#include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x.h"
 #include "mewt/emu/chip/mos_65xx/vic2_656x/vic2_656x_config.h"
 #include "mewt/emu/host/host.impl.h"
 
@@ -16,7 +17,8 @@ namespace mewt::emu::chip::mos_65xx
 	 *
 	 * mwToDo: both vic2 and 6510 make a memory access in every cycle
 	 * mwToDo: vic2 accesses memory in first half of cpu cycle, 6510 accesses it in second half
-	 * mwToDo: set ba low 3 cycles before vic2 needs to steal bus access from cpu. 6510 should check this when reading data only, and stop until it goes high again.
+	 * mwToDo: set ba low 3 cycles before vic2 needs to steal bus access from cpu. 6510 should check
+	 * this when reading data only, and stop until it goes high again.
 	 *
 	 */
 
@@ -28,8 +30,9 @@ namespace mewt::emu::chip::mos_65xx
 	// }
 
 	constexpr int kVicIIRegisterAddressBits = 6;
-	constexpr Address kVicIIRegisterAddressMask = Address((1 << kVicIIRegisterAddressBits) - 1);
-	constexpr Data kVicIIRegisterOutOfBoundsValue = Data(0xff);
+	constexpr vic2_656x_t::Address kVicIIRegisterAddressMask = { (1 << kVicIIRegisterAddressBits) -
+																					 1 };
+	constexpr types::Byte kVicIIRegisterOutOfBoundsValue { 0xff };
 
 	auto vic2_656x_t::IOController::read(Address address) -> Data
 	{
@@ -38,7 +41,8 @@ namespace mewt::emu::chip::mos_65xx
 		if (address >= Address(sizeof(Regs)))
 			return kVicIIRegisterOutOfBoundsValue;
 		auto reg_data = types::ByteSpan(_chip._regs);
-		// auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1); // #mwToDo: Store reg_data as a member of IOController
+		// auto reg_data = std::span<Regs, 1>(std::addressof(_chip._regs), 1); // #mwToDo: Store
+		// reg_data as a member of IOController
 		return reg_data[lowBits<6>(address)];
 		//  #mwToDo: Should we use std::byte instead of std::uint8_t for memory contents?
 		//  return *((Data*)&_chip._regs + address);
@@ -86,7 +90,6 @@ namespace mewt::emu::chip::mos_65xx
 				break;
 		}
 	}*/
-
 
 	/*
 
@@ -165,7 +168,8 @@ namespace mewt::emu::chip::mos_65xx
 	}
 
 	// #mwToDo: Remove the nolint on the following line
-	void vic2_656x_t::generateFrame(IHost::Frame& frame) // NOLINT(readability-function-cognitive-complexity)
+	void vic2_656x_t::generateFrame(
+		 IHost::Frame& frame) // NOLINT(readability-function-cognitive-complexity)
 	{
 		const auto& config = getConfig();
 		bool scanline_visible = false;
@@ -177,12 +181,16 @@ namespace mewt::emu::chip::mos_65xx
 		bool main_border_flip_flop = true;
 		bool vert_border_flip_flop = true;
 		bool bad_line_enable = false;
-		int reg_vc_base = 0; // (video counter base) is a 10 bit data register with reset input that can be loaded with the value from VC.
-		int reg_vc = 0;		//  (video counter) is a 10 bit counter that can be loaded with the value from VCBASE.
-		int reg_vmli = 0;		// 6 bit counter with reset input that keeps track of the position within the internal 40×12 bit video matrix / color line where read character pointers are stored resp.read again.
-		int reg_rc = 0;		// (row counter) is a 3 bit counter with reset input.
+		int reg_vc_base = 0; // (video counter base) is a 10 bit data register with reset input that
+									// can be loaded with the value from VC.
+		int reg_vc =
+			 0; //  (video counter) is a 10 bit counter that can be loaded with the value from VCBASE.
+		int reg_vmli = 0; // 6 bit counter with reset input that keeps track of the position within
+								// the internal 40×12 bit video matrix / color line where read character
+								// pointers are stored resp.read again.
+		int reg_rc = 0;	// (row counter) is a 3 bit counter with reset input.
 		bool bus_available = true;
-		const std::array<uint16_t, 40> video_matrix{ 0 };
+		const std::array<uint16_t, 40> video_matrix { 0 };
 		bool is_display_state = false;
 
 		(void)bus_available;
@@ -195,12 +203,12 @@ namespace mewt::emu::chip::mos_65xx
 
 			for (uint16_t cycle_x = 0; cycle_x < config._cycles_per_scanline; ++cycle_x)
 			{
-
 				if ((raster_y == 0x30) && _regs._control_reg_1._den)
 					bad_line_enable = true;
 				else if (raster_y == 0xf8)
 					bad_line_enable = false;
-				bool is_bad_line = bad_line_enable && ((raster_y & 7) == _regs._control_reg_1._y_scroll);
+				bool is_bad_line =
+					 bad_line_enable && ((raster_y & 7) == _regs._control_reg_1._y_scroll);
 				if (is_bad_line)
 					is_display_state = true;
 
@@ -226,8 +234,8 @@ namespace mewt::emu::chip::mos_65xx
 				if ((cycle_x >= 12) && (cycle_x <= 54))
 				{
 					if (is_bad_line)
-						bus_available = false; // mwToDo: CPU needs to stop on first read access after BA goes low.
-													  // mwToDo
+						bus_available = false; // mwToDo: CPU needs to stop on first read access after BA
+													  // goes low. mwToDo
 													  /// if (!bus_available && (cycle_x >= 15))
 													  ///	video_matrix[vmli] = mem_read_c();
 				}
@@ -279,10 +287,10 @@ namespace mewt::emu::chip::mos_65xx
 							main_border_flip_flop = false;
 					}
 
-
 					if (raster_visible)
 					{
-						auto pixel_colour = kVicIIColours[main_border_flip_flop ? (uint8_t)_regs._border_color : 0];
+						auto pixel_colour =
+							 kVicIIColours[main_border_flip_flop ? (uint8_t)_regs._border_color : 0];
 						// pixel_colour.r = vc & 0xff;
 						// pixel_colour.r = rc << 5;
 						// pixel_colour.r = vmli;
@@ -302,13 +310,10 @@ namespace mewt::emu::chip::mos_65xx
 
 	async::Future<> vic2_656x_t::runGpu(IHost& host)
 	{
-
 		auto& config = co_await host.events().initialising;
 		const auto& vic_config = getConfig();
-		config.display_size = {
-			._width = gfx::Image::Width(visibleScanlineWidth(vic_config)),
-			._height = gfx::Image::Height(visibleScanlineCount(vic_config))
-		};
+		config.display_size = { ._width = gfx::Image::Width(visibleScanlineWidth(vic_config)),
+										._height = gfx::Image::Height(visibleScanlineCount(vic_config)) };
 
 		// VicII vic2(vic_config);
 		for (;;)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug-Clang|x64">
@@ -136,6 +136,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <AdditionalOptions>/std:c++20 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,6 +164,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <AdditionalOptions>/std:c++20 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,6 +188,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AdditionalIncludeDirectories>$(ProjectDir)..;$(SDL_SDK)\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/std:c++20 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -209,6 +212,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AdditionalIncludeDirectories>$(ProjectDir)..;$(SDL_SDK)\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/std:c++20 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -234,6 +238,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/std:c++20 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -261,6 +266,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/std:c++20 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -307,6 +313,8 @@
     <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.cpp" />
     <ClCompile Include="emu\sys\c64\c64.cpp" />
     <ClCompile Include="os\app_context\win\win_app_context.cpp" />
+    <ClCompile Include="types\numeric\numeric.Tests.cpp" />
+    <ClCompile Include="types\numeric\value\value.Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\c64_emu\c64_emu.decl.h" />
@@ -333,12 +341,14 @@
     <ClInclude Include="async\resumer.h" />
     <ClInclude Include="diag\log.h" />
     <ClInclude Include="diag\source_location.h" />
+    <ClInclude Include="emu\chip\chip.Info.h" />
     <ClInclude Include="emu\chip\mos_65xx\mos_65xx.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r56a.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r8.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_6569.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.decl.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x_config.h" />
+    <ClInclude Include="emu\device\device.Info.h" />
     <ClInclude Include="emu\host\host.h" />
     <ClInclude Include="emu\host\host.impl.h" />
     <ClInclude Include="emu\mem\bus_spec.h" />
@@ -349,6 +359,8 @@
     <ClInclude Include="emu\chip\mos_65xx\cpu_6502\cpu_6502_instructions.h" />
     <ClInclude Include="emu\chip\mos_65xx\vic2_656x\vic2_656x.h" />
     <ClInclude Include="emu\chip\mos_65xx\cia_6526\cia_6526.h" />
+    <ClInclude Include="emu\mem\interface\interface.Abstract.h" />
+    <ClInclude Include="emu\mem\interface\interface.RegisterStruct.h" />
     <ClInclude Include="emu\mem\memory_interface.h" />
     <ClInclude Include="emu\chip\mos_65xx\sid_6581\sid_6581.h" />
     <ClInclude Include="emu\mem\ram\fixed_size_ram.h" />
@@ -387,9 +399,12 @@
     <ClInclude Include="os\app_context\app_context.h" />
     <ClInclude Include="os\app_context\win\win_app_context.h" />
     <ClInclude Include="os\base\win_base.h" />
+    <ClInclude Include="types\adapters\adapters.ValueAsType.h" />
+    <ClInclude Include="types\address_space.h" />
     <ClInclude Include="types\arithmetic.h" />
     <ClInclude Include="types\bitfield.h" />
     <ClInclude Include="types\byte.h" />
+    <ClInclude Include="types\byte_span.h" />
     <ClInclude Include="types\colour.h" />
     <ClInclude Include="types\concepts.h" />
     <ClInclude Include="types\coroutine.h" />
@@ -401,11 +416,29 @@
     <ClInclude Include="types\intrusive_stack.h" />
     <ClInclude Include="types\intrusive_stack.impl.h" />
     <ClInclude Include="types\int_types.h" />
+    <ClInclude Include="types\native\native.Bit.h" />
     <ClInclude Include="types\non_movable.h" />
+    <ClInclude Include="types\numeric.h" />
+    <ClInclude Include="types\native\native.Integer.h" />
+    <ClInclude Include="types\numeric\numeric.Count.h" />
+    <ClInclude Include="types\numeric\numeric.space.h" />
+    <ClInclude Include="types\numeric\numeric.Index.h" />
+    <ClInclude Include="types\numeric\numeric.Integer.h" />
+    <ClInclude Include="types\native\native.Integer.decl.h" />
+    <ClInclude Include="types\native\native.Value.h" />
+    <ClInclude Include="types\numeric\value\value.Transform.h" />
+    <ClInclude Include="types\numeric\value\value.Operations.h" />
+    <ClInclude Include="types\numeric\value\value.Absolute.h" />
+    <ClInclude Include="types\numeric\value\value.Strong.h" />
+    <ClInclude Include="types\numeric\value\value.Relative.h" />
+    <ClInclude Include="types\mewt.types.decl.h" />
+    <ClInclude Include="types\traits\traits.Layout.h" />
     <ClInclude Include="types\opaque.h" />
     <ClInclude Include="types\scale_factor.h" />
     <ClInclude Include="types\span_2d.h" />
     <ClInclude Include="types\traits.h" />
+    <ClInclude Include="types\numeric\numeric.unit.h" />
+    <ClInclude Include="types\traits\traits.TypeId.h" />
     <ClInclude Include="types\unique_referencable.h" />
   </ItemGroup>
   <ItemGroup>

@@ -2,21 +2,25 @@
 #pragma once
 
 #include "mewt/types/int_types.h"
+#include "mewt/types/numeric/numeric.Count.h"
 
 namespace mewt::types
 {
 
-	template <int NBits>
+	template <auto NBitCount>
+		requires numeric::isCountOf<decltype(NBitCount), native::Bit>
 	class BitField
 	{
-
-		using Data = UInt<NBits>;
+		using Data = numeric::Integer<NBitCount, false>;
 
 		class Proxy
 		{
-
 		public:
-			constexpr explicit operator bool() const { return _bitfield._bits & _mask; }
+			constexpr explicit operator bool() const
+			{
+				return _bitfield._bits & _mask;
+			}
+
 			constexpr auto operator=(bool bit) -> Proxy&
 			{
 				if (bit)
@@ -32,13 +36,30 @@ namespace mewt::types
 		};
 
 	public:
-		constexpr BitField() : _bits(0) {}
-		constexpr explicit BitField(Data bits) : _bits(bits) {}
+		constexpr BitField()
+			 : _bits(0)
+		{
+		}
 
-		constexpr explicit operator Data() const { return _bits; }
+		constexpr explicit BitField(Data bits)
+			 : _bits(bits)
+		{
+		}
 
-		constexpr auto operator[](Data bit) -> Proxy { return Proxy{ *this, static_cast<Data>(1 << bit) }; }
-		constexpr auto operator[](Data bit) const -> bool { return _bits & (1 << bit); }
+		constexpr explicit operator Data() const
+		{
+			return _bits;
+		}
+
+		constexpr auto operator[](Data bit) -> Proxy
+		{
+			return Proxy { *this, static_cast<Data>(1 << bit) };
+		}
+
+		constexpr auto operator[](Data bit) const -> bool
+		{
+			return _bits & (1 << bit);
+		}
 
 	private:
 		Data _bits;

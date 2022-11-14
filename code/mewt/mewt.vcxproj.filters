@@ -108,6 +108,9 @@
     <ClCompile Include="emu\chip\mos_65xx\vic2_656x\vic2_6567r8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="types\numeric\value\value.Tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="types\intrusive_stack.h">
@@ -402,6 +405,81 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types\byte.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\byte_span.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\address_space.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\numeric.space.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\traits\traits.TypeId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\numeric.Count.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\numeric.Index.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\numeric.unit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\traits\traits.Layout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\native\native.Bit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\native\native.Integer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\numeric.Integer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\value\value.Strong.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\value\value.Relative.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\value\value.Absolute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\value\value.Operations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\numeric\value\value.Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\native\native.Integer.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\native\native.Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\chip\chip.Info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\device\device.Info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\mem\interface\interface.RegisterStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\mewt.types.decl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu\mem\interface\interface.Abstract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types\adapters\adapters.ValueAsType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
